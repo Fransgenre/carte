@@ -51,23 +51,27 @@ To spin up a development environment, follow these steps:
 
 **Pre-requisites:**
 
+- A working installation of Docker (configured so that it can be used without root privileges)
 - A working installation of Nix
   - Supports of Nix Flakes is required.
-  - A PostgreSQL server with PostGIS in version 16 or higher. You can start one with `start_docker_postgresql`.
+- A PostgreSQL server with PostGIS in version 16 or higher. You can start one with `start_docker_postgresql`.
 
 **Steps:**
 
 - Clone the repository
 - Run `nix develop` to enter a development environment
-- Adjust the flake.nix variable to match your database database
+- Run `start_docker_postgresql` to start a database server
 - Inside the `backend` folder
   - Run `sqlx migrate run` to create the database schema
 - Inside the `frontend` folder
   - Run `npm install` to install the dependencies
 - Inside the root folder:
   - Run `regen_api` to regenerate the API
-  - _Optional:_ Run `start_docker_postgresql` to start a PostgreSQL server with PostGIS
   - Run `start_dev_env` to start the stack using process-compose
+
+Then, go to the admin panel at http://localhost:4000/admin/ and create an access token for you. You may then use it to access the map at http://localhost:4000/map/\<token\>
+
+The search page is available at http://localhost:4000/search/\<token\>
 
 ## License
 
