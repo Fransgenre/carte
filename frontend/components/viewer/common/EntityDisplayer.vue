@@ -198,6 +198,7 @@ function refreshDiscreteScoreAverages() {
         .map(c => (c.data as Record<string, number>)[field.key] ?? 0)
         .reduce((acc, score) => acc + score, 0) / props.entity.comments.filter(c => (c.data as Record<string, number>)[field.key] != null).length,
     }))
+    .filter(f => !isNaN(f.average))
 }
 
 refreshDiscreteScoreAverages()
