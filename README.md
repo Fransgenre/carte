@@ -69,9 +69,9 @@ To spin up a development environment, follow these steps:
   - Run `regen_api` to regenerate the API
   - Run `start_dev_env` to start the stack using process-compose
 
-Then, go to the admin panel at http://localhost:4000/admin/ and create an access token for you. You may then use it to access the map at http://localhost:4000/map/\<token\>
+Then, go to the admin panel at http://localhost:4000/admin/ and create an access token for you. You may then use it to access the map at `http://localhost:4000/map/<token>`
 
-The search page is available at http://localhost:4000/search/\<token\>
+The search page is available at `http://localhost:4000/search/<token>`
 
 ## License
 
