@@ -41,7 +41,8 @@
 <script setup lang="ts">
 import { transform } from 'ol/proj'
 import type { UnprocessedLocation } from '~/lib'
-import { freeFormSearch, type Result } from '~/lib/nominatim'
+import { freeFormSearch } from '~/lib/nominatim'
+import type { Result } from '~/lib/nominatim'
 
 const props = defineProps<{ modelValue: UnprocessedLocation | null }>()
 const emits = defineEmits(['select'])

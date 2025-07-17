@@ -84,11 +84,11 @@ export interface HasCategory {
   category: Category
 }
 
-export type DisplayableCachedEntity = ViewerCachedEntity &
-  HasCoordinates &
-  HasFamily &
-  HasCategory &
-  CanBeHighlighted
+export type DisplayableCachedEntity = ViewerCachedEntity
+  & HasCoordinates
+  & HasFamily
+  & HasCategory
+  & CanBeHighlighted
 
 export type DisplayableCluster = Cluster & HasCoordinates
 

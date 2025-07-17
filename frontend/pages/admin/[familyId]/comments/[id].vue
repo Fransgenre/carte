@@ -131,14 +131,14 @@ else {
 
 const editedComment: Ref<AdminNewOrUpdateComment> = isNew
   ? ref({
-    author: '',
-    data: {},
-    entity_id: urlEntityId ?? '',
-    entity_category_id: parentEntityToDisplay.value.category_id,
-    moderated: false,
-    text: '',
-    version: 1,
-  })
+      author: '',
+      data: {},
+      entity_id: urlEntityId ?? '',
+      entity_category_id: parentEntityToDisplay.value.category_id,
+      moderated: false,
+      text: '',
+      version: 1,
+    })
   : ref(JSON.parse(JSON.stringify(fetchedComment))) // deep copy
 
 const processingRequest = ref(false)

@@ -428,13 +428,13 @@ initAdminLayout(
 )
 
 // Define the OptionValidation type as a union of specific group-name pairs
-type OptionValidation =
-  { group: 'general', name: keyof SafeHavenOptions['general'] }
-  | { group: 'init_popup', name: keyof SafeHavenOptions['init_popup'] }
-  | { group: 'safe_mode', name: keyof SafeHavenOptions['safe_mode'] }
-  | { group: 'cartography_init', name: keyof SafeHavenOptions['cartography_init'] }
-  | { group: 'cartography_source', name: keyof SafeHavenOptions['cartography_source'] }
-  | { group: 'cartography_cluster', name: keyof SafeHavenOptions['cartography_cluster'] }
+type OptionValidation
+  = { group: 'general', name: keyof SafeHavenOptions['general'] }
+    | { group: 'init_popup', name: keyof SafeHavenOptions['init_popup'] }
+    | { group: 'safe_mode', name: keyof SafeHavenOptions['safe_mode'] }
+    | { group: 'cartography_init', name: keyof SafeHavenOptions['cartography_init'] }
+    | { group: 'cartography_source', name: keyof SafeHavenOptions['cartography_source'] }
+    | { group: 'cartography_cluster', name: keyof SafeHavenOptions['cartography_cluster'] }
 
 // Function to validate individual options based on the group and name properties
 function isOptionValid(option: OptionValidation): boolean {

@@ -3,7 +3,6 @@
 import theme from './theme.mjs'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2024-09-13',
   modules: [
     '@primevue/nuxt-module',
     '@nuxt/eslint',
@@ -12,9 +11,31 @@ export default defineNuxtConfig({
   ],
   ssr: false,
   devtools: { enabled: true },
+  app: {
+    head: {
+      title: 'Safehaven',
+    },
+  },
+  css: [
+    '~/assets/main.css',
+    '~/assets/richtext.css',
+  ],
+  compatibilityDate: '2024-09-13',
+  vite: {
+    resolve: {
+      alias: {
+        ace: 'ace-builds/src-noconflict',
+      },
+    },
+  },
   typescript: {
     typeCheck: true,
     strict: true,
+  },
+  eslint: {
+    config: {
+      stylistic: true,
+    },
   },
   primevue: {
     options: {
@@ -24,27 +45,6 @@ export default defineNuxtConfig({
         options: {
           darkModeSelector: '.sh-dark',
         },
-      },
-    },
-  },
-  css: [
-    '~/assets/main.css',
-    '~/assets/richtext.css',
-  ],
-  eslint: {
-    config: {
-      stylistic: true,
-    },
-  },
-  app: {
-    head: {
-      title: 'Safehaven',
-    },
-  },
-  vite: {
-    resolve: {
-      alias: {
-        ace: 'ace-builds/src-noconflict',
       },
     },
   },
