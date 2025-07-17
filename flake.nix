@@ -15,7 +15,6 @@
   };
 
   outputs = {
-    self,
     nixpkgs,
     fenix,
     alejandra,
@@ -31,9 +30,6 @@
 
         # NodeJS environment
         fixedNode = pkgs.nodejs_20;
-        fixedNodePackages = pkgs.nodePackages.override {
-          nodejs = fixedNode;
-        };
 
         # Rust environment
         rustVer = fenix.packages.${system}.complete;
@@ -211,7 +207,7 @@
             cargo = rustVer.toolchain;
             rustc = rustVer.toolchain;
           })
-          .buildRustPackage rec {
+          .buildRustPackage {
             inherit version;
 
             name = "safehaven-backend";
@@ -223,7 +219,7 @@
           };
 
         # Frontend derivation
-        frontend = pkgs.buildNpmPackage rec {
+        frontend = pkgs.buildNpmPackage {
           inherit version;
 
           name = "safehaven-frontend";
