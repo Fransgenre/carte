@@ -64,7 +64,7 @@ jobs:
           ./result | gzip --fast | \
             skopeo copy \
               docker-archive:/dev/stdin \
-              docker://ghcr.io/safehavenmaps/safehaven:$TAG
+              docker://ghcr.io/fransgenre/carte:$TAG
 
   build_arm64:
     # aarch64 are terribly long. We only build on release events.
@@ -112,4 +112,4 @@ jobs:
           ./result | gzip --fast | \
             skopeo copy \
               docker-archive:/dev/stdin \
-              docker://ghcr.io/safehavenmaps/safehaven:$TAG
+              docker://ghcr.io/fransgenre/carte:$TAG

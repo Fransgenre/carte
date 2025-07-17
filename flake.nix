@@ -244,7 +244,7 @@
 
         # Docker image
         dockerImage = pkgs.dockerTools.streamLayeredImage {
-          name = "ghcr.io/safehavenmaps/safehaven";
+          name = "ghcr.io/fransgenre/carte";
           tag = version;
           contents = [
             backend
