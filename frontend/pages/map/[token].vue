@@ -100,8 +100,8 @@ catch {
   }
 }
 
-// Center to the given location using the given zoom level if provided in the url query
-onMounted(() => {
+// Center and display the given entity or location using the given zoom level if provided in the url query
+onMounted(async () => {
   let customStartCenter: Coordinate | undefined = undefined
   if (route.query.lat && route.query.lon) {
     if (typeof route.query.lat == 'string' && typeof route.query.lon == 'string') {
@@ -120,7 +120,32 @@ onMounted(() => {
     }
   }
 
-  if(customStartCenter) goToGpsCoordinates(customStartCenter, customStartZoom)
+  let customStartEntityId: string | undefined = undefined
+  if (route.query.ent) {
+    if (typeof route.query.ent == 'string') {
+      const entityId = route.query.ent
+      customStartEntityId = entityId
+    }
+  }
+
+  if (customStartEntityId) {
+    // Custom entity provided, try to display it
+    await displayEntityId(customStartEntityId)
+    const entity = state.activeEntity?.entity
+    if (entity?.id == customStartEntityId && entity?.locations.length) {
+      // The entity is displayed, go to its location optionally using the given zoom
+      goToGpsCoordinates([entity.locations[0].long, entity.locations[0].lat], customStartZoom)
+    }
+    else if(customStartCenter) {
+      // Either the entity isn't displayed or it doesn't have a location, fallback to the custom location (and optional zoom) provided
+      goToGpsCoordinates(customStartCenter, customStartZoom)
+    }
+  }
+
+  else if(customStartCenter) {
+    // Custom location provided, go to it, optionally using the given zoom
+    goToGpsCoordinates(customStartCenter, customStartZoom)
+  }
 })
 
 const mapRef = ref<typeof ViewerMap>()
