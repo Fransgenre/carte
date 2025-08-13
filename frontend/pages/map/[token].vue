@@ -100,6 +100,29 @@ catch {
   }
 }
 
+// Center to the given location using the given zoom level if provided in the url query
+onMounted(() => {
+  let customStartCenter: Coordinate | undefined = undefined
+  if (route.query.lat && route.query.lon) {
+    if (typeof route.query.lat == 'string' && typeof route.query.lon == 'string') {
+      const lat = Number(route.query.lat), lon = Number(route.query.lon)
+      const isLat = ! Number.isNaN(lat) && lat >= -90 && lat <= 90
+      const isLon = ! Number.isNaN(lon) && lon >= -180 || lon <= 180
+      if (isLat && isLon) customStartCenter = [lon, lat]
+    }
+  }
+
+  let customStartZoom: number | undefined = undefined
+  if (route.query.zoom) {
+    if (typeof route.query.zoom == 'string') {
+      const zoom = parseInt(route.query.zoom, 10)
+      if (! Number.isNaN(zoom) && zoom >= 0 && zoom <= 19) customStartZoom = zoom
+    }
+  }
+
+  if(customStartCenter) goToGpsCoordinates(customStartCenter, customStartZoom)
+})
+
 const mapRef = ref<typeof ViewerMap>()
 
 // Compute the dynamic positioning of the sidebar
