@@ -245,6 +245,22 @@ catch {
   }
 }
 
+// Display the given entity if provided in the url query
+onMounted(async () => {
+  let customStartEntityId: string | undefined = undefined
+  if (route.query.ent) {
+    if (typeof route.query.ent == 'string') {
+      const entityId = route.query.ent
+      customStartEntityId = entityId
+    }
+  }
+
+  if (customStartEntityId) {
+    // Custom entity provided, try to display it
+    await displayEntityId(customStartEntityId)
+  }
+})
+
 const query = ref('')
 const currentPage = ref(1)
 const pageSize = ref(20)
