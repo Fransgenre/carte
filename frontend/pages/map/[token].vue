@@ -113,8 +113,8 @@ function fitContainer() {
   return {} // Return default/fallback styles if needed
 }
 
-function goToGpsCoordinates(coordinates: Coordinate) {
-  mapRef.value?.goToGpsCoordinates(coordinates, 13)
+function goToGpsCoordinates(coordinates: Coordinate, zoom=13) {
+  mapRef.value?.goToGpsCoordinates(coordinates, zoom)
 }
 
 async function refreshMap() {
@@ -135,7 +135,7 @@ async function displayEntityId(entityId: string) {
   }
 }
 
-async function goToEntity(entity: ViewerSearchedCachedEntity) {
+async function goToEntity(entity: ViewerSearchedCachedEntity, zoom=14) {
   try {
     await state.selectEntity(entity.entity_id)
   }
@@ -153,7 +153,7 @@ async function goToEntity(entity: ViewerSearchedCachedEntity) {
     mapRef.value?.goToWebMercatorCoordinates([
       location.x,
       location.y,
-    ], 14)
+    ], zoom)
   }
 }
 </script>
