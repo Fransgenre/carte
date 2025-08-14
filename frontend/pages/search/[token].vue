@@ -258,6 +258,25 @@ onMounted(async () => {
   if (customStartEntityId) {
     // Custom entity provided, try to display it
     await displayEntityId(customStartEntityId)
+    const entity = state.activeEntity?.entity
+
+    if (entity?.id == customStartEntityId) {
+      // The entity is loaded and its infos are displayed
+      // Let's update the filter settings so the UI is consistent
+
+      // Ensure the right family is selected
+      state.activeFamily = state.families.find((family) => family.id == entity.family_id) || state.activeFamily
+
+      // Ensure the right category is displayed
+      state.filteringCategories.forEach((category) => {
+        if (category.id == entity.category_id) category.active = true
+      })
+
+      // Ensure the right tags are displayed
+      state.filteringTags.forEach((tag) => {
+        if (entity.tags.includes(tag.id) && tag.is_filter) tag.active = null
+      })
+    }
   }
 })
 
