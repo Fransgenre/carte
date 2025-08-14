@@ -266,7 +266,7 @@ onMounted(async () => {
       // Let's update the filter settings so the UI is consistent
 
       // Ensure the right family is selected
-      state.activeFamily = state.families.find((family) => family.id == entity.family_id) || state.activeFamily
+      state.activeFamily = state.families.find(family => family.id == entity.family_id) || state.activeFamily
 
       // Ensure the right category is displayed
       state.filteringCategories.forEach((category) => {
