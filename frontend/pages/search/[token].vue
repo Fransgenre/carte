@@ -259,8 +259,9 @@ onMounted(async () => {
     // Custom entity provided, try to display it
     await displayEntityId(customStartEntityId)
     const entity = state.activeEntity?.entity
+    const hasEntity = entity?.id == customStartEntityId
 
-    if (entity?.id == customStartEntityId) {
+    if (hasEntity) {
       // The entity is loaded and its infos are displayed
       // Let's update the filter settings so the UI is consistent
 

@@ -132,8 +132,9 @@ onMounted(async () => {
     // Custom entity provided, try to display it
     await displayEntityId(customStartEntityId)
     const entity = state.activeEntity?.entity
+    const hasEntity = entity?.id == customStartEntityId
 
-    if (entity?.id == customStartEntityId) {
+    if (hasEntity) {
       // The entity is loaded and its infos are displayed
       // It might be invisible on the map depending on the current family and filter settings so we might have to change them
 
@@ -151,7 +152,7 @@ onMounted(async () => {
       })
     }
     
-    if (entity?.id == customStartEntityId && entity?.locations.length) {
+    if (hasEntity && entity.locations.length) {
       // The entity is loaded, its infos are displayed and it has a location
       // Go to the entity location optionally using the given zoom
       goToGpsCoordinates([entity.locations[0].long, entity.locations[0].lat], customStartZoom)
