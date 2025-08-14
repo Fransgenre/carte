@@ -14,6 +14,9 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Safehaven',
+      meta: [
+        { name: 'robots', content: 'noindex' },
+      ],
     },
   },
   css: [
