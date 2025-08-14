@@ -147,7 +147,7 @@ onMounted(async () => {
 
       // Ensure the right tags are displayed
       state.filteringTags.forEach((tag) => {
-        if (entity.tags.includes(tag.id) && tag.is_filter) tag.active = null
+        if (entity.tags.includes(tag.id)) tag.active = null
       })
     }
     
