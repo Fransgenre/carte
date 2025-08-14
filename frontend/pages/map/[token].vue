@@ -133,11 +133,27 @@ onMounted(async () => {
     await displayEntityId(customStartEntityId)
     const entity = state.activeEntity?.entity
     if (entity?.id == customStartEntityId && entity?.locations.length) {
-      // The entity is displayed, go to its location optionally using the given zoom
+      // The entity is loaded and its infos are displayed
+      // It has a location, tho it might be invisible on the map depending on the current family and filter settings
+
+      // Ensure the right family is selected
+      state.activeFamily = state.families.find((family) => family.id == entity.family_id) || state.activeFamily
+
+      // Ensure the right category is displayed
+      state.filteringCategories.forEach((category) => {
+        if (category.id == entity.category_id) category.active = true
+      })
+
+      // Ensure the right tags are displayed
+      state.filteringTags.forEach((tag) => {
+        if (entity.tags.includes(tag.id) && tag.is_filter) tag.active = null
+      })
+
+      // Finally go to the entity location optionally using the given zoom
       goToGpsCoordinates([entity.locations[0].long, entity.locations[0].lat], customStartZoom)
     }
     else if(customStartCenter) {
-      // Either the entity isn't displayed or it doesn't have a location, fallback to the custom location (and optional zoom) provided
+      // Either the entity isn't loaded or it doesn't have a location, fallback to the custom location (and optional zoom) provided
       goToGpsCoordinates(customStartCenter, customStartZoom)
     }
   }
