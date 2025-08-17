@@ -239,8 +239,9 @@ const isValid = computed(() => {
 
 emit('isValid', isValid.value)
 
-function updateField(value: undefined | FieldContentMap[FormField['field_type']]) {
+async function updateField(value: undefined | FieldContentMap[FormField['field_type']]) {
   emit('update:fieldContent', value)
+  await nextTick()
   emit('isValid', isValid.value)
 }
 
