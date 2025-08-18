@@ -9,6 +9,8 @@
     :draggable="false"
     :style="{ width: '50rem' }"
     :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+    :auto-z-index="false"
+    :pt:mask:style="{ zIndex: 10000 }"
   >
     <div
       class="rich-text-content"
