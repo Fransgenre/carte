@@ -178,7 +178,9 @@ function isCommentPageValid(page: number) {
   if (page === 0) {
     return isValidText(editedComment.value!.author) && isValidRichText(editedComment.value!.text)
   }
-  return commentFieldsSortedByPage(page).every(field => commentFieldValid.value[field.key])
+  return commentFieldsSortedByPage(page)
+    .filter(field => field.categories == null || field.categories.includes(editedComment.value!.entity_category_id))
+    .every(field => commentFieldValid.value[field.key])
 }
 
 function hCaptchaVerify(token: string) {
