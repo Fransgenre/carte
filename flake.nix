@@ -4,42 +4,19 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    alejandra = {
-      url = "github:kamadorueda/alejandra/3.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {
     nixpkgs,
-    fenix,
-    alejandra,
     flake-utils,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [fenix.overlays.default];
-        };
+        pkgs = import nixpkgs {inherit system;};
 
         # NodeJS environment
         fixedNode = pkgs.nodejs_24;
-
-        # Rust environment
-        rustVer = fenix.packages.${system}.complete;
-        rustChan = rustVer.withComponents [
-          "cargo"
-          "clippy"
-          "rust-src"
-          "rustc"
-          "rustfmt"
-        ];
 
         checkProject = pkgs.writeShellScriptBin "check_project" ''
           set -e
@@ -202,21 +179,17 @@
         version = builtins.readFile ./container_release;
 
         # Backend derivation
-        backend =
-          (pkgs.makeRustPlatform {
-            cargo = rustVer.toolchain;
-            rustc = rustVer.toolchain;
-          })
+        backend = pkgs.rustPlatform
           .buildRustPackage {
-            inherit version;
+          inherit version;
 
-            name = "safehaven-backend";
-            src = ./backend;
+          name = "safehaven-backend";
+          src = ./backend;
 
-            # When modifying cargo dependencies, replace the hash with pkgs.lib.fakeHash
-            # then run `nix build .#backend`. Use the hash in the error to replace the value.
-            cargoHash = "sha256-ffaFgV5i4T0miX3k2uTiAU5P+zT7EHvXax9foZXTibQ=";
-          };
+          # When modifying cargo dependencies, replace the hash with pkgs.lib.fakeHash
+          # then run `nix build .#backend`. Use the hash in the error to replace the value.
+          cargoHash = "sha256-ffaFgV5i4T0miX3k2uTiAU5P+zT7EHvXax9foZXTibQ=";
+        };
 
         # Frontend derivation
         frontend = pkgs.buildNpmPackage {
@@ -259,7 +232,11 @@
           packages = {inherit backend frontend dockerImage;};
           devShells.default = mkShell {
             buildInputs = [
-              rustChan
+              # Rust toolchain
+              rustc
+              cargo
+              rustfmt
+              clippy
               # Various scripts
               checkProject
               regenApi
@@ -270,7 +247,7 @@
               # Front
               fixedNode
               # Nix formatting
-              alejandra.defaultPackage.${system}
+              alejandra
               # Process composing
               process-compose
               # PostgreSQL and PostGIS
