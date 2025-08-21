@@ -307,11 +307,11 @@ impl AccessToken {
         // Convert the JsonValue to HashMap<String, u32>
         let origins: HashMap<String, u32> =
             serde_json::from_value(origins_json).map_err(|err| {
-                AppError::Internal(format!("Failed to deserialize origins: {}", err).into())
+                AppError::Internal(format!("Failed to deserialize origins: {err}").into())
             })?;
         let visits_30_days: BTreeMap<String, u32> = serde_json::from_value(visits_30_days_json)
             .map_err(|err| {
-                AppError::Internal(format!("Failed to deserialize visits_30_days: {}", err).into())
+                AppError::Internal(format!("Failed to deserialize visits_30_days: {err}").into())
             })?;
 
         Ok(AccessTokenStats {

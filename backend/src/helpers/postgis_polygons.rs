@@ -12,17 +12,17 @@ impl MultiPolygon {
             .map(|polygon| {
                 let coords_str = polygon
                     .iter()
-                    .map(|&(x, y)| format!("{} {}", x, y))
+                    .map(|&(x, y)| format!("{x} {y}"))
                     .collect::<Vec<_>>()
                     .join(", ");
-                format!("({})", coords_str)
+                format!("({coords_str})")
             })
             .collect::<Vec<_>>()
             .join("),(");
 
         match srid {
-            Some(srid) => format!("SRID={};MULTIPOLYGON(({}))", srid, polygons_str),
-            None => format!("MULTIPOLYGON(({}))", polygons_str),
+            Some(srid) => format!("SRID={srid};MULTIPOLYGON(({polygons_str}))"),
+            None => format!("MULTIPOLYGON(({polygons_str}))"),
         }
     }
 }

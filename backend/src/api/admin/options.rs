@@ -65,8 +65,7 @@ pub async fn admin_options_update(
         }
         _ => {
             return Err(AppError::Validation(format!(
-                "Unknown configuration option: {}",
-                name
+                "Unknown configuration option: {name}"
             )));
         }
     };

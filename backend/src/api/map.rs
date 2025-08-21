@@ -335,7 +335,7 @@ async fn check_captcha(state: AppState, response: Option<String>) -> Result<(), 
                         AppError::Validation("HCaptcha network error".to_string())
                     }
                     HCaptchaValidationError::HCaptchaError(errors) => {
-                        AppError::Validation(format!("HCaptcha errors: {:?}", errors))
+                        AppError::Validation(format!("HCaptcha errors: {errors:?}"))
                     }
                 })?;
             }
@@ -527,10 +527,7 @@ async fn viewer_fetch_entity(
         .into_iter()
         // filter against request
         .filter(|child| {
-            request
-                .active_categories
-                .iter()
-                .any(|cat| *cat == child.category_id)
+            request.active_categories.contains(&child.category_id)
                 && request
                     .active_required_tags
                     .iter()
