@@ -211,7 +211,6 @@
 </template>
 
 <script setup lang="ts">
-import type Popover from 'primevue/popover'
 import type { PageState } from 'primevue/paginator'
 import type { ViewerPaginatedCachedEntities } from '~/lib'
 import state from '~/lib/viewer-state'
@@ -291,7 +290,7 @@ const researchIncrement = ref(0)
 const showCriterias = ref(false)
 
 const currentEntitiesResults: Ref<ViewerPaginatedCachedEntities | null> = ref(null)
-const familySwitcher = ref<typeof Popover>()
+const familySwitcher = useTemplateRef('familySwitcher')
 
 function resultLabel() {
   const result = currentEntitiesResults!.value?.total_results ?? 0

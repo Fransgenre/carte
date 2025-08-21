@@ -29,7 +29,7 @@
         };
 
         # NodeJS environment
-        fixedNode = pkgs.nodejs_20;
+        fixedNode = pkgs.nodejs_24;
 
         # Rust environment
         rustVer = fenix.packages.${system}.complete;

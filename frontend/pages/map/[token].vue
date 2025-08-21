@@ -169,7 +169,7 @@ onMounted(async () => {
   }
 })
 
-const mapRef = ref<typeof ViewerMap>()
+const mapRef = useTemplateRef('mapRef')
 
 // Compute the dynamic positioning of the sidebar
 const containerRef = ref<HTMLElement | null>(null)

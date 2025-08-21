@@ -90,7 +90,6 @@
 </template>
 
 <script setup lang="ts">
-import type Popover from 'primevue/popover'
 import type {
   AdminCachedEntity,
   AdminPaginatedCachedEntities,
@@ -111,7 +110,7 @@ const props = withDefaults(defineProps<{
   title: 'Choix d\'une entité',
 })
 
-const filters_overlay = ref<typeof Popover>()
+const filters_overlay = useTemplateRef('filters_overlay')
 
 const search_query = ref('')
 const categoryFilteringList = ref<(Category & { active: boolean })[]>([])

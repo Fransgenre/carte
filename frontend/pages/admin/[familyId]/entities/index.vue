@@ -142,7 +142,6 @@
 </template>
 
 <script setup lang="ts">
-import Popover from 'primevue/popover'
 import type { PageState } from 'primevue/paginator'
 import DisplayedTag from '~/components/DisplayedTag.vue'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
@@ -163,8 +162,8 @@ if (state.tags == null) {
 
 const familyTitle = state.families.filter(family => family.id == familyId)[0].title
 
-const filters_overlay = ref<typeof Popover>()
-const tags_tooltip = ref<typeof Popover>()
+const filters_overlay = useTemplateRef('filters_overlay')
+const tags_tooltip = useTemplateRef('tags_tooltip')
 const tooltip_excess_tags: Ref<undefined | string[]> = ref(undefined)
 
 const firstRow = ref(0)

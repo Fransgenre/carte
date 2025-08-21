@@ -391,7 +391,6 @@
 </template>
 
 <script setup lang="ts">
-import type Popover from 'primevue/popover'
 import type { Coordinate } from 'ol/coordinate'
 import type { PageState } from 'primevue/paginator'
 import state from '~/lib/viewer-state'
@@ -419,7 +418,7 @@ const props = withDefaults(defineProps<Props>(), {
   showFamilySwitcher: true,
 })
 
-const entityAddForm = ref<typeof ViewerEntityAddForm>()
+const entityAddForm = useTemplateRef('entityAddForm')
 
 const emit = defineEmits<{
   filtersChanged: []
@@ -427,9 +426,9 @@ const emit = defineEmits<{
   entityChosen: [ViewerSearchedCachedEntity]
 }>()
 
-const filterOp = ref<typeof Popover>()
-const searchOp = ref<typeof Popover>()
-const overflowPanel = ref<typeof Popover>()
+const filterOp = useTemplateRef('filterOp')
+const searchOp = useTemplateRef('searchOp')
+const overflowPanel = useTemplateRef('overflowPanel')
 
 const placeSearch: Ref<string> = ref('')
 const entitySearch: Ref<string> = ref('')
