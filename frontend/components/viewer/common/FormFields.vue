@@ -79,13 +79,13 @@
           <AccordionHeader>
             <Tag
               :severity="event.severity"
-              :value="event.title"
+              :value="event.title && event.title.length ? event.title : 'Evènement inconnu'"
             />
           </AccordionHeader>
 
           <AccordionContent>
             <p>
-              <strong>Date :</strong> {{ event.date.toLocaleDateString() }}
+              <strong>Date :</strong> {{ event.date ? event.date.toLocaleDateString() : 'Date inconnue' }}
             </p>
 
             <p v-if="event.comment && event.comment.length > 0">
@@ -117,9 +117,9 @@ function eventWithMetadata(event, fieldKey) {
 
   return {
     ...event,
-    date: new Date(event.date),
-    title: current_metadata.label,
-    severity: eventColorToSeverity(current_metadata.color),
+    date: event?.date ? new Date(event.date) : null,
+    title: current_metadata?.label,
+    severity: eventColorToSeverity(current_metadata?.color),
   }
 }
 
