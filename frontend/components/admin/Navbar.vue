@@ -144,14 +144,13 @@
 </template>
 
 <script setup lang="ts">
-import type Menu from 'primevue/menu'
 import state from '~/lib/admin-state'
 import safehaven_logo from '~/assets/logo_square_white.svg'
 
 const emit = defineEmits(['toggleSidebar'])
 const darkMode = useDarkMode()
 
-const accountMenu = ref<typeof Menu | null>(null)
+const accountMenu = useTemplateRef('accountMenu')
 const versionModalVisible = ref(false)
 const navbarRef: Ref<HTMLElement | null> = ref(null)
 
