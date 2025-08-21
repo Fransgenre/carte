@@ -146,7 +146,7 @@ pub async fn home_page_stats(conn: &mut PgConnection) -> Result<HomePageStats, A
     // Deserialize the visits_30_days field into a HashMap<String, i64>
     let visits_30_days: BTreeMap<String, i64> = serde_json::from_value(result.visits_30_days)
         .map_err(|err| {
-            AppError::Internal(format!("Failed to deserialize visits_30_days: {}", err).into())
+            AppError::Internal(format!("Failed to deserialize visits_30_days: {err}").into())
         })?;
 
     Ok(HomePageStats {

@@ -74,7 +74,7 @@ async fn main() {
             });
             // Print as json
             let json = serde_json::to_string_pretty(&config).unwrap();
-            println!("{}", json);
+            println!("{json}");
         }
     };
 }
@@ -115,7 +115,7 @@ async fn build_server(app_state: AppState, config: Arc<SafeHavenConfig>) {
 
     if let Some(public_path) = &config.serve_public_path {
         let serve_dir = ServeDir::new(public_path)
-            .not_found_service(ServeFile::new(format!("{}/index.html", public_path)));
+            .not_found_service(ServeFile::new(format!("{public_path}/index.html")));
 
         app = app
             .nest_service("/", serve_dir.clone())

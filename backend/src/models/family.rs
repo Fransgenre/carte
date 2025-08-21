@@ -150,9 +150,10 @@ impl Field {
         entity_category: Uuid,
     ) -> Result<(), AppError> {
         let field_required = self.mandatory
-            && self.categories.as_ref().map_or(true, |categories| {
-                categories.iter().any(|&c| c == entity_category)
-            });
+            && self
+                .categories
+                .as_ref()
+                .is_none_or(|categories| categories.contains(&entity_category));
 
         let field_value = match field_value {
             None if field_required => {
