@@ -107,7 +107,12 @@ import { purify_strict } from '~/lib/dompurify'
 const props = defineProps(['fields', 'data'])
 
 function getSortedEventList(fieldKey) {
-  return getKeyValue(fieldKey).map(e => eventWithMetadata(e, fieldKey)).sort((a, b) => a.date - b.date)
+  return getKeyValue(fieldKey).map(e => eventWithMetadata(e, fieldKey)).sort((a, b) => { 
+    if(a.date == null && b.date == null) return 0
+    if(a.date == null) return 1
+    if(b.date == null) return -1
+    return a.date - b.date
+  })
 }
 
 function eventWithMetadata(event, fieldKey) {
