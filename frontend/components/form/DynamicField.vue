@@ -118,22 +118,24 @@
       >
         <span class="flex flex-wrap items-center gap-4">
           <Select
-            v-model="event.type"
+            :model-value="event.type"
             placeholder="type d'évènement"
             class="grow"
             :options="(props.formField as Extract<FieldTypeMetadataEnum, { field_type: 'EventList' }>).field_type_metadata?.event_types"
             option-value="value"
             option-label="label"
+            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index].type = new_value; updateField(fieldContent) }"
           />
           <!-- @update:model-value="new_type => (props.fieldContent as EntityOrCommentEvent[])[ev_index] = { type: new_type, date: event.date, details: event.details }" -->
           <DatePicker
-            v-model="event.date"
+            :model-value="event.date"
             class="w-40"
             placeholder="jj/mm/aaaa"
             date-format="dd/mm/yy"
             show-icon
             icon-display="input"
             show-button-bar
+            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index].date = new_value; updateField(fieldContent) }"
           />
 
           <Button
@@ -141,7 +143,7 @@
             outlined
             class="m-0 p-1"
             severity="primary"
-            @click="(props.fieldContent as EntityOrCommentEvent[]).splice(ev_index, 1)"
+            @click="() => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent.splice(ev_index, 1); updateField(fieldContent) }"
           >
             <template #default>
               <AppIcon
@@ -155,7 +157,8 @@
         <span class="flex items-center gap-2">
           <label for="">Détails (optionels): </label>
           <Textarea
-            v-model="event.details"
+            :model-value="event.details"
+            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index].details = new_value; updateField(fieldContent) }"
           />
         </span>
         <Divider
@@ -169,7 +172,7 @@
           size="small"
           outlined
           class="m-0 p-1 pr-2"
-          @click="(props.fieldContent as EntityOrCommentEvent[]).push({ date: undefined, type: undefined, details: undefined })"
+          @click="() => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent.push({ date: undefined, type: undefined, details: undefined }); updateField(fieldContent) }"
         >
           <template #default>
             <AppIcon
