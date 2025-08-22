@@ -219,6 +219,9 @@ const isValid = computed(() => {
     case 'Number':
       isValidUnformatted = isValidNumber(props.fieldContent as number)
       break
+    case 'EventList':
+      isValidUnformatted = props.fieldContent != null && (props.fieldContent as EntityOrCommentEvent[]).length > 0
+      break
   }
 
   if (!isValidUnformatted)
