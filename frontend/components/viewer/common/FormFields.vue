@@ -92,10 +92,10 @@
                 <strong>Date :</strong> {{ event.date ? event.date.toLocaleDateString() : 'Date inconnue' }}
               </p>
 
-              <p v-if="event.comment && event.comment.length > 0">
+              <p v-if="event.details && event.details.length > 0">
                 <strong>Commentaire :</strong>
                 <br>
-                {{ event.comment }}
+                {{ event.details }}
               </p>
             </AccordionContent>
           </AccordionPanel>
