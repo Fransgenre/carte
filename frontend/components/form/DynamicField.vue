@@ -227,6 +227,11 @@ const isValid = computed(() => {
   if (!isValidUnformatted)
     return !props.formField.mandatory
 
+  // if it is an event list, every event should have a type and a date
+  if (props.formField.field_type == 'EventList') {
+    return (props.fieldContent as EntityOrCommentEvent[]).every(event => event.type != null && event.date != null)
+  }
+
   // otherwise if it has a required format we need to check it against this format
   if (!props.formField.field_type_metadata || !('format' in (props.formField.field_type_metadata as { format: string | undefined })))
     return true
