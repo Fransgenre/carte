@@ -72,30 +72,34 @@
 
     <div v-else-if="field.field_type == 'EventList'">
       <Accordion>
-        <AccordionPanel
+        <template
           v-for="event in getSortedEventList(field.key)"
           :key="event"
-          :value="0"
         >
-          <AccordionHeader>
-            <Tag
-              :severity="event.severity"
-              :value="event.title && event.title.length ? event.title : 'Evènement inconnu'"
-            />
-          </AccordionHeader>
+          <AccordionPanel
+            v-if="! isEventEmpty(event)"
+            :value="0"
+          >
+            <AccordionHeader>
+              <Tag
+                :severity="event.severity"
+                :value="event.title && event.title.length ? event.title : 'Evènement inconnu'"
+              />
+            </AccordionHeader>
 
-          <AccordionContent>
-            <p>
-              <strong>Date :</strong> {{ event.date ? event.date.toLocaleDateString() : 'Date inconnue' }}
-            </p>
+            <AccordionContent>
+              <p>
+                <strong>Date :</strong> {{ event.date ? event.date.toLocaleDateString() : 'Date inconnue' }}
+              </p>
 
-            <p v-if="event.comment && event.comment.length > 0">
-              <strong>Commentaire :</strong>
-              <br>
-              {{ event.comment }}
-            </p>
-          </AccordionContent>
-        </AccordionPanel>
+              <p v-if="event.comment && event.comment.length > 0">
+                <strong>Commentaire :</strong>
+                <br>
+                {{ event.comment }}
+              </p>
+            </AccordionContent>
+          </AccordionPanel>
+        </template>
       </Accordion>
     </div>
   </Fieldset>
@@ -142,6 +146,10 @@ function eventColorToSeverity(color) {
     default:
       return 'secondary'
   }
+}
+
+function isEventEmpty(eventAndMetadata) {
+  return !(eventAndMetadata.date || eventAndMetadata.title?.length || eventAndMetadata.details?.length)
 }
 
 function isUrlField(key) {
