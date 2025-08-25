@@ -71,30 +71,35 @@
     </div>
 
     <div v-else-if="field.field_type == 'EventList'">
-      <Accordion :value="0">
-        <AccordionPanel
+      <Accordion>
+        <template
           v-for="event in getSortedEventList(field.key)"
           :key="event"
         >
-          <AccordionHeader>
-            <Tag
-              :severity="event.severity"
-              :value="event.title"
-            />
-          </AccordionHeader>
+          <AccordionPanel
+            v-if="! isEventEmpty(event)"
+            :value="0"
+          >
+            <AccordionHeader>
+              <Tag
+                :severity="event.severity"
+                :value="event.title && event.title.length ? event.title : 'Evènement inconnu'"
+              />
+            </AccordionHeader>
 
-          <AccordionContent>
-            <p>
-              <strong>Date :</strong> {{ event.date.toLocaleDateString() }}
-            </p>
+            <AccordionContent>
+              <p>
+                <strong>Date :</strong> {{ event.date ? event.date.toLocaleDateString() : 'Date inconnue' }}
+              </p>
 
-            <p v-if="event.comment && event.comment.length > 0">
-              <strong>Commentaire :</strong>
-              <br>
-              {{ event.comment }}
-            </p>
-          </AccordionContent>
-        </AccordionPanel>
+              <p v-if="event.details && event.details.length > 0">
+                <strong>Commentaire :</strong>
+                <br>
+                {{ event.details }}
+              </p>
+            </AccordionContent>
+          </AccordionPanel>
+        </template>
       </Accordion>
     </div>
   </Fieldset>
@@ -107,7 +112,12 @@ import { purify_strict } from '~/lib/dompurify'
 const props = defineProps(['fields', 'data'])
 
 function getSortedEventList(fieldKey) {
-  return getKeyValue(fieldKey).map(e => eventWithMetadata(e, fieldKey)).sort((a, b) => a.date - b.date)
+  return getKeyValue(fieldKey).map(e => eventWithMetadata(e, fieldKey)).sort((a, b) => {
+    if (a.date == null && b.date == null) return 0
+    if (a.date == null) return 1
+    if (b.date == null) return -1
+    return a.date - b.date
+  })
 }
 
 function eventWithMetadata(event, fieldKey) {
@@ -117,9 +127,9 @@ function eventWithMetadata(event, fieldKey) {
 
   return {
     ...event,
-    date: new Date(event.date),
-    title: current_metadata.label,
-    severity: eventColorToSeverity(current_metadata.color),
+    date: event?.date ? new Date(event.date) : null,
+    title: current_metadata?.label,
+    severity: eventColorToSeverity(current_metadata?.color),
   }
 }
 
@@ -136,6 +146,10 @@ function eventColorToSeverity(color) {
     default:
       return 'secondary'
   }
+}
+
+function isEventEmpty(eventAndMetadata) {
+  return !(eventAndMetadata.date || eventAndMetadata.title?.length || eventAndMetadata.details?.length)
 }
 
 function isUrlField(key) {
@@ -160,11 +174,11 @@ function extractHostnameFromUrl(url) {
 }
 
 function hasRealValue(value) {
-  const result = value !== undefined && value !== null && value !== ''
-  if (typeof value === 'string') {
-    return result && value.trim() !== ''
-  }
-  return value
+  if (value === undefined || value === null) return false
+  if (typeof value == 'string') return value.trim() != ''
+  if (typeof value == 'number') return !Number.isNaN(value)
+  if (Array.isArray(value)) return value.length > 0
+  return true
 }
 
 function fieldsToDisplay() {
