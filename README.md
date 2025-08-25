@@ -64,7 +64,7 @@ To spin up a development environment, follow these steps:
 - Inside the `backend` folder
   - Run `sqlx migrate run` to create the database schema
 - Inside the `frontend` folder
-  - Run `npm install` to install the dependencies
+  - Run `npm ci` to install the dependencies
 - Inside the root folder:
   - Run `regen_api` to regenerate the API
   - Run `start_dev_env` to start the stack using process-compose
