@@ -259,7 +259,7 @@ async function updateField(value: undefined | FieldContentMap[FormField['field_t
 function initializeValue() {
   switch (props.formField.field_type) {
     case 'EventList':
-      updateField([{ date: undefined, type: undefined, details: undefined }])
+      updateField([])
       break
     case 'Boolean':
       updateField(false)
