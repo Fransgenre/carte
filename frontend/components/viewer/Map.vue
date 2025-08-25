@@ -200,10 +200,16 @@ async function handleEntityClick(entity: DisplayableCachedEntity) {
 }
 </script>
 
-<style>
+<style scoped>
 #map_container,
 #map {
   width: 100%;
   height: 100%;
+}
+:deep(#map .ol-zoom) {
+  top: unset;
+  left: unset;
+  bottom: 2em;
+  right: .7em;
 }
 </style>
