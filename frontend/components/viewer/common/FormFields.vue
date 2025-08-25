@@ -174,14 +174,11 @@ function extractHostnameFromUrl(url) {
 }
 
 function hasRealValue(value) {
-  const result = value !== undefined && value !== null && value !== ''
-  if (typeof value === 'string') {
-    return result && value.trim() !== ''
-  }
-  if (Array.isArray(value)) {
-    return value.length > 0
-  }
-  return value
+  if (value === undefined || value === null) return false
+  if (typeof value == 'string') return value.trim() != ''
+  if (typeof value == 'number') return !Number.isNaN(value)
+  if (Array.isArray(value)) return value.length > 0
+  return true
 }
 
 function fieldsToDisplay() {
