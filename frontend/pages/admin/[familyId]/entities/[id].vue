@@ -17,7 +17,13 @@
         <Tab
           value="2"
         >
-          Commentaires
+          <template v-if="!hasLoadedComments">
+            Commentaires
+          </template>
+          <template v-else>
+            Commentaire{{ entityComments.length > 1 ? 's' : '' }}
+            ({{ entityComments.length }})
+          </template>
         </Tab>
       </TabList>
 
@@ -191,8 +197,11 @@ const tags = state.tags
 
 const fetchedEntity = ref(await state.client.getEntity(entityId))
 const entityComments = ref<AdminComment[]>([])
+const hasLoadedComments = ref(false)
 async function refreshComments() {
+  hasLoadedComments.value = false
   entityComments.value = await state.client.listEntityComments(entityId)
+  hasLoadedComments.value = true
 }
 refreshComments()
 
