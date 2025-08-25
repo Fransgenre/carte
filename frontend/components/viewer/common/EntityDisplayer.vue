@@ -21,7 +21,8 @@
           v-if="hasComments"
           value="3"
         >
-          Commentaires
+          Commentaire{{ props.entity.comments.length > 1 ? 's' : '' }}
+          ({{ props.entity.comments.length }})
         </Tab>
       </TabList>
 
