@@ -155,7 +155,7 @@
         </span>
 
         <span class="flex items-center gap-2">
-          <label for="">Détails (optionels): </label>
+          <label for="">Détails (optionnels): </label>
           <Textarea
             :model-value="event.details"
             @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index].details = new_value; updateField(fieldContent) }"
