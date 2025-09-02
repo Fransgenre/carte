@@ -96,6 +96,7 @@
               v-model="tag.active"
               :options="[true, null, false]"
               option-label="title"
+              :allow-empty="false"
               aria-labelledby="custom"
               @change="tagFiltersChanged"
             >
@@ -164,6 +165,7 @@
               v-model="tag.active"
               :options="[true, null, false]"
               option-label="title"
+              :allow-empty="false"
               aria-labelledby="custom"
               @change="() => tagFiltersChanged()"
             >
