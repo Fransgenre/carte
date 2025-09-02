@@ -93,18 +93,19 @@
             </div>
 
             <SelectButton
-              v-model="tag.active"
-              :options="[true, null, false]"
+              :model-value="tag.active === false ? -1 : tag.active === true ? 1 : 0"
+              :options="[1, 0, -1]"
               option-label="title"
               :allow-empty="false"
               aria-labelledby="custom"
+              @update:model-value="(value) => tag.active = (value === -1 ? false : value === 1 ? true : null)"
               @change="tagFiltersChanged"
             >
               <template #option="slotProps">
                 <div class="button-content">
                   <span>{{
-                    slotProps.option === false ? 'Caché'
-                    : slotProps.option === null
+                    slotProps.option === -1 ? 'Caché'
+                    : slotProps.option === 0
                       ? 'Affiché' : 'Requis'
                   }}</span>
                 </div>
@@ -162,18 +163,19 @@
             </div>
 
             <SelectButton
-              v-model="tag.active"
-              :options="[true, null, false]"
+              :model-value="tag.active === false ? -1 : tag.active === true ? 1 : 0"
+              :options="[1, 0, -1]"
               option-label="title"
               :allow-empty="false"
               aria-labelledby="custom"
+              @update:model-value="(value) => tag.active = (value === -1 ? false : value === 1 ? true : null)"
               @change="() => tagFiltersChanged()"
             >
               <template #option="slotProps">
                 <div class="button-content">
                   <span>{{
-                    slotProps.option === false ? 'Caché'
-                    : slotProps.option === null
+                    slotProps.option === -1 ? 'Caché'
+                    : slotProps.option === 0
                       ? 'Affiché' : 'Requis'
                   }}</span>
                 </div>
