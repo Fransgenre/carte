@@ -3,6 +3,7 @@
     v-model="state.activeFamily"
     :options="state.families"
     option-label="title"
+    :allow-empty="false"
     aria-labelledby="custom"
   >
     <template #option="slotProps">
