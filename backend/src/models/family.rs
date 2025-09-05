@@ -186,7 +186,10 @@ impl Field {
         }
 
         match &self.field_type {
-            FieldType::SingleLineText | FieldType::MultiLineText | FieldType::RichText => {
+            FieldType::SingleLineText
+            | FieldType::MultiLineText
+            | FieldType::RichText
+            | FieldType::EnumSingleOption => {
                 let str_value = field_value.as_str().ok_or_else(|| {
                     AppError::Validation(format!("Field {} is not a string", self.key))
                 })?;
@@ -267,8 +270,6 @@ impl Field {
                     )));
                 }
             }
-
-            _ => {}
         }
         Ok(())
     }
