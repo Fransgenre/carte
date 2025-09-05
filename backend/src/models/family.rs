@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::api::AppError;
-use chrono::DateTime;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::{to_value, Value};
 use sqlx::{types::Json, PgConnection};
@@ -99,6 +99,13 @@ pub struct NewOrUpdateFamily {
     pub comment_form: Form,
     pub sort_order: i32,
     pub version: Option<i32>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+struct EntityOrCommentEvent {
+    date: DateTime<Utc>,
+    r#type: String,
+    details: Option<String>,
 }
 
 impl Form {
@@ -233,12 +240,27 @@ impl Field {
                 }
             }
 
-            FieldType::EnumMultiOption | FieldType::EventList => {
-                let arr_value = field_value.as_array().ok_or_else(|| {
-                    AppError::Validation(format!("Field {} is not an array", self.key))
-                })?;
+            FieldType::EnumMultiOption => {
+                let parsed_value: Vec<String> = serde_json::from_value(field_value.clone())
+                    .map_err(|_err| {
+                        AppError::Validation(format!("Field {} is not a string array", self.key))
+                    })?;
 
-                if field_required && arr_value.is_empty() {
+                if field_required && parsed_value.is_empty() {
+                    return Err(AppError::Validation(format!(
+                        "Mandatory field {} is empty",
+                        self.key
+                    )));
+                }
+            }
+
+            FieldType::EventList => {
+                let parsed_value: Vec<EntityOrCommentEvent> =
+                    serde_json::from_value(field_value.clone()).map_err(|_err| {
+                        AppError::Validation(format!("Field {} is not a valid event", self.key))
+                    })?;
+
+                if field_required && parsed_value.is_empty() {
                     return Err(AppError::Validation(format!(
                         "Mandatory field {} is empty",
                         self.key
