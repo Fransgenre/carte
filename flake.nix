@@ -251,7 +251,7 @@
               # Process composing
               process-compose
               # PostgreSQL and PostGIS
-              (postgresql_16.withPackages (p: with p; [postgis]))
+              (postgresql_16.withPackages (p: with p; [postgis])).out
             ];
             DATABASE_URL = "postgres://postgres:postgres@localhost:5432/safehaven";
           };
