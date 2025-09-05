@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::api::AppError;
+use chrono::DateTime;
 use serde::{Deserialize, Serialize};
 use serde_json::{to_value, Value};
 use sqlx::{types::Json, PgConnection};
@@ -222,7 +223,14 @@ impl Field {
                     )));
                 }
 
-                // Check if date is valid using chrono
+                if !str_value.is_empty() {
+                    DateTime::parse_from_rfc3339(str_value).map_err(|_err| {
+                        AppError::Validation(format!(
+                            "Field {} is not a valid RFC 3339 date-and-time string",
+                            self.key
+                        ))
+                    })?;
+                }
             }
 
             FieldType::EnumMultiOption | FieldType::EventList => {
