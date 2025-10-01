@@ -7,7 +7,7 @@
       <AdminInputTextField
         id="author"
         v-model="editedComment.author"
-        label="Auteur"
+        label="Auteurice"
         :variant="hasBeenEdited('author')"
       />
 

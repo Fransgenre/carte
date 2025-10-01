@@ -33,7 +33,7 @@
       <AdminInputTextField
         id="author"
         v-model="editedComment!.author"
-        label="Auteur"
+        label="Auteurice"
       />
 
       <div class="flex flex-col gap-2">

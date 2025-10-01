@@ -39,7 +39,7 @@
     >
       <Column
         field="author"
-        header="Auteur"
+        header="Auteurice"
         class="max-w-[25rem]"
         sortable
       />
