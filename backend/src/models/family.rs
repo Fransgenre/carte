@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::api::AppError;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::{to_value, Value};
 use sqlx::{types::Json, PgConnection};
@@ -100,6 +101,13 @@ pub struct NewOrUpdateFamily {
     pub version: Option<i32>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
+struct EntityOrCommentEvent {
+    date: DateTime<Utc>,
+    r#type: String,
+    details: Option<String>,
+}
+
 impl Form {
     pub fn validate(&self) -> Result<(), AppError> {
         if self.title.is_empty() {
@@ -178,7 +186,10 @@ impl Field {
         }
 
         match &self.field_type {
-            FieldType::SingleLineText | FieldType::MultiLineText | FieldType::RichText => {
+            FieldType::SingleLineText
+            | FieldType::MultiLineText
+            | FieldType::RichText
+            | FieldType::EnumSingleOption => {
                 let str_value = field_value.as_str().ok_or_else(|| {
                     AppError::Validation(format!("Field {} is not a string", self.key))
                 })?;
@@ -222,15 +233,23 @@ impl Field {
                     )));
                 }
 
-                // Check if date is valid using chrono
+                if !str_value.is_empty() {
+                    DateTime::parse_from_rfc3339(str_value).map_err(|_err| {
+                        AppError::Validation(format!(
+                            "Field {} is not a valid RFC 3339 date-and-time string",
+                            self.key
+                        ))
+                    })?;
+                }
             }
 
-            FieldType::EnumMultiOption | FieldType::EventList => {
-                let arr_value = field_value.as_array().ok_or_else(|| {
-                    AppError::Validation(format!("Field {} is not an array", self.key))
-                })?;
+            FieldType::EnumMultiOption => {
+                let parsed_value: Vec<String> = serde_json::from_value(field_value.clone())
+                    .map_err(|_err| {
+                        AppError::Validation(format!("Field {} is not a string array", self.key))
+                    })?;
 
-                if field_required && arr_value.is_empty() {
+                if field_required && parsed_value.is_empty() {
                     return Err(AppError::Validation(format!(
                         "Mandatory field {} is empty",
                         self.key
@@ -238,7 +257,19 @@ impl Field {
                 }
             }
 
-            _ => {}
+            FieldType::EventList => {
+                let parsed_value: Vec<EntityOrCommentEvent> =
+                    serde_json::from_value(field_value.clone()).map_err(|_err| {
+                        AppError::Validation(format!("Field {} is not a valid event", self.key))
+                    })?;
+
+                if field_required && parsed_value.is_empty() {
+                    return Err(AppError::Validation(format!(
+                        "Mandatory field {} is empty",
+                        self.key
+                    )));
+                }
+            }
         }
         Ok(())
     }
