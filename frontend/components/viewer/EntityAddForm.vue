@@ -41,10 +41,10 @@
           >
             <span class="flex items-center gap-2">
               <ToggleSwitch
+                v-model="include_comment"
                 class="shrink-0"
-                :model-value="include_comment"
                 input-id="include_comment"
-                @change="(event: Event) => onIncludeCommentToggle(event)"
+                @change="onIncludeCommentToggle"
               />
               <label for="include_comment">Inclure un commentaire</label>
             </span>
@@ -349,12 +349,7 @@ async function realOnSave(token: string | null) {
 
 const confirm = useConfirm()
 function onIncludeCommentToggle(event: Event) {
-  console.log(event)
-  console.log(event.currentTarget as HTMLElement)
   if (!include_comment.value) {
-    include_comment.value = true
-  }
-  else {
     const options: ConfirmationOptions = {
       target: event.currentTarget as HTMLElement,
       group: 'confirm_dialog',
@@ -367,10 +362,9 @@ function onIncludeCommentToggle(event: Event) {
       acceptClass: 'p-button-sm',
       rejectLabel: 'Ne pas inclure de commentaire',
       acceptLabel: 'Annuler',
-      reject: () => {
-        include_comment.value = false
-      },
-      accept: () => {},
+      reject: () => {},
+      accept: () => include_comment.value = true,
+      onHide: () => include_comment.value = true,
     }
     confirm.require(options)
   }
