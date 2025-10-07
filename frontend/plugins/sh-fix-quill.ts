@@ -1,4 +1,5 @@
 import Editor from 'quill/core/editor'
+import Clipboard from 'quill/modules/clipboard'
 import Keyboard from 'quill/modules/keyboard'
 import { defineNuxtPlugin } from '#app'
 
@@ -10,24 +11,47 @@ const KEYNAME_TAB = 'Tab'
  */
 export default defineNuxtPlugin(() => {
   // Fix the generated HTML code
-  const getHTML = Editor.prototype.getHTML
-  Editor.prototype.getHTML = function (this: Editor, index: number, length: number) {
-    let html = getHTML.call(this, index, length)
-
-    // Fix empty <p></p> returned by the editor for empty line feeds
-    html = fixEmptyParagraphsAsLineFeeds(html)
-
-    // Undo the editor replacing spaces by non-breaking spaces (&nbsp;)
-    // (see https://github.com/slab/quill/issues/4509)
-    html = convertNbspToSpace(html)
-
-    return html
-  }
+  fixGeneratedHtml()
 
   // Prevent the editor from blocking Tab navigation for indentation
   // (see https://github.com/Fransgenre/carte/issues/7)
   removeTabBindings()
 })
+
+let htmlFixesEnabled = true
+
+function fixGeneratedHtml() {
+  // Make Editor.getHTML() apply the html fixes if those are enabled
+  const getHTML = Editor.prototype.getHTML
+  Editor.prototype.getHTML = function (this: Editor, index, length) {
+    let result = getHTML.call(this, index, length)
+
+    if (htmlFixesEnabled) {
+      // Fix empty <p></p> returned by the editor for empty line feeds
+      result = fixEmptyParagraphsAsLineFeeds(result)
+
+      // Undo the editor replacing spaces by non-breaking spaces (&nbsp;)
+      // (see https://github.com/slab/quill/issues/4509)
+      result = convertNbspToSpace(result)
+    }
+
+    return result
+  }
+
+  // Disable the html fixes when Clipboard.onCopy() is called
+  const onCopy = Clipboard.prototype.onCopy
+  Clipboard.prototype.onCopy = function (this: Clipboard, range, isCut) {
+    let result
+    try {
+      htmlFixesEnabled = false
+      result = onCopy.call(this, range, isCut)
+    }
+    finally {
+      htmlFixesEnabled = true
+    }
+    return result
+  }
+}
 
 function fixEmptyParagraphsAsLineFeeds(html: string) {
   return html.replace(
