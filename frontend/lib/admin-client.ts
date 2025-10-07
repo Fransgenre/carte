@@ -21,7 +21,6 @@ import type {
   AdminSearchRequestBody,
   AccessTokenStats,
   AdminEntityWithRelations,
-  SafeHavenVersion,
   Family,
   AdminPaginatedCachedEntities,
   AccessToken,
@@ -87,12 +86,6 @@ export default function useClient() {
     // Options
     async getConfig(): Promise<SafeHavenOptions> {
       const { data, error } = await this.rawClient.GET('/api/admin/options')
-      if (error) throw error
-      return data
-    },
-
-    async getVersionInformation(): Promise<SafeHavenVersion> {
-      const { data, error } = await this.rawClient.GET('/api/version')
       if (error) throw error
       return data
     },

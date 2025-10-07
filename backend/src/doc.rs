@@ -9,10 +9,7 @@ use crate::{
             self, FetchEntityRequest, FetchedEntity, NewCommentRequest, PublicNewEntityRequest,
             PublicNewEntityResponse, SearchRequest as MapSearchRequest, ViewRequest,
         },
-        root::{
-            self, BootstrapPermissions, BootstrapResponse, SafeHavenVersionResponse, SafeMode,
-            StatusResponse,
-        },
+        root::{self, BootstrapPermissions, BootstrapResponse, SafeMode, StatusResponse},
         ErrorResponse,
     },
     helpers::postgis_polygons::MultiPolygon,
@@ -52,7 +49,6 @@ use utoipa::OpenApi;
     paths(
         root::status,
         root::bootstrap,
-        root::version,
         // map
         map::viewer_view_request,
         map::viewer_search_request,
@@ -135,7 +131,6 @@ use utoipa::OpenApi;
         SafeMode,
         BootstrapResponse,
         BootstrapPermissions,
-        SafeHavenVersionResponse,
         // options
         SafeHavenOptions,
         ConfigurationOption,
