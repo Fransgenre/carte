@@ -34,10 +34,6 @@ function fixGeneratedHtml() {
     if (htmlFixesEnabled) {
       // Fix empty <p></p> returned by the editor for empty line feeds
       result = fixEmptyParagraphsAsLineFeeds(result)
-
-      // Undo the editor replacing spaces by non-breaking spaces (&nbsp;)
-      // (see https://github.com/slab/quill/issues/4509)
-      result = convertNbspToSpace(result)
     }
 
     return result
@@ -61,14 +57,6 @@ function fixGeneratedHtml() {
 function fixEmptyParagraphsAsLineFeeds(html: string) {
   return html.replace(
     /<p><\/p>/g, '<p><br></p>',
-  )
-}
-
-function convertNbspToSpace(html: string) {
-  return html.replace(
-    /&nbsp;/g, ' ',
-  ).replace(
-    /\u00A0/g, ' ',
   )
 }
 
