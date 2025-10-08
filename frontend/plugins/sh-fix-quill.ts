@@ -1,4 +1,5 @@
-import Editor from 'quill/core/editor'
+import Quill from 'quill/core'
+import type { Range } from 'quill/core'
 import Clipboard from 'quill/modules/clipboard'
 import Keyboard from 'quill/modules/keyboard'
 import { defineNuxtPlugin } from '#app'
@@ -21,10 +22,14 @@ export default defineNuxtPlugin(() => {
 let htmlFixesEnabled = true
 
 function fixGeneratedHtml() {
-  // Make Editor.getHTML() apply the html fixes if those are enabled
-  const getHTML = Editor.prototype.getHTML
-  Editor.prototype.getHTML = function (this: Editor, index, length) {
-    let result = getHTML.call(this, index, length)
+  // Make Quill.getSemanticHTML() apply the html fixes if those are enabled
+  const getSemanticHTML = Quill.prototype.getSemanticHTML
+  Quill.prototype.getSemanticHTML = function (this: Quill, rangeOrIndex?: Range | number, length?: number) {
+    let result: string
+    if ('object' == typeof rangeOrIndex)
+      result = (getSemanticHTML as { (this: Quill, range: Range): string }).call(this, rangeOrIndex)
+    else
+      result = (getSemanticHTML as { (this: Quill, index?: number, length?: number): string }).call(this, rangeOrIndex, length)
 
     if (htmlFixesEnabled) {
       // Fix empty <p></p> returned by the editor for empty line feeds
@@ -40,7 +45,7 @@ function fixGeneratedHtml() {
 
   // Disable the html fixes when Clipboard.onCopy() is called
   const onCopy = Clipboard.prototype.onCopy
-  Clipboard.prototype.onCopy = function (this: Clipboard, range, isCut) {
+  Clipboard.prototype.onCopy = function (this: Clipboard, range: Range, isCut: boolean) {
     let result
     try {
       htmlFixesEnabled = false
