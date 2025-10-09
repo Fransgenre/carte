@@ -57,17 +57,17 @@
             outlined
             size="small"
             class="m-1"
-            @click="invertFilteringCategories"
+            @click="selectAllFilteringCategories"
           >
-            Inverser
+            Tout sélectionner
           </Button>
           <Button
             outlined
             size="small"
             class="m-1"
-            @click="selectAllFilteringCategories"
+            @click="deselectAllFilteringCategories"
           >
-            Tout sélectionner
+            Tout désélectionner
           </Button>
           <Button
             outlined
@@ -242,9 +242,16 @@ function shownAdvancedTags() {
   return base.filter(tag => tag.title.toLowerCase().includes(tagSearch.value.toLowerCase()))
 }
 
-function invertFilteringCategories() {
+function selectAllFilteringCategories() {
   props.filteringCategories.forEach((category) => {
-    category.active = !category.active
+    category.active = true
+  })
+  categoryFiltersChanged()
+}
+
+function deselectAllFilteringCategories() {
+  props.filteringCategories.forEach((category) => {
+    category.active = false
   })
   categoryFiltersChanged()
 }
@@ -252,13 +259,6 @@ function invertFilteringCategories() {
 function resetFilteringCategories() {
   props.filteringCategories.forEach((category) => {
     category.active = category.default_status
-  })
-  categoryFiltersChanged()
-}
-
-function selectAllFilteringCategories() {
-  props.filteringCategories.forEach((category) => {
-    category.active = true
   })
   categoryFiltersChanged()
 }
