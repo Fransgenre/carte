@@ -234,7 +234,7 @@
     />
   </Dialog>
   <Popover ref="searchOp">
-    <div class="flex flex-col gap-4 w-[25rem]">
+    <div class="flex flex-col gap-4 w-[25rem] md:w-[28rem]">
       <Tabs value="0">
         <TabList>
           <Tab value="0">
