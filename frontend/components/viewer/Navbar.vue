@@ -216,7 +216,7 @@
       v-model:filtering-tags="state.filteringTags"
       v-model:filtering-categories="state.filteringCategories"
       v-model:filtering-enums="state.filteringEnums"
-      class="w-[25rem]"
+      class="w-[28rem]"
       @filters-changed="filtersChanged"
     />
   </Popover>
