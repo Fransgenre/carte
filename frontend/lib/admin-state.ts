@@ -180,6 +180,7 @@ export class AppState {
   // Categories
   async fetchCategories(): Promise<void> {
     const categories = await this.client.listCategories()
+    categories.sort((a, b) => a.title.localeCompare(b.title))
     if (!this.compareIds(categories, toRaw(this.categoriesData))) {
       this.tablesQueryParams = {}
     }
@@ -214,6 +215,7 @@ export class AppState {
   // Tags
   async fetchTags(): Promise<void> {
     const tags = await this.client.listTags()
+    tags.sort((a, b) => a.title.localeCompare(b.title))
     if (!this.compareIds(tags, this.tagsData)) {
       this.tablesQueryParams = {}
     }
