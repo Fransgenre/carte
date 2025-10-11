@@ -251,12 +251,14 @@ export class AppState {
       })
       .sort((a, b) => a.title.localeCompare(b.title))
 
-    this.tagsData = data.tags.map((tag) => {
-      return {
-        ...tag,
-        allowed: data.allowed_tags.includes(tag.id),
-      }
-    })
+    this.tagsData = data.tags
+      .map((tag) => {
+        return {
+          ...tag,
+          allowed: data.allowed_tags.includes(tag.id),
+        }
+      })
+      .sort((a, b) => a.title.localeCompare(b.title))
 
     if (this.permissions.can_list_with_filters)
       this.filteringTags = this.tagsData
