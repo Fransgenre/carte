@@ -134,7 +134,7 @@
         v-model:filtering-tags="state.tablesQueryParams[table_key].tagFilteringList!"
         v-model:filtering-categories="state.tablesQueryParams[table_key].categoryFilteringList!"
         v-model:filtering-enums="state.tablesQueryParams[table_key].enumsFilteringList!"
-        class="w-[25rem] md:w-[28rem]"
+        class="w-[25rem] md:w-[30rem]"
         @filters-changed="refreshTable"
       />
     </Popover>
