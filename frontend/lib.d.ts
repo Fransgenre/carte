@@ -24,6 +24,13 @@ export type PublicNewEntityRequest = api.components['schemas']['PublicNewEntityR
 export type PublicNewEntityResponse = api.components['schemas']['PublicNewEntityResponse']
 export type Cluster = api.components['schemas']['Cluster']
 
+export type PaginatedVec<T> = {
+  entities: T[]
+  total_results: number
+  total_pages: number
+  response_current_page: number
+}
+
 export type ViewerCachedEntity = api.components['schemas']['ViewerCachedEntity']
 export type ViewerSearchedCachedEntity = api.components['schemas']['ViewerSearchedCachedEntity']
 export type ViewerPaginatedCachedEntities = PaginatedVec<ViewerSearchedCachedEntity>
