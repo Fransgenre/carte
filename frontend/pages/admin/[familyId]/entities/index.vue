@@ -238,6 +238,14 @@ async function refreshTable() {
         ),
     },
   )
+  currentEntitiesResults.value.entities.forEach((entity) => {
+    entity.tags_ids.sort((a, b) => {
+      const tagA = state.tagRecord[a], tagB = state.tagRecord[b]
+      if (!tagA) return 1
+      if (!tagB) return -1
+      return tagA.title.localeCompare(tagB.title)
+    })
+  })
 }
 
 await refreshTable()
