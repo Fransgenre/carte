@@ -69,7 +69,7 @@
             class="flex flex-wrap gap-1"
           >
             <DisplayedTag
-              v-for="tag in props.entity?.tags"
+              v-for="tag in sortedTags"
               :key="tag.id"
               :tag="tag"
             />
@@ -181,6 +181,10 @@ const emits = defineEmits<{
 function getCategory(id: string) {
   return props.categories.find(c => c.id === id)!
 }
+
+const sortedTags = computed(() => {
+  return [...props.entity.tags].sort((a, b) => a.title.localeCompare(b.title))
+})
 
 const discreteScoreAveragesOnComments = ref<{
   key: string
