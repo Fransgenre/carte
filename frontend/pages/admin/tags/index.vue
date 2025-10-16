@@ -39,6 +39,7 @@
       class=" "
     >
       <Column
+        field="title"
         header="Titre"
         sortable
       >
