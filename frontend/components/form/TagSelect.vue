@@ -3,7 +3,7 @@
     <label for="tag_id">Tags</label>
     <div class="flex flex-wrap gap-1">
       <DisplayedTag
-        v-for="tag_id in props.modelValue"
+        v-for="tag_id in sortedModelValue"
         :key="tag_id"
         :tag="tagRecord[tag_id]"
       />
@@ -13,7 +13,7 @@
       id="tag_id"
       filter
       empty-filter-message="Aucun résultat trouvé"
-      :model-value="props.modelValue"
+      :model-value="sortedModelValue"
       :options="tags"
       placeholder="Sélectionner des tags"
       option-value="id"
@@ -39,12 +39,25 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue'])
 
-function updateValue(value: undefined | string) {
+function updateValue(value: string[] | undefined | null) {
   emit('update:modelValue', value)
 }
 
-const tagRecord: TagRecord = props.tags.reduce((tags, tag) => {
-  tags[tag.id] = tag
-  return tags
-}, {} as TagRecord)
+const tagRecord = computed(() => {
+  return props.tags.reduce((tags, tag) => {
+    tags[tag.id] = tag
+    return tags
+  }, {} as TagRecord)
+})
+
+const sortedModelValue = computed(() => {
+  const record = tagRecord.value
+  if (props.modelValue === null || props.modelValue === undefined) return props.modelValue
+  return [...props.modelValue].sort((a, b) => {
+    const tagA = record[a], tagB = record[b]
+    if (!tagA) return 1
+    if (!tagB) return -1
+    return tagA.title.localeCompare(tagB.title)
+  })
+})
 </script>
