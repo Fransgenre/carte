@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT id, title, is_filter, is_primary_filter, filter_description,\n                default_filter_status, version, fill_color, border_color\n            FROM tags\n            WHERE NOT (id = ANY($1))\n            ",
+  "query": "\n            SELECT id, title, is_filter, is_primary_filter, filter_description,\n                default_filter_status, version, fill_color, border_color, created_at, updated_at\n            FROM tags\n            ",
   "describe": {
     "columns": [
       {
@@ -47,12 +47,20 @@
         "ordinal": 8,
         "name": "border_color",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 10,
+        "name": "updated_at",
+        "type_info": "Timestamp"
       }
     ],
     "parameters": {
-      "Left": [
-        "UuidArray"
-      ]
+      "Left": []
     },
     "nullable": [
       false,
@@ -63,8 +71,10 @@
       false,
       false,
       false,
+      false,
+      false,
       false
     ]
   },
-  "hash": "980dc595abe611c59bd1cc6d46dfb52a46b7fe1d830f37fdfd817121d7f1a56a"
+  "hash": "9297fea92cdbbc85dba3579544e911c6ec92c8bc4cc39ded173d55669a4d43f5"
 }

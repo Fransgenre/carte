@@ -24,6 +24,8 @@ pub struct Category {
     pub fill_color: String,
     pub border_color: String,
     pub version: i32,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: chrono::NaiveDateTime,
 }
 
 impl Category {
@@ -44,7 +46,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                created_at,
+                updated_at
             "#,
             category.title,
             category.family_id,
@@ -69,7 +73,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                created_at,
+                updated_at
             FROM categories
             WHERE id = $1
             "#,
@@ -103,7 +109,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                created_at,
+                updated_at
             "#,
             id,
             update.title,
@@ -145,7 +153,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                created_at,
+                updated_at
             FROM categories
             "#
         )
@@ -170,7 +180,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                created_at,
+                updated_at
             FROM categories
             WHERE NOT (id = ANY($1)) AND family_id = ANY($2)
             "#,

@@ -15,6 +15,8 @@ pub struct Tag {
     pub fill_color: String,
     pub border_color: String,
     pub version: i32,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: chrono::NaiveDateTime,
 }
 
 #[derive(Deserialize, Serialize, ToSchema, Debug)]
@@ -38,7 +40,7 @@ impl Tag {
                 filter_description, default_filter_status, fill_color, border_color)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING id, title, is_filter, is_primary_filter, filter_description,
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color, created_at, updated_at
             "#,
             tag.title,
             tag.is_filter,
@@ -47,6 +49,22 @@ impl Tag {
             tag.default_filter_status,
             tag.fill_color,
             tag.border_color,
+        )
+        .fetch_one(conn)
+        .await
+        .map_err(AppError::Database)
+    }
+
+    pub async fn get(given_id: Uuid, conn: &mut PgConnection) -> Result<Tag, AppError> {
+        sqlx::query_as!(
+            Tag,
+            r#"
+            SELECT id, title, is_filter, is_primary_filter, filter_description, 
+                default_filter_status, version, fill_color, border_color, created_at, updated_at
+            FROM tags
+            WHERE id = $1
+            "#,
+            given_id
         )
         .fetch_one(conn)
         .await
@@ -71,7 +89,7 @@ impl Tag {
                 default_filter_status = $6, version = $7, fill_color = $8, border_color = $9
             WHERE id = $1
             RETURNING id, title, is_filter, is_primary_filter, filter_description, 
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color, created_at, updated_at
             "#,
             given_id,
             update.title,
@@ -103,28 +121,12 @@ impl Tag {
         Ok(())
     }
 
-    pub async fn get(given_id: Uuid, conn: &mut PgConnection) -> Result<Tag, AppError> {
-        sqlx::query_as!(
-            Tag,
-            r#"
-            SELECT id, title, is_filter, is_primary_filter, filter_description, 
-                default_filter_status, version, fill_color, border_color
-            FROM tags
-            WHERE id = $1
-            "#,
-            given_id
-        )
-        .fetch_one(conn)
-        .await
-        .map_err(AppError::Database)
-    }
-
     pub async fn list(conn: &mut PgConnection) -> Result<Vec<Tag>, AppError> {
         sqlx::query_as!(
             Tag,
             r#"
             SELECT id, title, is_filter, is_primary_filter, filter_description,
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color, created_at, updated_at
             FROM tags
             "#
         )
@@ -141,7 +143,7 @@ impl Tag {
             Tag,
             r#"
             SELECT id, title, is_filter, is_primary_filter, filter_description,
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color, created_at, updated_at
             FROM tags
             WHERE NOT (id = ANY($1))
             "#,

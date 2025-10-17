@@ -61,6 +61,19 @@
         header="Entités"
         sortable
       />
+      <Column
+        v-if="state.tablesSelectedColumns[table_key].includes('Date maj')"
+        field="updated_at"
+        header="Date maj"
+        sortable
+      >
+        <template #body="slotProps">
+          {{ Intl.DateTimeFormat('fr-FR', {
+            dateStyle: 'short',
+            timeStyle: undefined,
+          }).format(new Date(slotProps.data.updated_at)) }}
+        </template>
+      </Column>
       <Column>
         <template #body="slotProps">
           <AdminEditDeleteButtons
@@ -106,7 +119,7 @@ async function refreshTable() {
 refreshTable()
 
 const isSmallScreen = useMediaQuery('(max-width: 768px)')
-const optionalColumns = ref(['Affichage par défaut', 'Entités'])
+const optionalColumns = ref(['Affichage par défaut', 'Entités', 'Date maj'])
 const table_key = `dt-state-categories-${familyId}`
 if (!(table_key in state.tablesSelectedColumns)) {
   state.tablesSelectedColumns[table_key] = isSmallScreen.value ? [] : ['Affichage par défaut']

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            UPDATE tags\n            SET title = $2, is_filter = $3, is_primary_filter = $4, filter_description = $5, \n                default_filter_status = $6, version = $7, fill_color = $8, border_color = $9\n            WHERE id = $1\n            RETURNING id, title, is_filter, is_primary_filter, filter_description, \n                default_filter_status, version, fill_color, border_color\n            ",
+  "query": "\n            SELECT id, title, is_filter, is_primary_filter, filter_description,\n                default_filter_status, version, fill_color, border_color, created_at, updated_at\n            FROM tags\n            WHERE NOT (id = ANY($1))\n            ",
   "describe": {
     "columns": [
       {
@@ -47,19 +47,21 @@
         "ordinal": 8,
         "name": "border_color",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 10,
+        "name": "updated_at",
+        "type_info": "Timestamp"
       }
     ],
     "parameters": {
       "Left": [
-        "Uuid",
-        "Varchar",
-        "Bool",
-        "Bool",
-        "Text",
-        "Bool",
-        "Int4",
-        "Varchar",
-        "Varchar"
+        "UuidArray"
       ]
     },
     "nullable": [
@@ -71,8 +73,10 @@
       false,
       false,
       false,
+      false,
+      false,
       false
     ]
   },
-  "hash": "e4bcd40211792477d6dff5d1d64d5b5b6ae3904d613c8285f750a8c6b5bd8e25"
+  "hash": "4c51a2b88742301edde95de7bde01aff49241efbec7b64d017f98dfe561f5e6a"
 }

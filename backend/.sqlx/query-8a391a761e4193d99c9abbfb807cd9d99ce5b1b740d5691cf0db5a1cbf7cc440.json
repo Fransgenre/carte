@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                id,\n                title,\n                family_id,\n                default_status,\n                (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,\n                fill_color,\n                border_color,\n                version\n            FROM categories\n            ",
+  "query": "\n            SELECT\n                id,\n                title,\n                family_id,\n                default_status,\n                (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,\n                fill_color,\n                border_color,\n                version,\n                created_at,\n                updated_at\n            FROM categories\n            WHERE NOT (id = ANY($1)) AND family_id = ANY($2)\n            ",
   "describe": {
     "columns": [
       {
@@ -42,10 +42,23 @@
         "ordinal": 7,
         "name": "version",
         "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 9,
+        "name": "updated_at",
+        "type_info": "Timestamp"
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "UuidArray",
+        "UuidArray"
+      ]
     },
     "nullable": [
       false,
@@ -55,8 +68,10 @@
       null,
       false,
       false,
+      false,
+      false,
       false
     ]
   },
-  "hash": "93ea354a30d421bc27be9f28bfc99efd68d52f47025750e6663ea76ea529a3b7"
+  "hash": "8a391a761e4193d99c9abbfb807cd9d99ce5b1b740d5691cf0db5a1cbf7cc440"
 }

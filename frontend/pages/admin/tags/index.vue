@@ -82,6 +82,20 @@
         sortable
       />
 
+      <Column
+        v-if="state.tablesSelectedColumns[table_key].includes('Date maj')"
+        field="updated_at"
+        header="Date maj"
+        sortable
+      >
+        <template #body="slotProps">
+          {{ Intl.DateTimeFormat('fr-FR', {
+            dateStyle: 'short',
+            timeStyle: undefined,
+          }).format(new Date(slotProps.data.updated_at)) }}
+        </template>
+      </Column>
+
       <Column>
         <template #body="slotProps">
           <AdminEditDeleteButtons
@@ -104,7 +118,7 @@ import type { Tag } from '~/lib'
 import state from '~/lib/admin-state'
 
 const isSmallScreen = useMediaQuery('(max-width: 768px)')
-const optionalColumns = ref(['Filtrage', 'Valeur de filtre par défaut', 'Description de filtre'])
+const optionalColumns = ref(['Filtrage', 'Valeur de filtre par défaut', 'Description de filtre', 'Date maj'])
 const table_key = `dt-state-tags`
 if (!(table_key in state.tablesSelectedColumns)) {
   state.tablesSelectedColumns[table_key] = isSmallScreen.value ? [] : ['Filtrage', 'Valeur de filtre par défaut']
