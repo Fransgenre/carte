@@ -35,7 +35,7 @@ set data = jsonb_set(
         event,
         '{details}',
         -- On retient le premier qui existe entre `comment` et `details`.
-        coalesce(event->'comment', event->'details')
+        coalesce(event->'comment', event->'details', 'null'::jsonb)
       )
       -- Suppression du champ `comment` pour cet événement.
       #- '{comment}'
