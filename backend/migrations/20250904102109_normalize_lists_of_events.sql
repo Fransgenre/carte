@@ -31,11 +31,13 @@ set data = jsonb_set(
     -- Reconstruction de la liste des événements de ce commentaire.
     select jsonb_agg(
       -- Définition du champ `details` pour cet événement.
-      jsonb_set(
+      jsonb_set_lax(
         event,
         '{details}',
         -- On retient le premier qui existe entre `comment` et `details`.
-        coalesce(event->'comment', event->'details', 'null'::jsonb)
+        coalesce(event->'comment', event->'details'),
+        true,
+        'return_target'
       )
       -- Suppression du champ `comment` pour cet événement.
       #- '{comment}'
