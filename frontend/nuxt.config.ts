@@ -30,6 +30,11 @@ export default defineNuxtConfig({
         ace: 'ace-builds/src-noconflict',
       },
     },
+    server: {
+      hmr: {
+        path: '_hmr/',
+      },
+    },
   },
   typescript: {
     typeCheck: true,
