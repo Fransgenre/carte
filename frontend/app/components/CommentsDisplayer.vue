@@ -1,5 +1,5 @@
 <template>
-  <Accordion :value="sortedComments[0].id">
+  <Accordion :value="sortedComments[0]?.id">
     <AccordionPanel
       v-for="comment in sortedComments"
       :key="comment.id"
