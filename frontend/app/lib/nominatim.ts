@@ -48,15 +48,15 @@ function fullTextToTitles(fullText: string): { title: string, subtitle: string }
   if (splitted.length === 1) {
     // If there is only one element, it's both the title and the subtitle
     return {
-      title: splitted[0],
+      title: splitted[0]!,
       subtitle: '',
     }
   }
   else if (splitted.length === 2) {
     // If there are two elements, the first is the title, the second is the subtitle
     return {
-      title: splitted[0],
-      subtitle: splitted[1],
+      title: splitted[0]!,
+      subtitle: splitted[1]!,
     }
   }
   else if (splitted.length > 2) {
@@ -75,10 +75,10 @@ function computeResultBoundingBox(boundingbox?: string[]): ResultBoundingBox | u
   if (!boundingbox) return undefined
   if (boundingbox.length != 4) return undefined
   const result: ResultBoundingBox = [
-    parseFloat(boundingbox[0]),
-    parseFloat(boundingbox[1]),
-    parseFloat(boundingbox[2]),
-    parseFloat(boundingbox[3]),
+    parseFloat(boundingbox[0]!),
+    parseFloat(boundingbox[1]!),
+    parseFloat(boundingbox[2]!),
+    parseFloat(boundingbox[3]!),
   ]
   if (result.some(n => !Number.isFinite(n))) return undefined
   return result
