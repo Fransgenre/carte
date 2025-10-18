@@ -102,7 +102,7 @@ function removeAddress(index: number) {
 }
 
 function editAddress(index: number) {
-  currentlyEditedLocation.value = { index: index, loc: { ...props.locations[index] } }
+  currentlyEditedLocation.value = { index: index, loc: { ...props.locations[index]! } }
   displayNominatimPicker.value = true
   addressSelected.value = false
 }

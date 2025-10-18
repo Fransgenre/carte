@@ -33,7 +33,7 @@
         category-id="default"
         :zoom="10"
       />
-      <small class="text-secondary flex ">Addresse : {{ results[0].display_name }}</small>
+      <small class="text-secondary flex ">Addresse : {{ results[0]!.display_name }}</small>
     </div>
   </div>
 </template>
@@ -64,7 +64,7 @@ const transformedCoordinates = computed(() => {
 async function searchNominatim() {
   results.value = await freeFormSearch(locationInput.value)
   resultsSearched.value = true
-  if (results.value.length !== 0) {
+  if (results.value[0]) {
     locationSelected.value = {
       lat: results.value[0].lat,
       long: results.value[0].lon,
