@@ -66,12 +66,12 @@ function centerViewOnCoordinates() {
     view.setMaxZoom(props.locked ? props.zoom : 20)
   }
   else {
-    const extent = [Infinity, Infinity, -Infinity, -Infinity]
+    const extent: [number, number, number, number] = [Infinity, Infinity, -Infinity, -Infinity]
     props.coordinates.forEach((coord) => {
-      extent[0] = Math.min(extent[0], coord[0])
-      extent[1] = Math.min(extent[1], coord[1])
-      extent[2] = Math.max(extent[2], coord[0])
-      extent[3] = Math.max(extent[3], coord[1])
+      extent[0] = Math.min(extent[0], coord[0]!)
+      extent[1] = Math.min(extent[1], coord[1]!)
+      extent[2] = Math.max(extent[2], coord[0]!)
+      extent[3] = Math.max(extent[3], coord[1]!)
     })
     // Add padding to the extent
     const paddingParcentage = 50 / 100
