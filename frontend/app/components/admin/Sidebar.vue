@@ -115,7 +115,7 @@ const familyNodes = computed(() => [{
       label: item.title,
       key: item.id,
       icon: item.icon_hash!,
-      pending_count: counts[1] + counts[3],
+      pending_count: (counts[1] ?? 0) + (counts[3] ?? 0),
       iconDynamic: true,
       route: '',
       active: false,
@@ -180,7 +180,7 @@ const nodes = computed(() => [
   {
     label: 'Familles',
     icon: 'family',
-    pending_count: Object.values(state.countsByFamily).reduce((summed_count, counts) => summed_count + counts[1] + counts[3], 0),
+    pending_count: Object.values(state.countsByFamily).reduce((summed_count, counts) => summed_count + (counts[1] ?? 0) + (counts[3] ?? 0), 0),
     items: familyNodes.value,
     active: false,
     key: 'families',
