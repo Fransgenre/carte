@@ -54,7 +54,7 @@
           <div>{{ result.display_name }}</div>
 
           <div class="mt-1">
-            <CategoryTag :category="state.categoryRecord[result.category_id]" />
+            <CategoryTag :category="state.categoryRecord[result.category_id]!" />
           </div>
         </div>
       </div>

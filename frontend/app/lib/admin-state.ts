@@ -146,7 +146,6 @@ export class AppState {
   // Families
   async fetchFamilies(): Promise<void> {
     this.familiesData = await this.client.listFamilies()
-    console.log(this.familiesData)
     this.familyRecord = this.familiesData.reduce((families, family) => {
       families[family.id] = family
       return families
@@ -157,7 +156,7 @@ export class AppState {
     return this.familiesData!
   }
 
-  familyById(id: string): Family {
+  familyById(id: string): Family | undefined {
     return this.familyRecord[id]
   }
 
@@ -251,8 +250,8 @@ export class AppState {
   // Stats
   async getEntitiesCommentsCounts() {
     const [countsByFamily, countsByCategory] = await this.client.getEntitiesCommentsCounts()
-    this.countsByFamilyData = countsByFamily
-    this.countsByCategoryData = countsByCategory
+    this.countsByFamilyData = countsByFamily ?? {}
+    this.countsByCategoryData = countsByCategory ?? {}
   }
 
   get countsByFamily() {

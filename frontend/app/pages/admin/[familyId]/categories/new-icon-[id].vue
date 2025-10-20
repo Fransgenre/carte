@@ -28,7 +28,7 @@ definePageMeta({
 const familyId = useRoute().params.familyId as string
 if (state.families == undefined)
   await state.fetchFamilies()
-const familyTitle = state.families.filter(family => family.id == familyId)[0].title
+const familyTitle = state.familyRecord[familyId]!.title
 const categoryId = useRoute().params.id as string
 
 const fetchedCategory = await state.fetchCategory(categoryId)

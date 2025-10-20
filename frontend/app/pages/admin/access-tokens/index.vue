@@ -9,7 +9,7 @@
           class="-mt-1"
         /></InputIcon>
         <InputText
-          v-model="(state.tablesFilters[table_key]['global'] as DataTableFilterMetaData).value"
+          v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
           placeholder="Recherche"
         />
       </IconField>
@@ -43,7 +43,7 @@
         sortable
       />
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Jeton')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Jeton')"
         field="token"
         header="Jeton"
       />
@@ -61,7 +61,7 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Visites')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Visites')"
         field="last_week_visits"
         header="Visites (7 derniers jours)"
         class="max-w-32 "
@@ -69,7 +69,7 @@
       />
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Familles')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Familles')"
         header="Familles"
         :field="(data: any) => all_included(data.permissions.families_policy).toString()"
         sortable
@@ -83,7 +83,7 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Catégories')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Catégories')"
         header="Catégories"
         :field="(data: any) => all_included(data.permissions.categories_policy).toString()"
         sortable
@@ -97,7 +97,7 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Tags')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Tags')"
         header="Tags"
         field="data => all_included(data.permissions.tags_policy).toString()"
         sortable
@@ -111,7 +111,7 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Commentaires')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Commentaires')"
         header="Commentaires"
         field="permissions.can_access_comments"
         sortable

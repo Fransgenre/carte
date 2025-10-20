@@ -2,11 +2,15 @@
   <div class="flex flex-col gap-2">
     <label for="tag_id">Tags</label>
     <div class="flex flex-wrap gap-1">
-      <DisplayedTag
+      <template
         v-for="tag_id in sortedModelValue"
         :key="tag_id"
-        :tag="tagRecord[tag_id]"
-      />
+      >
+        <DisplayedTag
+          v-if="tagRecord[tag_id]"
+          :tag="tagRecord[tag_id]"
+        />
+      </template>
     </div>
 
     <MultiSelect
