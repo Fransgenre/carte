@@ -12,8 +12,8 @@
     >
       <template #value="slotProps">
         <CategoryTag
-          v-if="slotProps.value"
-          :category="categoryRecord[slotProps.value]"
+          v-if="slotProps.value && categoryRecord[slotProps.value]"
+          :category="categoryRecord[slotProps.value]!"
         />
         <span v-else>{{ slotProps.placeholder }}</span>
       </template>
@@ -40,8 +40,10 @@ function updateValue(value: undefined | string) {
   emit('update:modelValue', value)
 }
 
-const categoryRecord: CategoryRecord = props.categories.reduce((categories, category) => {
-  categories[category.id] = category
-  return categories
-}, {} as CategoryRecord)
+const categoryRecord = computed(() => {
+  return props.categories.reduce((categories, category) => {
+    categories[category.id] = category
+    return categories
+  }, {} as CategoryRecord)
+})
 </script>

@@ -4,7 +4,7 @@
       <form @submit.prevent="refreshTable">
         <InputGroup class="h-10">
           <InputText
-            v-model="state.tablesQueryParams[table_key].search_query"
+            v-model="state.tablesQueryParams[table_key]!.search_query"
             placeholder="Tapez votre recherche ici"
           />
 
@@ -39,7 +39,7 @@
     </span>
 
     <DataTable
-      :rows="state.tablesQueryParams[table_key].pageSize"
+      :rows="state.tablesQueryParams[table_key]!.pageSize"
       :first="firstRow"
       lazy
       paginator
@@ -59,16 +59,16 @@
         class="max-w-[25rem]"
       />
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Catégorie')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Catégorie')"
         field="category_id"
         header="Catégorie"
       >
         <template #body="slotProps">
-          <CategoryTag :category="state.categoryRecord[slotProps.data.category_id]" />
+          <CategoryTag :category="state.categoryRecord[slotProps.data.category_id]!" />
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Tags')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Tags')"
         field="tags"
         header="Tags"
         class="max-w-72"
@@ -77,7 +77,7 @@
           <DisplayedTag
             v-for="tag_id in slotProps.data.tags_ids.slice(0, max_tags_displayed)"
             :key="tag_id"
-            :tag="state.tagRecord[tag_id]"
+            :tag="state.tagRecord[tag_id]!"
             class="m-1"
           />
           <Badge
@@ -94,7 +94,7 @@
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Visibilité')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Visibilité')"
         field="hidden"
         header="Visibilité"
       >
@@ -124,16 +124,16 @@
       <DisplayedTag
         v-for="tag_id in tooltip_excess_tags"
         :key="tag_id"
-        :tag="state.tagRecord[tag_id]"
+        :tag="state.tagRecord[tag_id]!"
         class="m-1"
       />
     </Popover>
 
     <Popover ref="filters_overlay">
       <ViewerFilterConfig
-        v-model:filtering-tags="state.tablesQueryParams[table_key].tagFilteringList!"
-        v-model:filtering-categories="state.tablesQueryParams[table_key].categoryFilteringList!"
-        v-model:filtering-enums="state.tablesQueryParams[table_key].enumsFilteringList!"
+        v-model:filtering-tags="state.tablesQueryParams[table_key]!.tagFilteringList!"
+        v-model:filtering-categories="state.tablesQueryParams[table_key]!.categoryFilteringList!"
+        v-model:filtering-enums="state.tablesQueryParams[table_key]!.enumsFilteringList!"
         class="w-[25rem] md:w-[30rem]"
         @filters-changed="refreshTable"
       />
@@ -160,7 +160,8 @@ if (state.tags == null) {
   await state.fetchTags()
 }
 
-const familyTitle = state.families.filter(family => family.id == familyId)[0].title
+const family = state.familyRecord[familyId]!
+const familyTitle = family.title
 
 const filters_overlay = useTemplateRef('filters_overlay')
 const tags_tooltip = useTemplateRef('tags_tooltip')
@@ -183,7 +184,7 @@ if (!(table_key in state.tablesQueryParams)) {
       .filter(category => category.family_id == familyId)
       .map(category => ({ ...category, active: true })),
     tagFilteringList: state.tags.map(tag => ({ ...tag, active: null })),
-    enumsFilteringList: state.familyById(familyId).entity_form.fields
+    enumsFilteringList: family.entity_form.fields
       .filter(f => f.indexed && (f.field_type === 'EnumMultiOption' || f.field_type === 'EnumSingleOption'))
       .map((f) => {
         return {
@@ -202,15 +203,15 @@ if (!(table_key in state.tablesQueryParams)) {
   }
 }
 else {
-  firstRow.value = (state.tablesQueryParams[table_key].currentPage - 1) * state.tablesQueryParams[table_key].pageSize
+  firstRow.value = (state.tablesQueryParams[table_key]!.currentPage - 1) * state.tablesQueryParams[table_key]!.pageSize
 }
 
 let forceFullRefresh = false
 
 watch([
-  ...state.tablesQueryParams[table_key].categoryFilteringList!,
-  ...state.tablesQueryParams[table_key].tagFilteringList!,
-  state.tablesQueryParams[table_key].search_query,
+  ...state.tablesQueryParams[table_key]!.categoryFilteringList!,
+  ...state.tablesQueryParams[table_key]!.tagFilteringList!,
+  state.tablesQueryParams[table_key]!.search_query,
 ], () => {
   forceFullRefresh = true
 })
@@ -218,21 +219,21 @@ watch([
 const currentEntitiesResults: Ref<AdminPaginatedCachedEntities | null> = ref(null)
 async function refreshTable() {
   if (forceFullRefresh) {
-    state.tablesQueryParams[table_key].currentPage = 1
+    state.tablesQueryParams[table_key]!.currentPage = 1
     forceFullRefresh = false
   }
 
   currentEntitiesResults.value = await state.client.searchEntities(
-    { page: state.tablesQueryParams[table_key].currentPage, page_size: state.tablesQueryParams[table_key].pageSize },
+    { page: state.tablesQueryParams[table_key]!.currentPage, page_size: state.tablesQueryParams[table_key]!.pageSize },
     {
-      search: state.tablesQueryParams[table_key].search_query,
+      search: state.tablesQueryParams[table_key]!.search_query,
       family: familyId,
-      active_categories_ids: state.tablesQueryParams[table_key].categoryFilteringList!.filter(t => t.active).map(t => t.id),
-      required_tags_ids: state.tablesQueryParams[table_key].tagFilteringList!.filter(t => t.active).map(t => t.id),
-      excluded_tags_ids: state.tablesQueryParams[table_key].tagFilteringList!.filter(t => t.active === false).map(t => t.id),
+      active_categories_ids: state.tablesQueryParams[table_key]!.categoryFilteringList!.filter(t => t.active).map(t => t.id),
+      required_tags_ids: state.tablesQueryParams[table_key]!.tagFilteringList!.filter(t => t.active).map(t => t.id),
+      excluded_tags_ids: state.tablesQueryParams[table_key]!.tagFilteringList!.filter(t => t.active === false).map(t => t.id),
       enums_constraints: Object
         .fromEntries(
-          state.tablesQueryParams[table_key].enumsFilteringList!
+          state.tablesQueryParams[table_key]!.enumsFilteringList!
             .filter(f => f.active.length > 0)
             .map(f => [f.key, f.active]),
         ),
@@ -251,8 +252,8 @@ async function refreshTable() {
 await refreshTable()
 
 async function onPage(event: PageState) {
-  state.tablesQueryParams[table_key].currentPage = event.page + 1
-  state.tablesQueryParams[table_key].pageSize = event.rows
+  state.tablesQueryParams[table_key]!.currentPage = event.page + 1
+  state.tablesQueryParams[table_key]!.pageSize = event.rows
   await refreshTable()
 }
 

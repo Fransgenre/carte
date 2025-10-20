@@ -11,7 +11,7 @@
           />
         </InputIcon>
         <InputText
-          v-model="(state.tablesFilters[table_key]['global'] as DataTableFilterMetaData).value"
+          v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
           placeholder="Recherche"
         />
       </IconField>
@@ -47,18 +47,18 @@
       />
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Catégorie')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Catégorie')"
         field="category_id"
         header="Catégorie"
         sortable
       >
         <template #body="slotProps">
-          <CategoryTag :category="state.categoryRecord[slotProps.data.category_id]" />
+          <CategoryTag :category="state.categoryRecord[slotProps.data.category_id]!" />
         </template>
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Créée le')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Créée le')"
         field="created_at"
         header="Créée le"
         sortable
@@ -68,7 +68,7 @@
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Mise à jour le')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Mise à jour le')"
         field="updated_at"
         header="Mise à jour le"
         sortable
@@ -79,7 +79,7 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Visibilité')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Visibilité')"
         field="hidden"
         header="Visibilité"
       >
@@ -117,13 +117,13 @@ if (state.families == null)
 if (state.categories == null)
   await state.fetchCategories()
 
-const familyTitle = state.families.filter(family => family.id == familyId)[0].title
+const familyTitle = state.familyRecord[familyId]!.title
 
 // Initialize the ref with an empty array, then fetch to update entities asynchronously
 const entities: Ref<AdminListedEntity[]> = ref([])
 async function refreshTable() {
   entities.value = await state.client.listPendingEntities()
-  entities.value = entities.value.filter(entity => state.categoryRecord[entity.category_id].family_id == familyId)
+  entities.value = entities.value.filter(entity => state.categoryRecord[entity.category_id]!.family_id == familyId)
   state.getEntitiesCommentsCounts()
 }
 refreshTable()

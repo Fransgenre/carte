@@ -58,7 +58,7 @@
         sortable
       >
         <template #body="slotProps">
-          <CategoryTag :category="state.categoryRecord[slotProps.data.category_id]" />
+          <CategoryTag :category="state.categoryRecord[slotProps.data.category_id]!" />
         </template>
       </Column>
 

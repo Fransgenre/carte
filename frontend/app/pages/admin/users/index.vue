@@ -9,7 +9,7 @@
           class="-mt-1"
         /></InputIcon>
         <InputText
-          v-model="(state.tablesFilters[table_key]['global'] as DataTableFilterMetaData).value"
+          v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
           placeholder="Recherche"
         />
       </IconField>
@@ -52,7 +52,7 @@
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Droits')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Droits')"
         header="Droits"
         field="is_admin"
         sortable
@@ -66,7 +66,7 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Connection')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Connection')"
         field="last_login"
         header="Dernière connection"
       >

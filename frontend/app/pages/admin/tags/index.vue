@@ -9,7 +9,7 @@
           class="-mt-1"
         /></InputIcon>
         <InputText
-          v-model="(state.tablesFilters[table_key]['global'] as DataTableFilterMetaData).value"
+          v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
           placeholder="Recherche"
         />
       </IconField>
@@ -48,7 +48,7 @@
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Filtrage')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Filtrage')"
         field="is_filter"
         header="Filtrage"
         sortable
@@ -62,7 +62,7 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Valeur de filtre par défaut')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Valeur de filtre par défaut')"
         header="Valeur de filtre par défaut"
         field="default_filter_status"
         sortable
@@ -76,7 +76,7 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Description de filtre')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Description de filtre')"
         header="Description de filtre"
         field="filter_description"
         sortable

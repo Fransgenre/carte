@@ -9,7 +9,7 @@
           class="-mt-1"
         /></InputIcon>
         <InputText
-          v-model="(state.tablesFilters[table_key]['global'] as DataTableFilterMetaData).value"
+          v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
           placeholder="Recherche"
         />
       </IconField>
@@ -43,7 +43,7 @@
         sortable
       />
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Entités')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Entités')"
         field="entity_count"
         header="Entités"
         sortable
