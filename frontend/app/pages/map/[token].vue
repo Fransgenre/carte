@@ -152,7 +152,7 @@ onMounted(async () => {
       })
     }
 
-    if (hasEntity && entity.locations.length) {
+    if (hasEntity && entity.locations[0]) {
       // The entity is loaded, its infos are displayed and it has a location
       // Go to the entity location optionally using the given zoom
       goToGpsCoordinates([entity.locations[0].long, entity.locations[0].lat], customStartZoom)
@@ -216,7 +216,7 @@ async function goToEntity(entity: ViewerSearchedCachedEntity, zoom = 14) {
       life: 3000,
     })
   }
-  if (entity.locations.length > 0) {
+  if (entity.locations[0]) {
     const location = entity.locations[0]
 
     mapRef.value?.goToWebMercatorCoordinates([

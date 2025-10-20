@@ -9,7 +9,7 @@
           />
         </InputIcon>
         <InputText
-          v-model="(state.tablesFilters[table_key]['global'] as DataTableFilterMetaData).value"
+          v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
           placeholder="Recherche"
         />
       </IconField>
@@ -43,7 +43,7 @@
         sortable
       />
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Affichage par défaut')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Affichage par défaut')"
         field="default_status"
         header="Affichage par défaut"
         sortable
@@ -56,7 +56,7 @@
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Entités')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Entités')"
         field="entity_count"
         header="Entités"
         sortable
@@ -87,7 +87,7 @@ import state from '~/lib/admin-state'
 const familyId = useRoute().params.familyId as string
 if (state.families == null)
   await state.fetchFamilies()
-const familyTitle = state.families.filter(family => family.id == familyId)[0].title
+const familyTitle = state.familyRecord[familyId]!.title
 
 interface CategoryWCount extends Category { entity_count?: number }
 

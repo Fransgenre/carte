@@ -622,7 +622,7 @@ const indexableTypes = [...searchableTypes, ...filterableTypes]
 
 function hasFieldAttributeBeenEdited(index: number, attribute: keyof FormField) {
   return index < props.originalFormFields.length
-    && edited_form_fields.value[index][attribute] !== props.originalFormFields[index][attribute]
+    && edited_form_fields.value[index]![attribute] !== props.originalFormFields[index]![attribute]
 }
 
 function getFieldsForPage(pageNumber: number) {
@@ -675,7 +675,7 @@ function onDropPage(event: DragEvent, page: number) {
   const droppedField: FormField = JSON.parse(event.dataTransfer!.getData('application/json')).field!
   const fieldIndex = edited_form_fields.value.findIndex(f => f.key === droppedField.key)
   if (fieldIndex !== -1) {
-    edited_form_fields.value[fieldIndex].form_page = page
+    edited_form_fields.value[fieldIndex]!.form_page = page
   }
   updatePageCount()
 }
@@ -694,7 +694,7 @@ function onKeyChange(field_to_modify: FormField, new_key: string) {
   }
   editKeyVisible.value = false
   field_to_modify.key = new_key
-  const display_index = display_indexes.value[old_key]
+  const display_index = display_indexes.value[old_key]!
   // risk of deleting hidden key of the record, such as __data, but this issue is present as soon as such a key is set
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   delete display_indexes.value[old_key]
@@ -702,7 +702,7 @@ function onKeyChange(field_to_modify: FormField, new_key: string) {
 }
 
 function onDisplayIndexChange(field: FormField, new_display_index: 'notDisplayed' | number | null) {
-  const old_display_index = display_indexes.value[field.key]
+  const old_display_index = display_indexes.value[field.key]!
   if (old_display_index === new_display_index) return
   if (old_display_index === 'notDisplayed') {
     max_display_index.value += 1
@@ -787,7 +787,7 @@ function onIndexableChange(field: FormField) {
 
 function onFieldDelete(key: string) {
   const index = edited_form_fields.value.findIndex(field => field.key === key)
-  onDisplayIndexChange(edited_form_fields.value[index], 'notDisplayed')
+  onDisplayIndexChange(edited_form_fields.value[index]!, 'notDisplayed')
   edited_form_fields.value.splice(index, 1)
   updatePageCount()
 }
@@ -827,7 +827,7 @@ async function onSave() {
     for (const field of getFieldsForPage(page)) {
       field.form_weight = form_weight_incr
       form_weight_incr++
-      const pseudo_display_index = display_indexes.value[field.key]
+      const pseudo_display_index = display_indexes.value[field.key]!
       if (pseudo_display_index === 'notDisplayed') {
         field.user_facing = false
         field.display_weight = 0
