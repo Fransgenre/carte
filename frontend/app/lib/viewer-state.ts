@@ -98,9 +98,9 @@ export class AppState {
 
     return {
       ...this._activeEntity!,
-      family: this.familiesLookupTable[this._activeEntity!.entity.family_id],
-      category: this.categoriesLookupTable[this._activeEntity!.entity.category_id],
-      tags: this._activeEntity!.entity.tags.map(tagId => this.tagsLookupTable[tagId]),
+      family: this.familiesLookupTable[this._activeEntity!.entity.family_id]!,
+      category: this.categoriesLookupTable[this._activeEntity!.entity.category_id]!,
+      tags: this._activeEntity!.entity.tags.map(tagId => this.tagsLookupTable[tagId]!),
     }
   }
 
@@ -113,7 +113,7 @@ export class AppState {
   }
 
   get activeFamily() {
-    return this.familiesLookupTable[this.activeFamilyId!]
+    return this.familiesLookupTable[this.activeFamilyId!]!
   }
 
   set activeFamily(family: Family) {
@@ -287,7 +287,7 @@ export class AppState {
       throw new Error('No families available')
     }
 
-    this.activeFamily = this.familiesData![0]
+    this.activeFamily = this.familiesData![0]!
 
     this.initialized = true
   }
@@ -375,10 +375,10 @@ export class AppState {
     const zoom = Math.round(zoomLevel)
     const newViewData = await this.client.getEntitiesWithinBounds(
       {
-        xmin: extent[0],
-        ymin: extent[1],
-        xmax: extent[2],
-        ymax: extent[3],
+        xmin: extent[0]!,
+        ymin: extent[1]!,
+        xmax: extent[2]!,
+        ymax: extent[3]!,
       },
       zoom,
       this.activeFamilyId!,
@@ -403,8 +403,8 @@ export class AppState {
       ...newEntities.map(entity => ({
         ...entity,
         coordinates: [entity.web_mercator_x!, entity.web_mercator_y!],
-        family: this.familiesLookupTable[entity.family_id],
-        category: this.categoriesLookupTable[entity.category_id],
+        family: this.familiesLookupTable[entity.family_id]!,
+        category: this.categoriesLookupTable[entity.category_id]!,
         highlighted: false,
       })),
     )

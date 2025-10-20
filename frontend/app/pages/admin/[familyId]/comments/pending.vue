@@ -9,7 +9,7 @@
           />
         </InputIcon>
         <InputText
-          v-model="(state.tablesFilters[table_key]['global'] as DataTableFilterMetaData).value"
+          v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
           placeholder="Recherche"
         />
       </IconField>
@@ -51,18 +51,18 @@
       />
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Catégorie')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Catégorie')"
         field="entity_category_id"
         header="Catégorie"
         sortable
       >
         <template #body="slotProps">
-          <CategoryTag :category="state.categoryRecord[slotProps.data.entity_category_id]" />
+          <CategoryTag :category="state.categoryRecord[slotProps.data.entity_category_id]!" />
         </template>
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Créé le')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Créé le')"
         field="created_at"
         header="Créé le"
         sortable
@@ -72,7 +72,7 @@
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key].includes('Mis à jour le')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('Mis à jour le')"
         field="updated_at"
         header="Mis à jour le"
         sortable
@@ -108,13 +108,13 @@ if (state.families == null)
 if (state.categories == null)
   await state.fetchCategories()
 
-const familyTitle = state.families.filter(family => family.id == familyId)[0].title
+const familyTitle = state.familyRecord[familyId]!.title
 
 // Initialize the ref with an empty array, then fetch to update comments asynchronously
 const comments: Ref<AdminListedComment[]> = ref([])
 async function refreshTable() {
   comments.value = await state.client.listPendingComments()
-  comments.value = comments.value.filter(comment => state.categoryRecord[comment.entity_category_id].family_id === familyId)
+  comments.value = comments.value.filter(comment => state.categoryRecord[comment.entity_category_id]!.family_id === familyId)
   state.getEntitiesCommentsCounts()
 }
 refreshTable()

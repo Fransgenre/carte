@@ -202,7 +202,7 @@ const entityId = useRoute().params.id as string
 if (state.families == undefined) {
   await state.fetchFamilies()
 }
-const family = state.families.filter(family => family.id == familyId)[0]
+const family = state.familyRecord[familyId]!
 
 // Fetch categories and tags if not already fetched
 if (!state.categories) {

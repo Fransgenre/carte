@@ -44,7 +44,7 @@
       <span>
         Rattaché à {{ parentEntityToDisplay?.display_name }} <CategoryTag
           v-if="parentEntityToDisplay?.category_id"
-          :category="state.categoryRecord[parentEntityToDisplay!.category_id]"
+          :category="state.categoryRecord[parentEntityToDisplay!.category_id]!"
         />
 
       </span>
@@ -111,7 +111,7 @@ if (state.categories == undefined)
 if (state.tags == undefined)
   await state.fetchTags()
 
-const family = state.families.filter(family => family.id == familyId)[0]
+const family = state.familyRecord[familyId]!
 const commentId = useRoute().params.id as string
 const isNew = (commentId === 'new')
 const urlEntityId = useRoute().query.urlEntityId

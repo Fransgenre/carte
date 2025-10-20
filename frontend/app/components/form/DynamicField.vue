@@ -124,7 +124,7 @@
             :options="(props.formField as Extract<FieldTypeMetadataEnum, { field_type: 'EventList' }>).field_type_metadata?.event_types"
             option-value="value"
             option-label="label"
-            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index].type = new_value; updateField(fieldContent) }"
+            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index]!.type = new_value; updateField(fieldContent) }"
           />
           <!-- @update:model-value="new_type => (props.fieldContent as EntityOrCommentEvent[])[ev_index] = { type: new_type, date: event.date, details: event.details }" -->
           <DatePicker
@@ -135,7 +135,7 @@
             show-icon
             icon-display="input"
             show-button-bar
-            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index].date = new_value; updateField(fieldContent) }"
+            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index]!.date = new_value; updateField(fieldContent) }"
           />
 
           <Button
@@ -158,7 +158,7 @@
           <label for="">Détails (optionnels): </label>
           <Textarea
             :model-value="event.details"
-            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index].details = new_value; updateField(fieldContent) }"
+            @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index]!.details = new_value; updateField(fieldContent) }"
           />
         </span>
         <Divider
@@ -195,7 +195,7 @@ import type { EntityOrCommentEvent, FieldContentMap, FieldTypeMetadataEnum, Form
 import { isValidNumber, isValidRichText, isValidText } from '~/lib/validation'
 
 type FormProps<T extends FormField> = {
-  fieldContent: FieldContentMap[T['field_type']]
+  fieldContent: FieldContentMap[T['field_type']] | undefined
   formField: T
   hasBeenEdited?: boolean
 }
@@ -210,14 +210,14 @@ const isValid = computed(() => {
   switch (props.formField.field_type) {
     case 'SingleLineText':
     case 'MultiLineText':
-      isValidUnformatted = isValidText(props.fieldContent as string)
+      isValidUnformatted = isValidText(props.fieldContent as string | undefined)
       break
     case 'RichText':
-      isValidUnformatted = isValidRichText(props.fieldContent as string)
+      isValidUnformatted = isValidRichText(props.fieldContent as string | undefined)
       break
     case 'DiscreteScore':
     case 'Number':
-      isValidUnformatted = isValidNumber(props.fieldContent as number)
+      isValidUnformatted = isValidNumber(props.fieldContent as number | undefined)
       break
     case 'EventList':
       isValidUnformatted = props.fieldContent != null && (props.fieldContent as EntityOrCommentEvent[]).length > 0
