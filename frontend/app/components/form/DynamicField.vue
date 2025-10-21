@@ -77,6 +77,7 @@
       :invalid="!isValid && hasLostFocus"
       date-format="dd/mm/yy"
       show-icon
+      fluid
       icon-display="input"
       show-button-bar
       @update:model-value="(value: Date | Date[] | (Date | null)[] | null | undefined) => updateField(value as (Date | undefined))"
@@ -133,6 +134,7 @@
             placeholder="jj/mm/aaaa"
             date-format="dd/mm/yy"
             show-icon
+            fluid
             icon-display="input"
             show-button-bar
             @update:model-value="(new_value: any) => { const fieldContent = [...props.fieldContent as EntityOrCommentEvent[]]; fieldContent[ev_index]!.date = new_value; updateField(fieldContent) }"
