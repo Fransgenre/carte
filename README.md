@@ -49,29 +49,53 @@ We welcome contributions from everyone.
 
 To spin up a development environment, follow these steps:
 
-**Pre-requisites:**
+### Pre-requisites
 
-- A working installation of Docker (configured so that it can be used without root privileges)
-- A working installation of Nix
-  - Supports of Nix Flakes is required.
-- A PostgreSQL server with PostGIS in version 16 or higher. You can start one with `start_docker_postgresql`.
+1. A PostgreSQL 16 server with the PostGIS extension
+2. Node 24 and npm
+3. A Rust toolchain with Cargo
 
-**Steps:**
+A PostgreSQL server (1.) can be started using Docker Compose.
+
+Node, npm (2.) and a Rust toolchain (3.) can be installed using the Nix flake *(option B)*.
+
+### Steps without using Nix *(option A)*
 
 - Clone the repository
-- Run `nix develop` to enter a development environment
-- Run `start_docker_postgresql` to start a database server
-- Inside the `backend` folder
-  - Run `sqlx migrate run` to create the database schema
-- Inside the `frontend` folder
-  - Run `npm ci` to install the dependencies
-- Inside the root folder:
-  - Run `regen_api` to regenerate the API
-  - Run `start_dev_env` to start the stack using process-compose
+- Run `npm ci` to install the Node dependencies
+- Run `docker compose up -d` to start a PostgreSQL server
+- Run `npm run dev` to start the development processes
 
-Then, go to the admin panel at http://localhost:4000/admin/ and create an access token for you. You may then use it to access the map at `http://localhost:4000/map/<token>`
+### Steps using Nix *(option B)*
 
-The search page is available at `http://localhost:4000/search/<token>`
+- Clone the repository
+- Run `nix develop` to enter the development environment
+- Run `npm ci` to install the Node dependencies
+- Run `docker compose up -d` to start a PostgreSQL server
+- To start the development processes, either:
+  - run `start_dev_env` to use [process-compose](https://github.com/F1bonacc1/process-compose)
+  - run `npm run dev` to use [npm-run-all2](https://github.com/bcomnes/npm-run-all2)
+
+### The admin panel
+
+The admin panel should now be available at http://localhost:3000/admin.
+
+If no admin user exists in the database, the backend creates one and displays its password in the logs.
+
+You may use the admin panel to create an access token, which you can then use to access:
+
+- The map view at `http://localhost:3000/map/<token>`
+- The search view at `http://localhost:3000/search/<token>`
+- The add view at `http://localhost:3000/add/<token>`
+
+### Regenerating the API specification and client
+
+If you use the Nix flake, you can run `regen_api`.
+
+Otherwise, follow these steps:
+
+- In the `backend` directory, run `cargo run -- openapi ../frontend/openapi.json`
+- In the `frontend` directory, run `npm run generate-api`
 
 ## License
 
