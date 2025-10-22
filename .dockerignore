@@ -1,0 +1,37 @@
+##########
+# common #
+##########
+
+.DS_Store
+.direnv
+.pgdata
+.idea
+result
+logs
+*.log
+Dockerfile
+
+###########
+# backend #
+###########
+
+/backend/target
+
+############
+# frontend #
+############
+
+# Nuxt dev/build outputs
+/frontend/.output
+/frontend/.data
+/frontend/.nuxt
+/frontend/.nitro
+/frontend/.cache
+/frontend/dist
+
+# Node dependencies
+/frontend/node_modules
+
+# Generated from the backend openapi
+/frontend/lib/api.d.ts
+

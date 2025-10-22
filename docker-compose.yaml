@@ -1,0 +1,10 @@
+name: safehaven
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: safehaven
+    ports:
+      - 5432:5432
