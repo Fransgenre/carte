@@ -1,7 +1,8 @@
 import createClient from 'openapi-fetch'
 import type { paths } from './api'
 import createAuthMiddleware from './viewer-auth-middleware'
-import type { FetchedEntity, PublicNewCommentRequest, PublicNewEntityRequest, PublicComment, ViewerPaginatedCachedEntities, PublicNewEntityResponse } from '~/lib'
+import type { FetchedEntity, PublicNewCommentRequest, PublicNewEntityRequest, PublicComment, ViewerPaginatedCachedEntities, PublicNewEntityResponse, FormField } from '~/lib'
+import { formatCommentFieldsData, formatCommentsFieldsData, formatEntityFieldsData } from './fields-utils'
 
 type Callback = () => Promise<void>
 
@@ -92,6 +93,9 @@ export default function useClient() {
       })
       if (error) throw error
 
+      formatEntityFieldsData(data.entity, data.entity.entity_form.fields)
+      formatCommentsFieldsData(data.comments, data.entity.comment_form.fields)
+
       return data
     },
 
@@ -124,15 +128,22 @@ export default function useClient() {
       return data
     },
 
-    async createComment(comment: PublicNewCommentRequest): Promise<PublicComment> {
+    async createComment(comment: PublicNewCommentRequest, commentFields?: FormField[]): Promise<PublicComment> {
       const { data, error } = await this.rawClient.POST('/api/map/comments', { body: comment })
       if (error) throw error
+
+      if (commentFields) formatCommentFieldsData(data, commentFields)
+
       return data
     },
 
     async createEntity(entity: PublicNewEntityRequest): Promise<PublicNewEntityResponse> {
       const { data, error } = await this.rawClient.POST('/api/map/entities', { body: entity })
       if (error) throw error
+
+      formatEntityFieldsData(data.entity, data.entity.entity_form.fields)
+      if (data.comment) formatCommentFieldsData(data.comment, data.entity.comment_form.fields)
+
       return data
     },
   }
