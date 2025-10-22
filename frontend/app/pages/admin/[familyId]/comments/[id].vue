@@ -110,6 +110,7 @@
 </template>
 
 <script setup lang="ts">
+import type { LocationQueryValue } from 'vue-router'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { AdminNewOrUpdateComment, AdminComment, EntityOrCommentData, FormField } from '~/lib'
 import state from '~/lib/admin-state'
@@ -130,18 +131,19 @@ const family = state.familyRecord[familyId]!
 const commentId = useRoute().params.id as string
 const isNew = (commentId === 'new')
 
-const urlEntityId = useRoute().query.urlEntityId
+const urlEntityId = useRoute().query.urlEntityId as LocationQueryValue | undefined
 
 const entityLink = computed(() => `/admin/${familyId}/entities/${editedComment.value.entity_id}`)
 const returnUrl = computed(() => urlEntityId == null ? `/admin/${familyId}/comments/pending` : `${entityLink.value}?comments`)
 
-const fetchedComment: AdminComment | null = isNew ? null : await state.client.getComment(commentId)
+const fetchedComment: AdminComment | null = isNew ? null : await state.client.getComment(commentId, family!.comment_form.fields)
+
 const parentEntityToDisplay = ref<{ category_id: string, display_name: string }>()
 if (fetchedComment) {
   parentEntityToDisplay.value = { category_id: fetchedComment.entity_category_id, display_name: fetchedComment.entity_display_name }
 }
 else if (urlEntityId) {
-  const fetchedParent = await state.client.getEntity(urlEntityId as string)
+  const fetchedParent = await state.client.getEntity(urlEntityId as string, family!.entity_form.fields)
   parentEntityToDisplay.value = { category_id: fetchedParent.category_id, display_name: fetchedParent.display_name }
 }
 else {
@@ -158,7 +160,7 @@ const editedComment: Ref<AdminNewOrUpdateComment> = isNew
       text: '',
       version: 1,
     })
-  : ref(JSON.parse(JSON.stringify(fetchedComment))) // deep copy
+  : ref(structuredClone(fetchedComment!)) // deep copy
 
 const processingRequest = ref(false)
 const toast = useToast()
