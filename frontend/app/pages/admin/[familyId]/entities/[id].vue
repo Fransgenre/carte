@@ -143,7 +143,7 @@
             :categories="categories"
             :tags="tags"
             :family-id="familyId"
-            @update-kinship="async () => fetchedEntity = (await state.client.getEntity(entityId))"
+            @update-kinship="async () => fetchedEntity = (await state.client.getEntity(entityId, family!.entity_form.fields))"
           />
         </TabPanel>
 
@@ -216,18 +216,19 @@ const categories = computed(() => state.categories.filter(category => category.f
 
 const tags = state.tags
 
-const fetchedEntity = ref(await state.client.getEntity(entityId))
+const fetchedEntity = ref(await state.client.getEntity(entityId, family!.entity_form.fields))
+
 const entityComments = ref<AdminComment[]>([])
 const hasLoadedComments = ref(false)
 async function refreshComments() {
   hasLoadedComments.value = false
-  entityComments.value = await state.client.listEntityComments(entityId)
+  entityComments.value = await state.client.listEntityComments(entityId, family.comment_form.fields)
   hasLoadedComments.value = true
 }
 refreshComments()
 
 // Deep copy
-const editedEntity: Ref<AdminNewOrUpdateEntity> = ref(JSON.parse(JSON.stringify(fetchedEntity.value)))
+const editedEntity: Ref<AdminNewOrUpdateEntity> = ref(structuredClone(toRaw(fetchedEntity.value)))
 
 const processingRequest = ref(false)
 const toast = useToast()

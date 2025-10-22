@@ -24,7 +24,9 @@ import type {
   Family,
   AdminPaginatedCachedEntities,
   AccessToken,
+  FormField,
 } from '~/lib'
+import { formatCommentFieldsData, formatCommentsFieldsData, formatEntityFieldsData } from './fields-utils'
 
 // client as a closure
 export default function useClient() {
@@ -193,11 +195,14 @@ export default function useClient() {
       return data
     },
 
-    async getEntity(id: string): Promise<AdminEntityWithRelations> {
+    async getEntity(id: string, entityFields?: FormField[]): Promise<AdminEntityWithRelations> {
       const { data, error } = await this.rawClient.GET('/api/admin/entities/{id}', {
         params: { path: { id } },
       })
       if (error) throw error
+
+      if (entityFields) formatEntityFieldsData(data, entityFields)
+
       return data
     },
 
@@ -213,18 +218,24 @@ export default function useClient() {
       return data
     },
 
-    async createEntity(entity: AdminNewOrUpdateEntity): Promise<AdminEntity> {
+    async createEntity(entity: AdminNewOrUpdateEntity, entityFields?: FormField[]): Promise<AdminEntity> {
       const { data, error } = await this.rawClient.POST('/api/admin/entities', { body: entity })
       if (error) throw error
+
+      if (entityFields) formatEntityFieldsData(data, entityFields)
+
       return data
     },
 
-    async updateEntity(id: string, entity: AdminNewOrUpdateEntity): Promise<AdminEntity> {
+    async updateEntity(id: string, entity: AdminNewOrUpdateEntity, entityFields?: FormField[]): Promise<AdminEntity> {
       const { data, error } = await this.rawClient.PUT('/api/admin/entities/{id}', {
         body: entity,
         params: { path: { id } },
       })
       if (error) throw error
+
+      if (entityFields) formatEntityFieldsData(data, entityFields)
+
       return data
     },
 
@@ -310,26 +321,35 @@ export default function useClient() {
       return data
     },
 
-    async getComment(id: string): Promise<AdminComment> {
+    async getComment(id: string, commentFields?: FormField[]): Promise<AdminComment> {
       const { data, error } = await this.rawClient.GET('/api/admin/comments/{id}', {
         params: { path: { id } },
       })
       if (error) throw error
+
+      if (commentFields) formatCommentFieldsData(data, commentFields)
+
       return data
     },
 
-    async createComment(comment: AdminNewOrUpdateComment): Promise<AdminComment> {
+    async createComment(comment: AdminNewOrUpdateComment, commentFields?: FormField[]): Promise<AdminComment> {
       const { data, error } = await this.rawClient.POST('/api/admin/comments', { body: comment })
       if (error) throw error
+
+      if (commentFields) formatCommentFieldsData(data, commentFields)
+
       return data
     },
 
-    async updateComment(id: string, comment: AdminNewOrUpdateComment): Promise<AdminComment> {
+    async updateComment(id: string, comment: AdminNewOrUpdateComment, commentFields?: FormField[]): Promise<AdminComment> {
       const { data, error } = await this.rawClient.PUT('/api/admin/comments/{id}', {
         body: comment,
         params: { path: { id } },
       })
       if (error) throw error
+
+      if (commentFields) formatCommentFieldsData(data, commentFields)
+
       return data
     },
 
@@ -353,11 +373,14 @@ export default function useClient() {
       return data
     },
 
-    async listEntityComments(id: string): Promise<AdminComment[]> {
+    async listEntityComments(id: string, commentFields?: FormField[]): Promise<AdminComment[]> {
       const { data, error } = await this.rawClient.GET('/api/admin/entities/{id}/comments', {
         params: { path: { id } },
       })
       if (error) throw error
+
+      if (commentFields) formatCommentsFieldsData(data, commentFields)
+
       return data
     },
 
