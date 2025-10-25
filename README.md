@@ -63,6 +63,8 @@ Node, npm (2.) and a Rust toolchain (3.) can be installed using the Nix flake *(
 
 - Clone the repository
 - Run `npm ci` to install the Node dependencies
+- In the `backend` directory, run `cargo run -- openapi ../frontend/openapi.json` to regenerate the API specs
+- In the `frontend` directory, run `npm run generate-api` to regenerate the API client
 - Run `docker compose up -d` to start a PostgreSQL server
 - Run `npm run dev` to start the development processes
 
@@ -71,6 +73,7 @@ Node, npm (2.) and a Rust toolchain (3.) can be installed using the Nix flake *(
 - Clone the repository
 - Run `nix develop` to enter the development environment
 - Run `npm ci` to install the Node dependencies
+- Run `regen_api` to regenerate the API specs and client
 - Run `docker compose up -d` to start a PostgreSQL server
 - To start the development processes, either:
   - run `start_dev_env` to use [process-compose](https://github.com/F1bonacc1/process-compose)
