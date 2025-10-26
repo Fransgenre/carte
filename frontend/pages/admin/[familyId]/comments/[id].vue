@@ -63,6 +63,7 @@
         :previous-entity-id="editedComment.entity_id"
         @save_entity="entity => {
           editedComment.entity_id = entity.entity_id
+          editedComment.entity_category_id = entity.category_id
           parentEntityToDisplay = entity
         }"
       />
