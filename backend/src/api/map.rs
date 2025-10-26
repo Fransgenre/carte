@@ -478,10 +478,10 @@ async fn viewer_fetch_entity(
         .tags
         .iter()
         .find_map(|tag_id| {
-            require_permission(!is_tag_explicitly_excluded_by_token(&token, tag_id)).err()
+            require_permission(!is_tag_allowed_by_token(&token, tag_id)).err()
         })
         .map_or(Ok(()), Err)?;
-    debug!("[PERMDBG] No tag is explicitly excluded, continuing");
+    debug!("[PERMDBG] No tag is allowed, continuing");
 
     let parents = PublicEntity::get_parents(id, &mut conn).await?;
     let children = PublicEntity::get_children(id, &mut conn).await?;
