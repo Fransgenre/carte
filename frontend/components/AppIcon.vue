@@ -78,6 +78,7 @@ const iconDict: Record<string, string> = {
   mapPage: mdi.mdiMap,
   searchPage: mdi.mdiListBox,
   copy: mdi.mdiContentCopy,
+  de: mdi.mdiDiceMultiple,
 }
 </script>
 
