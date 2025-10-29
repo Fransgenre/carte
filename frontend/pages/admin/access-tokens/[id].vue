@@ -23,10 +23,14 @@
       <Button
         type="button"
         class="whitespace-nowrap"
+        aria-label="générer un UUID"
         style="align-self: flex-start; margin-top: 2rem;"
         @click="generateUUID"
       >
-        <AppIcon icon-name="de" class="w-4 h-4" />
+        <AppIcon
+          icon-name="dice"
+          class="w-4 h-4"
+        />
       </Button>
     </div>
 
