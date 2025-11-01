@@ -98,16 +98,17 @@
                 <span class="flex items-center gap-2">
                   <label class="px-2 py-1 rounded text-sm select-text">{{ entityId }}</label>
                   <Button
+                    outlined
+                    rounded
                     type="button"
                     title="Copier l'identifiant"
-                    class="hover:text-gray-600 active:text-gray-800 transition"
+                    class="mx-2"
                     aria-label="Copier l'identifiant"
                     @click="copyEntityId"
                   >
-                    <AppIcon
-                      icon-name="copy"
-                      class="w-4 h-4"
-                    />
+                    <template #icon>
+                      <AppIcon icon-name="copy" />
+                    </template>
                   </Button>
                 </span>
               </p>
