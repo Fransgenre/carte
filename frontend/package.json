@@ -6,9 +6,10 @@
     "dev": "nuxt dev",
     "postinstall": "nuxt prepare",
     "generate-api": "openapi-typescript ./openapi.json -o ./app/lib/api.d.ts",
-    "build": "npm run generate-api && MINIMAL=1 nuxt generate",
+    "build": "npm run generate-api && nuxt build",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "migrate": "node-pg-migrate -j sql --migration-filename-format utc"
   },
   "dependencies": {
     "@hcaptcha/vue3-hcaptcha": "^1.3.0",
@@ -26,14 +27,19 @@
     "chart.js": "^4.5.1",
     "chartjs-adapter-luxon": "^1.3.1",
     "dompurify": "^3.3.0",
+    "generate-password": "^1.7.1",
     "jdenticon": "^3.3.0",
     "luxon": "^3.7.2",
+    "node-pg-migrate": "^8.0.3",
     "nuxt": "^4.1.3",
     "ol": "^10.6.1",
     "ol-contextmenu": "^5.4.0",
     "ol-ext": "^4.0.36",
     "openapi-fetch": "^0.15.0",
     "openapi-typescript": "^7.10.1",
+    "pg": "^8.16.3",
+    "pg-listener": "^1.1.3",
+    "pg-promise": "^12.2.0",
     "primevue": "4.4.1",
     "quill": "=2.0.2",
     "tailwindcss-primeui": "^0.6.1",
@@ -43,6 +49,7 @@
     "vue-router": "^4.6.3",
     "vue-tsc": "^3.1.1",
     "vue3-ace-editor": "^2.2.4",
-    "vue3-openlayers": "12.1.1"
+    "vue3-openlayers": "12.1.1",
+    "zod": "^4.1.12"
   }
 }
