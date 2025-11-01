@@ -29,9 +29,9 @@
         style="align-self: flex-start; margin-top: 2rem;"
         @click="generateUUID"
       >
-      <template #icon>
-        <AppIcon icon-name="dice" />
-      </template>
+        <template #icon>
+          <AppIcon icon-name="dice" />
+        </template>
       </Button>
     </div>
 
