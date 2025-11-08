@@ -87,7 +87,7 @@
           label="Sauvegarder"
           type="submit"
           :loading="processingRequest"
-          :disabled="processingRequest || !editedComment.author || !editedComment.text"
+          :disabled="processingRequest || !editedComment.author || !editedComment.text || !editedComment.entity_id"
         />
       </span>
     </div>
