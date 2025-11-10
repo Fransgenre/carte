@@ -1,11 +1,14 @@
 import { defineNitroPlugin } from 'nitropack/runtime'
 import pgPromise from 'pg-promise'
 import type { IInitOptions } from 'pg-promise'
+import { tryWithKillProcess } from '../lib/errors'
 import state from '../lib/server-state'
 import type { IConnectionParameters } from 'pg-promise/typescript/pg-subset'
 
 export default defineNitroPlugin(() => {
-  initDb()
+  tryWithKillProcess(() => {
+    initDb()
+  })
 })
 
 function initDb() {

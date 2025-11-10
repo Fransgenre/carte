@@ -1,8 +1,8 @@
 import { defineNitroPlugin } from 'nitropack/runtime'
 import * as z from 'zod'
-import process from 'node:process'
 import { generate as generatePassword } from 'generate-password'
 import { runner as pgMigrate } from 'node-pg-migrate'
+import { tryWithKillProcessAsync } from '../lib/errors'
 import state from '../lib/server-state'
 import type { IConnectedDb, IDbLike } from '../lib/server-state'
 import { OptionsRepository, UserRepository } from '../repositories'
@@ -10,18 +10,17 @@ import { PgListener } from 'pg-listener'
 import type { IDatabase, IMain } from 'pg-promise'
 import type { IClient } from 'pg-promise/typescript/pg-subset'
 
+// Nitro plugins aren't asynchronous, so all asynchronous code should be in this one, which should run last
 export default defineNitroPlugin(() => {
-  // Nitro plugins aren't asynchronous, so all asynchronous code should be in this one, which should run last
-  asyncInit()
+  tryWithKillProcessAsync(async () => {
+    await ensureDatabaseConnectable()
+    await runMigrations()
+    await createAdminUserIfNeeded()
+    await initOptionsFromDb()
+    initOptionsDbListener()
+    markAsInitialized()
+  })
 })
-
-async function asyncInit() {
-  await ensureDatabaseConnectable()
-  await runMigrations()
-  await createAdminUserIfNeeded()
-  await initOptionsFromDb()
-  initOptionsDbListener()
-}
 
 async function ensureDatabaseConnectable() {
   const { db } = state
@@ -39,8 +38,6 @@ async function ensureDatabaseConnectable() {
     console.info('Database connection established')
   }
   else {
-    console.error('FATAL : Couldn\'t connect to the database at startup')
-    process.kill(process.pid)
     throw 'FATAL : Couldn\'t connect to the database at startup'
   }
 }
@@ -61,7 +58,7 @@ async function runMigrations() {
   }
   catch (ex) {
     console.error(ex)
-    console.warn('Failed to run migrations !')
+    throw 'FATAL : Failed to run migrations'
   }
   finally {
     if (connection) await connection.done()
@@ -85,7 +82,12 @@ async function createAdminUserIfNeeded() {
     const parsedPassword = z.string().nonempty().safeParse(process.env.SAFEHAVEN_DEFAULT_PASSWORD)
     let password = parsedPassword.success ? parsedPassword.data : undefined
     if (password == undefined) password = generatePassword({
-      uppercase: true, lowercase: true, numbers: true, symbols: false, excludeSimilarCharacters: true, length: 32,
+      uppercase: true,
+      lowercase: true,
+      numbers: true,
+      symbols: false,
+      excludeSimilarCharacters: true,
+      length: 32,
     })
 
     console.info('No user found, creating admin user %s with password %s', name, password)
@@ -97,13 +99,19 @@ async function createAdminUserIfNeeded() {
   }
   catch (ex) {
     console.error(ex)
-    console.warn('Failed to try and create the default admin user if needed')
+    throw 'FATAL : Failed to try and create the default admin user if needed'
   }
 }
 
 async function initOptionsFromDb() {
   const { db } = state
-  await refreshCachedOptionsFromDb(db)
+  try {
+    await refreshCachedOptionsFromDb(db)
+  }
+  catch (ex) {
+    console.error(ex)
+    throw 'FATAL : Failed to initialize application options'
+  }
 }
 
 async function refreshCachedOptionsFromDb(db: IDbLike) {
@@ -144,4 +152,9 @@ function initOptionsDbListener() {
       }
     },
   })
+}
+
+function markAsInitialized() {
+  state.initialized = true
+  console.info('Server initialized')
 }

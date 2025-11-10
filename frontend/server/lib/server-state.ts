@@ -1,7 +1,7 @@
 import type { ITask } from 'pg-promise'
 import type pgPromise from 'pg-promise'
-import type { SafeHavenConfig } from '../models/config'
-import type { SafeHavenOptions } from '../models/options'
+import type { SafeHavenConfig } from '../models/'
+import type { SafeHavenOptions } from '../../shared/models/'
 
 export type IPgp = ReturnType<typeof pgPromise>
 export type IDb = ReturnType<IPgp>
@@ -49,6 +49,17 @@ export class ServerState {
   get options(): SafeHavenOptions {
     if (!this.#options) throw 'Cached options not available, please set them first'
     return this.#options
+  }
+
+  #initialized: boolean = false
+
+  set initialized(initialized: boolean) {
+    if (this.#initialized) throw 'Already initialized'
+    this.#initialized = initialized
+  }
+
+  get initialized() {
+    return this.#initialized
   }
 }
 

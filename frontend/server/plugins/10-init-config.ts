@@ -2,11 +2,14 @@ import * as z from 'zod'
 import type { ZodSafeParseResult } from 'zod'
 import { defineNitroPlugin } from 'nitropack/runtime'
 import process from 'node:process'
+import { tryWithKillProcess } from '../lib/errors'
 import state from '../lib/server-state'
-import { DatabaseParser, SafeHavenConfigParser } from '../models/config'
+import { DatabaseConfigWithDefaultsSchema, SafeHavenConfigWithDefaultsSchema } from '../models/'
 
 export default defineNitroPlugin(() => {
-  initConfigFromEnv()
+  tryWithKillProcess(() => {
+    initConfigFromEnv()
+  })
 })
 
 function initConfigFromEnv() {
@@ -47,8 +50,8 @@ function initConfigFromEnv() {
     else console.warn('Failed parsing configuration env SH__TOKEN_SECRET, using default')
   }
 
-  state.config = SafeHavenConfigParser.parse({
-    database: DatabaseParser.parse({
+  state.config = SafeHavenConfigWithDefaultsSchema.parse({
+    database: DatabaseConfigWithDefaultsSchema.parse({
       url: databaseUrl,
       pool_size,
       timeout,
