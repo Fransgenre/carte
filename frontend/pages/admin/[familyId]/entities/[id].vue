@@ -92,6 +92,27 @@
                 optional
               />
 
+              <!-- modif pour ajout affichage id de l'entité + option pour copier l'id facilement -->
+              <p class="flex flex-col items-start gap-1">
+                <strong>Identifiant de l’entité :</strong>
+                <span class="flex items-center gap-2">
+                  <label class="px-2 py-1 rounded text-sm select-text">{{ entityId }}</label>
+                  <Button
+                    outlined
+                    rounded
+                    type="button"
+                    title="Copier l'identifiant"
+                    class="mx-2"
+                    aria-label="Copier l'identifiant"
+                    @click="copyEntityId"
+                  >
+                    <template #icon>
+                      <AppIcon icon-name="copy" />
+                    </template>
+                  </Button>
+                </span>
+              </p>
+
               <FormAdresses
                 v-model:locations="editedEntity.locations as UnprocessedLocation[]"
               />
