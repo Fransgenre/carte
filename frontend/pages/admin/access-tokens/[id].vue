@@ -10,13 +10,30 @@
       :variant="hasBeenEdited('title')"
     />
 
-    <AdminInputTextField
-      id="token"
-      v-model="editedAccessToken.token"
-      label="Jeton"
-      :variant="hasBeenEdited('token')"
-      helper-text="(utilisé dans l'url d'accès après /map/ ou /search/)"
-    />
+    <div class="flex items-center gap-2">
+      <AdminInputTextField
+        id="token"
+        v-model="editedAccessToken.token"
+        label="Jeton"
+        :variant="hasBeenEdited('token')"
+        class="flex-1"
+        helper-text="(utilisé dans l'url d'accès après /map/ ou /search/)"
+      />
+
+      <Button
+        outlined
+        rounded
+        type="button"
+        class="mx-2"
+        aria-label="générer un UUID"
+        style="align-self: flex-start; margin-top: 2rem;"
+        @click="generateUUID"
+      >
+        <template #icon>
+          <AppIcon icon-name="dice" />
+        </template>
+      </Button>
+    </div>
 
     <AdminInputSwitchField
       id="active"
@@ -306,5 +323,10 @@ function updatePolicies(permissions: Permissions) {
       permissions[policy].force_exclude = []
     }
   }
+}
+
+// ajout fonction génération UUID
+function generateUUID() {
+  editedAccessToken.value.token = crypto.randomUUID()
 }
 </script>
