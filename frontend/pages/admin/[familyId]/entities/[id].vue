@@ -253,4 +253,15 @@ async function onCommentDelete(comment_id: string, comment_author: string, onDel
   }
   onDeleteDone()
 }
+
+// script pour copie id entité
+function copyEntityId() {
+  navigator.clipboard.writeText(entityId)
+  toast.add({
+    severity: 'success',
+    summary: 'Copié',
+    detail: `Identifiant de l'entité copié`,
+    life: 2000,
+  })
+}
 </script>
