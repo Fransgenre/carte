@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import theme from './theme.mjs'
+import theme from './app/theme.mjs'
 
 export default defineNuxtConfig({
   modules: [
