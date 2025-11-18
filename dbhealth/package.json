@@ -1,0 +1,28 @@
+{
+  "name": "safehaven_dbhealth",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dbhealth": "node index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "main": "index.ts",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@stylistic/eslint-plugin": "^5.5.0",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
+    "@typescript-eslint/parser": "^8.47.0",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.47.0"
+  },
+  "dependencies": {
+    "pg": "^8.16.3",
+    "pg-promise": "^12.3.0",
+    "pg-query-stream": "^4.10.3",
+    "zod": "^4.1.12"
+  }
+}
