@@ -31,7 +31,7 @@ export async function validatePublicListedEntities(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid publiclistedentity with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid publiclistedentity with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })
@@ -80,7 +80,7 @@ export async function validatePublicEntities(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid publicentity with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid publicentity with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })
@@ -113,7 +113,7 @@ export async function validateAdminListedEntities(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid adminlistedentity with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid adminlistedentity with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })
@@ -158,7 +158,7 @@ export async function validateAdminEntities(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid adminentity with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid adminentity with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })

@@ -33,7 +33,7 @@ export async function validateViewerCachedEntities(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid viewercachedentity with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid viewercachedentity with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })
@@ -64,7 +64,7 @@ export async function validateAdminCachedEntities(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid admincachedentity with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid admincachedentity with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })

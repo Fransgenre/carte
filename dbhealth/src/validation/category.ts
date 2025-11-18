@@ -28,7 +28,7 @@ export async function validateCategories(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid category with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid category with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })
