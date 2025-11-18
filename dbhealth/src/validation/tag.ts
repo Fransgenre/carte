@@ -26,7 +26,7 @@ export async function validateTags(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid tag with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid tag with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })

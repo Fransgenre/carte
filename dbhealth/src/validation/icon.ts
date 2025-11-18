@@ -21,7 +21,7 @@ export async function validateIcons(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid icon with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid icon with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })

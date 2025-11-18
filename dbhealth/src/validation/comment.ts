@@ -23,7 +23,7 @@ export async function validatePublicComments(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid publiccomment with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid publiccomment with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })
@@ -54,7 +54,7 @@ export async function validateAdminComments(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid admincomment with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid admincomment with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })
@@ -88,7 +88,7 @@ export async function validateAdminListedComments(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid adminlistedcomment with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid adminlistedcomment with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })

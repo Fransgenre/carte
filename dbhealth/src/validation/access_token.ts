@@ -51,7 +51,7 @@ export async function validateAccessTokens(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid accesstoken with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid accesstoken with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })

@@ -22,7 +22,7 @@ export async function validateUsers(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid user with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid user with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })

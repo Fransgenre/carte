@@ -68,7 +68,7 @@ export async function validateFamilies(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid family with data ', data, ' reasons ', describeParseError(parsed.error))
+        console.warn('Invalid family with data ', data, ' reasons ', describeParseError(parsed.error))
         invalid++
       }
     })
