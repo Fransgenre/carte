@@ -108,7 +108,7 @@ export async function validateOptions(db: IDbLike) {
       const parsedRow = OptionSchema.safeParse(data)
       if (!parsedRow.success) {
         invalid++
-        console.log('Invalid option with data ', data, ' reasons ', describeParseError(parsedRow.error))
+        console.warn('Invalid option with data ', data, ' reasons ', describeParseError(parsedRow.error))
         return
       }
 
@@ -117,7 +117,7 @@ export async function validateOptions(db: IDbLike) {
         valid++
       }
       else {
-        console.log('Invalid option with data ', data, ' could not parse it with any registered option parsers')
+        console.warn('Invalid option with data ', data, ' could not parse it with any registered option parsers')
         invalid++
       }
     })
