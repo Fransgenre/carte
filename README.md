@@ -100,6 +100,14 @@ Otherwise, follow these steps:
 - In the `backend` directory, run `cargo run -- openapi ../frontend/openapi.json`
 - In the `frontend` directory, run `npm run generate-api`
 
+### Regenerating sqlx query metadata
+
+This is only needed if you have modified one of the backend SQL queries.
+
+In the `backend` directory, run `cargo sqlx prepare --database-url postgresql://postgres:postgres@localhost/safehaven`.
+
+If you use the Nix flake, you can run `cargo sqlx prepare` without the `--database-url` argument.
+
 ## License
 
 Licensed under the GNU General Public License v3.0, see [LICENSE](LICENSE).
