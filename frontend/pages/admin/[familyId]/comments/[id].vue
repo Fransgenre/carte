@@ -51,9 +51,19 @@
       <Button
         label="Modifier l'entité de rattachement"
         outlined
-        class="-mt-1 mb-1"
         @click="entitySelectVisible=true"
       />
+      <NuxtLink
+        v-if="urlEntityId || fetchedComment?.entity_id"
+        :to="entityLink"
+        target="_blank"
+      >
+        <Button
+          label="Aller à l'entité de rattachement"
+          outlined
+          class="w-full"
+        />
+      </NuxtLink>
       <AdminInputEntitySelect
         v-model:visible="entitySelectVisible"
         title="Choix de l'entité de rattachement du commentaire"
@@ -114,8 +124,11 @@ if (state.tags == undefined)
 const family = state.families.filter(family => family.id == familyId)[0]
 const commentId = useRoute().params.id as string
 const isNew = (commentId === 'new')
+
 const urlEntityId = useRoute().query.urlEntityId
-const returnUrl = urlEntityId == null ? `/admin/${familyId}/comments/pending` : `/admin/${familyId}/entities/${urlEntityId}?comments`
+
+const entityLink = computed(() => `/admin/${familyId}/entities/${fetchedComment?.entity_id}`)
+const returnUrl = computed(() => urlEntityId == null ? `/admin/${familyId}/comments/pending` : `${entityLink.value}?comments`)
 
 const fetchedComment: AdminComment | null = isNew ? null : await state.client.getComment(commentId)
 const parentEntityToDisplay = ref<{ category_id: string, display_name: string }>()
@@ -158,7 +171,7 @@ initAdminLayout(
   [],
   [
     { label: `${family.title}`, url: '/admin/families' },
-    { label: urlEntityId ? `Commentaires de l'entité ${parentEntityToDisplay.value.display_name}` : `Commentaires en attente`, url: returnUrl },
+    { label: urlEntityId ? `Commentaires de l'entité ${parentEntityToDisplay.value.display_name}` : `Commentaires en attente`, url: returnUrl.value },
     isNew
       ? { label: `Nouveau commentaire`, url: `/admin/${familyId}/comments/new` }
       : { label: `Édition d'un commentaire`, url: `/admin/${familyId}/comments/${commentId}` },
@@ -178,7 +191,7 @@ async function onSave() {
     else {
       await state.client.updateComment(commentId, editedComment.value)
     }
-    navigateTo(returnUrl)
+    navigateTo(returnUrl.value)
     toast.add({ severity: 'success', summary: 'Succès', detail: 'Commentaire modifié avec succès', life: 3000 })
   }
   catch {
