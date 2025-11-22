@@ -8,6 +8,7 @@
         />
         <Button
           v-tooltip.bottom="'Lancer la recherche'"
+          aria-label="Lancer la recherche"
           severity="primary"
           type="submit"
         >

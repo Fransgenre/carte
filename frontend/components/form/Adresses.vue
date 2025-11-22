@@ -51,7 +51,7 @@
     v-model:visible="displayNominatimPicker"
     header="Sélectionner une adresse"
     :modal="true"
-    :closable="false"
+    :closable="true"
     dismissable-mask
     :style="{ width: '40rem' }"
   >
