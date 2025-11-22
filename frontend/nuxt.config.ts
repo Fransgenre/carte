@@ -24,6 +24,11 @@ export default defineNuxtConfig({
     '~/assets/richtext.css',
   ],
   compatibilityDate: '2024-09-13',
+  nitro: {
+    devProxy: {
+      '/api': 'http://localhost:28669/api',
+    },
+  },
   vite: {
     resolve: {
       alias: {

@@ -21,12 +21,17 @@
       />
 
       <Button
+        outlined
+        rounded
         type="button"
-        class="whitespace-nowrap"
+        class="mx-2"
+        aria-label="générer un UUID"
         style="align-self: flex-start; margin-top: 2rem;"
         @click="generateUUID"
       >
-        <AppIcon icon-name="de" class="w-4 h-4" />
+        <template #icon>
+          <AppIcon icon-name="dice" />
+        </template>
       </Button>
     </div>
 

@@ -97,15 +97,19 @@
                 <strong>Identifiant de l’entité :</strong>
                 <span class="flex items-center gap-2">
                   <label class="px-2 py-1 rounded text-sm select-text">{{ entityId }}</label>
-                  <button
+                  <Button
+                    outlined
+                    rounded
                     type="button"
                     title="Copier l'identifiant"
-                    class="hover:text-gray-600 active:text-gray-800 transition"
+                    class="mx-2"
                     aria-label="Copier l'identifiant"
-                    @click.stop.prevent="copyEntityId"
+                    @click="copyEntityId"
                   >
-                    <AppIcon icon-name="copy" class="w-4 h-4" />
-                  </button>
+                    <template #icon>
+                      <AppIcon icon-name="copy" />
+                    </template>
+                  </Button>
                 </span>
               </p>
 
@@ -275,7 +279,7 @@ async function onCommentDelete(comment_id: string, comment_author: string, onDel
 function copyEntityId() {
   navigator.clipboard.writeText(entityId)
   toast.add({
-    severity: 'info',
+    severity: 'success',
     summary: 'Copié',
     detail: `Identifiant de l'entité copié`,
     life: 2000,

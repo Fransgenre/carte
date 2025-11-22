@@ -63,6 +63,7 @@
         :previous-entity-id="editedComment.entity_id"
         @save_entity="entity => {
           editedComment.entity_id = entity.entity_id
+          editedComment.entity_category_id = entity.category_id
           parentEntityToDisplay = entity
         }"
       />
@@ -86,7 +87,7 @@
           label="Sauvegarder"
           type="submit"
           :loading="processingRequest"
-          :disabled="processingRequest || !editedComment.author || !editedComment.text"
+          :disabled="processingRequest || !editedComment.author || !editedComment.text || !editedComment.entity_id"
         />
       </span>
     </div>
