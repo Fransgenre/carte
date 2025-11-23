@@ -101,7 +101,7 @@ export type InitAdminLayout = (
   newCardTitle: string,
   newCardIconName: string,
   actions: ActionItem[],
-  breadcrumb: BreadcrumbItem[]
+  breadcrumb: BreadcrumbItem[],
 ) => void
 
 const currentBreadcrumbs = ref<BreadcrumbItem[]>([])
