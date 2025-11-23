@@ -80,6 +80,8 @@ const iconDict: Record<string, string> = {
   dice: mdi.mdiDiceMultiple,
   copy: mdi.mdiContentCopy,
   externalLink: mdi.mdiOpenInNew,
+  expandAll: mdi.mdiExpandAll,
+  collapseAll: mdi.mdiCollapseAll,
 }
 </script>
 

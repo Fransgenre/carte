@@ -71,14 +71,13 @@
     </div>
 
     <div v-else-if="field.field_type == 'EventList'">
-      <EventList :events="getSortedEventList(field.key)" />
+      <ViewerCommonEventList :events="getSortedEventList(field.key)" />
     </div>
   </Fieldset>
 </template>
 
 <script setup>
 import { purify_strict } from '~/lib/dompurify'
-import EventList from './EventList.vue'
 
 // eslint-disable-next-line vue/require-prop-types
 const props = defineProps(['fields', 'data'])
