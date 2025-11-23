@@ -127,7 +127,7 @@ const isNew = (commentId === 'new')
 
 const urlEntityId = useRoute().query.urlEntityId
 
-const entityLink = computed(() => `/admin/${familyId}/entities/${fetchedComment?.entity_id}`)
+const entityLink = computed(() => `/admin/${familyId}/entities/${fetchedComment?.entity_id ?? urlEntityId}`)
 const returnUrl = computed(() => urlEntityId == null ? `/admin/${familyId}/comments/pending` : `${entityLink.value}?comments`)
 
 const fetchedComment: AdminComment | null = isNew ? null : await state.client.getComment(commentId)
