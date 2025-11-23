@@ -71,42 +71,14 @@
     </div>
 
     <div v-else-if="field.field_type == 'EventList'">
-      <Accordion>
-        <template
-          v-for="event in getSortedEventList(field.key)"
-          :key="event"
-        >
-          <AccordionPanel
-            v-if="! isEventEmpty(event)"
-            :value="0"
-          >
-            <AccordionHeader>
-              <Tag
-                :severity="event.severity"
-                :value="event.title && event.title.length ? event.title : 'Evènement inconnu'"
-              />
-            </AccordionHeader>
-
-            <AccordionContent>
-              <p>
-                <strong>Date :</strong> {{ event.date ? event.date.toLocaleDateString() : 'Date inconnue' }}
-              </p>
-
-              <p v-if="event.details && event.details.length > 0">
-                <strong>Commentaire :</strong>
-                <br>
-                {{ event.details }}
-              </p>
-            </AccordionContent>
-          </AccordionPanel>
-        </template>
-      </Accordion>
+      <EventList :events="getSortedEventList(field.key)" />
     </div>
   </Fieldset>
 </template>
 
 <script setup>
 import { purify_strict } from '~/lib/dompurify'
+import EventList from './EventList.vue'
 
 // eslint-disable-next-line vue/require-prop-types
 const props = defineProps(['fields', 'data'])
@@ -146,10 +118,6 @@ function eventColorToSeverity(color) {
     default:
       return 'secondary'
   }
-}
-
-function isEventEmpty(eventAndMetadata) {
-  return !(eventAndMetadata.date || eventAndMetadata.title?.length || eventAndMetadata.details?.length)
 }
 
 function isUrlField(key) {
