@@ -1,0 +1,14 @@
+{
+  "name": "safehaven",
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "run-p --print-label --race backend frontend",
+    "backend": "cd backend && cargo run -- serve",
+    "frontend": "npm run --workspace frontend dev"
+  },
+  "devDependencies": {
+    "npm-run-all2": "^8.0.4"
+  }
+}

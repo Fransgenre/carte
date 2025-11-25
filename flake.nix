@@ -73,51 +73,6 @@
           popd
         '';
 
-        nginxConfigFile = pkgs.writeText "" ''
-          daemon off;
-          error_log stderr info;
-          pid /tmp/nginx.pid;
-
-          worker_processes auto;
-
-          events {
-            worker_connections 1024;
-          }
-
-          http {
-            default_type application/octet-stream;
-
-            sendfile on;
-            keepalive_timeout 65;
-
-            access_log /dev/stdout;
-
-            server {
-              listen 4000;
-
-              location / {
-                proxy_pass http://localhost:3000;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-
-                proxy_http_version 1.1;
-                proxy_set_header Upgrade $http_upgrade;
-                proxy_set_header Connection "upgrade";
-              }
-
-              location /api {
-                proxy_pass http://localhost:28669;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;
-              }
-            }
-          }
-        '';
-
         processConfigFile = let
           processes = {
             backend = {
@@ -128,9 +83,6 @@
               command = "npm run dev";
               working_dir = "./frontend";
             };
-            reverse = {
-              command = "${pkgs.nginx}/bin/nginx -c ${nginxConfigFile}";
-            };
           };
         in
           pkgs.writeText "process.yaml" (builtins.toJSON {
@@ -138,95 +90,10 @@
             processes = processes;
           });
 
-        pgHba = pkgs.writeText "pg_hba.conf" ''
-          local all all trust
-          host all all 0.0.0.0/0 trust
-          host all all ::/0 trust
-        '';
-
-        pgInitScript = pkgs.writeTextFile {
-          name = "pg_init_script";
-          text = ''
-            #!/bin/sh
-            set -e
-            # Copy the pg_hba.conf file
-            cp /wanted_pg_hba.conf /var/lib/postgresql/data/pg_hba.conf
-            # Create the database
-            psql -U postgres -c "CREATE DATABASE safehaven;"
-            psql -U postgres -d safehaven -c "CREATE EXTENSION postgis;"
-          '';
-          executable = true;
-        };
-
-        startDockerPostgresql = pkgs.writeShellScriptBin "start_docker_postgresql" ''
-          set -e
-          docker run --rm -d \
-            --name safehaven-postgres \
-            -e POSTGRES_PASSWORD=postgres \
-            -v $PWD/.pgdata:/var/lib/postgresql/data \
-            -v ${pgHba}:/wanted_pg_hba.conf \
-            -v ${pgInitScript}:/docker-entrypoint-initdb.d/init.sh \
-            -p 5432:5432 \
-            postgis/postgis:16-3.4-alpine
-        '';
-
         startDevEnv = pkgs.writeShellScriptBin "start_dev_env" ''
           set -e
           ${pkgs.process-compose}/bin/process-compose -f ${processConfigFile}
         '';
-
-        # Version when compiling the packages
-        version = builtins.readFile ./container_release;
-
-        # Backend derivation
-        backend = pkgs.rustPlatform
-          .buildRustPackage {
-          inherit version;
-
-          name = "safehaven-backend";
-          src = ./backend;
-
-          # When modifying cargo dependencies, replace the hash with pkgs.lib.fakeHash
-          # then run `nix build .#backend`. Use the hash in the error to replace the value.
-          cargoHash = "sha256-lNc5oV2ltNahj4tfc9YCP4nK2WEbm7eElsQWG3JNltY=";
-        };
-
-        # Frontend derivation
-        frontend = pkgs.buildNpmPackage {
-          inherit version;
-
-          name = "safehaven-frontend";
-          src = ./frontend;
-          nodejs = fixedNode;
-
-          # When modifying npm dependencies, replace the hash with pkgs.lib.fakeHash
-          # then run `nix build .#frontend`. Use the hash in the error to replace the value.
-          npmDepsHash = "sha256-eUppiU7GoXZW1H2Ya0xh4AOtaeGMdNtDHKm3TfO8KGg=";
-
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out/usr/share/safehaven/static
-            cp -rv dist/* $out/usr/share/safehaven/static
-            runHook postInstall
-          '';
-        };
-
-        # Docker image
-        dockerImage = pkgs.dockerTools.streamLayeredImage {
-          name = "ghcr.io/fransgenre/carte";
-          tag = version;
-          contents = [
-            backend
-            frontend
-          ];
-          config = {
-            Cmd = ["/bin/safehaven" "serve"];
-            Env = [
-              "SH__SERVE_PUBLIC_PATH=/usr/share/safehaven/static"
-            ];
-            ExposedPorts = {"28669/tcp" = {};};
-          };
-        };
       in
         with pkgs; {
           packages = {inherit backend frontend dockerImage;};
@@ -241,10 +108,9 @@
               checkProject
               regenApi
               startDevEnv
-              startDockerPostgresql
               # Backend
               sqlx-cli
-              # Front
+              # Frontend
               fixedNode
               # Nix formatting
               alejandra
