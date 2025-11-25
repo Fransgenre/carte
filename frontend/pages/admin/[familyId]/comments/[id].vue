@@ -53,17 +53,22 @@
         outlined
         @click="entitySelectVisible=true"
       />
-      <NuxtLink
+      <Button
         v-if="urlEntityId || fetchedComment?.entity_id"
-        :to="entityLink"
-        target="_blank"
+        v-slot="slotProps"
+        as-child
+        outlined
+        class="w-full"
       >
-        <Button
-          label="Aller à l'entité de rattachement"
-          outlined
-          class="w-full"
-        />
-      </NuxtLink>
+        <NuxtLink
+          :to="entityLink"
+          :class="[slotProps.class, 'p-button-label']"
+          target="_blank"
+        >
+          <AppIcon icon-name="externalLink" />
+          Aller à l'entité de rattachement
+        </NuxtLink>
+      </Button>
       <AdminInputEntitySelect
         v-model:visible="entitySelectVisible"
         title="Choix de l'entité de rattachement du commentaire"
@@ -127,7 +132,7 @@ const isNew = (commentId === 'new')
 
 const urlEntityId = useRoute().query.urlEntityId
 
-const entityLink = computed(() => `/admin/${familyId}/entities/${fetchedComment?.entity_id ?? urlEntityId}`)
+const entityLink = computed(() => `/admin/${familyId}/entities/${editedComment.value.entity_id}`)
 const returnUrl = computed(() => urlEntityId == null ? `/admin/${familyId}/comments/pending` : `${entityLink.value}?comments`)
 
 const fetchedComment: AdminComment | null = isNew ? null : await state.client.getComment(commentId)
