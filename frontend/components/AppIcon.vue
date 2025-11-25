@@ -79,6 +79,7 @@ const iconDict: Record<string, string> = {
   searchPage: mdi.mdiListBox,
   dice: mdi.mdiDiceMultiple,
   copy: mdi.mdiContentCopy,
+  externalLink: mdi.mdiOpenInNew,
 }
 </script>
 
