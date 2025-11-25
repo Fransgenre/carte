@@ -1,16 +1,26 @@
 <template>
   <div class="flex flex-col gap-1">
     <div class="self-end flex gap-1">
-      <ToggleButton
-        on-label="Tout replier"
-        off-label="Tout déplier"
-        :model-value="openComments.length !== 0"
-        @update:model-value="toggleComments"
+      <Button
+        label="Tout replier"
+        size="small"
+        outlined
+        @click="closeAllComments"
       >
-        <template #icon="{ value }">
-          <AppIcon :icon-name="value ? 'collapseAll' : 'expandAll'" />
+        <template #icon>
+          <AppIcon icon-name="collapseAll" />
         </template>
-      </ToggleButton>
+      </Button>
+      <Button
+        label="Tout déplier"
+        size="small"
+        outlined
+        @click="openAllComments"
+      >
+        <template #icon>
+          <AppIcon icon-name="expandAll" />
+        </template>
+      </Button>
     </div>
     <Accordion
       v-model:value="openComments"
@@ -62,12 +72,11 @@ function isEventEmpty(eventAndMetadata: EventProp) {
 
 const openComments = ref<number[]>([])
 
-function toggleComments() {
-  if (openComments.value.length) {
-    openComments.value = []
-  }
-  else {
-    openComments.value = displayedEvents.value.map((_, index) => index)
-  }
+function openAllComments() {
+  openComments.value = displayedEvents.value.map((_, index) => index)
+}
+
+function closeAllComments() {
+  openComments.value = []
 }
 </script>
