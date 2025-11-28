@@ -215,14 +215,12 @@ watch(() => [
   state.tablesQueryParams[table_key].tagFilteringList!.map(t => t.active),
   state.tablesQueryParams[table_key].enumsFilteringList!.map(e => e.active),
 ], () => {
-  console.log('watch triggered')
   forceFullRefresh = true
 },
 { flush: 'sync' })
 
 const currentEntitiesResults: Ref<AdminPaginatedCachedEntities | null> = ref(null)
 async function refreshTable() {
-  console.log('refreshTable called, forceFullRefresh:', forceFullRefresh)
   if (forceFullRefresh) {
     state.tablesQueryParams[table_key].currentPage = 1
     firstRow.value = 0
