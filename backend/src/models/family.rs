@@ -130,9 +130,16 @@ impl Form {
     }
 
     pub fn validate_data(&self, data: &Value, entity_category: Uuid) -> Result<(), AppError> {
+        if !data.is_object() {
+            return Err(AppError::Validation(
+                "Data must be a non-null object".to_string(),
+            ));
+        }
+
         for field in &self.fields {
             field.validate_data(data.get(&field.key), entity_category)?;
         }
+
         Ok(())
     }
 }
