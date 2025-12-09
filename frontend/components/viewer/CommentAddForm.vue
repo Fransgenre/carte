@@ -3,7 +3,7 @@
     label="Nouveau commentaire"
     rounded
     outlined
-    @click="formVisible=true"
+    @click="openForm('comment')"
   >
     <template #default>
       <div class="flex items-center">
@@ -15,17 +15,33 @@
       </div>
     </template>
   </Button>
-
+  <!-- Bouton pour ouvrir le formulaire de demande de modification -->
+  <Button
+    class="mt-2"
+    label="Demander une modification"
+    rounded
+    outlined
+    @click="openForm('edit')"
+  >
+    <AppIcon
+      class="-ml-1 mr-1"
+      icon-name="edit"
+    />
+    Demander une modification
+  </Button>
+  <!-- Formulaire d'ajout de commentaire -->
   <Dialog
     v-model:visible="formVisible"
     modal
     closable
     class="w-full max-w-[30rem]"
-    :header="props.family.comment_form.title"
+    :header="formType === 'comment'
+      ? props.family.comment_form.title
+      : 'Demander une modification'"
     :content-props="{ onClick: (event: Event) => { event.stopPropagation() } }"
   >
     <form
-      v-if="curr_page == 0"
+      v-if="formType === 'comment' && curr_page == 0"
       class="flex grow flex-col gap-4"
       @submit.prevent="curr_page+=1"
     >
@@ -51,6 +67,68 @@
           type="submit"
           outlined
           :disabled="!isCommentPageValid(0)"
+        />
+      </span>
+    </form>
+
+    <!-- Formulaire de demande de modification -->
+    <form
+      v-if="formType === 'edit'"
+      class="flex grow flex-col gap-4"
+      @submit.prevent="sendEditRequest"
+    >
+      <AdminInputTextField
+        id="request_author"
+        v-model="editRequest.author"
+        label="Auteurice"
+      />
+
+      <div class="flex flex-col gap-2">
+        <label for="request_type">Type de modification<RequiredIndicator /></label>
+        <select
+          id="request_type"
+          v-model="editRequest.type"
+          class="border p-2 rounded-md"
+          required
+        >
+          <option
+            disabled
+            value=""
+          >
+            -- Veuillez choisir --
+          </option>
+          <option value="Cessation d'activité">
+            Cessation d'activité
+          </option>
+          <option value="Déménagement">
+            Déménagement
+          </option>
+          <option value="Erreur dans les informations (horaires, coordonnées, etc.)">
+            Erreur dans les informations (horaires, coordonnées, etc.)
+          </option>
+          <option value="Autre">
+            Autre
+          </option>
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="request_text">Commentaire supplémentaire<RequiredIndicator v-if="editRequest.type === 'Autre'" /></label>
+        <ViewerRichTextEditor
+          id="request_text"
+          v-model="editRequest.text"
+          label="Votre demande"
+        />
+      </div>
+
+      <span class="flex gap-1 justify-end">
+        <!-- Bouton d'envoi -> désactivé si les champs requis ne sont pas remplis -->
+        <Button
+          label="Envoyer"
+          type="submit"
+          outlined
+          :loading="processingRequest"
+          :disabled="!editRequest.type || !isValidText(editRequest.author) || (editRequest.type === 'Autre' && !editRequest.text)"
         />
       </span>
     </form>
@@ -141,6 +219,22 @@ const commentFieldValid = ref(
     }, {} as Record<string, boolean>),
 )
 
+// Définition du type de formulaire (ajout de commentaire ou demande de modification)
+const formType = ref<'comment' | 'edit'>('comment')
+
+// Fonction d'ouverture du formulaire avec le type spécifié
+function openForm(type: 'comment' | 'edit') {
+  formType.value = type
+  formVisible.value = true
+}
+
+// Définition des références pour la demande de modification
+const editRequest = ref({
+  author: '',
+  type: '',
+  text: '',
+})
+
 function reset_refs(new_entity_id: string) {
   editedComment.value = {
     author: '',
@@ -225,7 +319,7 @@ async function realOnSave(token: string | null) {
     toast.add({
       severity: 'success',
       summary: 'Succès',
-      detail: 'Commentaire modifié avec succès',
+      detail: 'Commentaire envoyé avec succès',
       life: 3000,
     })
     reset_refs(props.entity.id)
@@ -238,6 +332,52 @@ async function realOnSave(token: string | null) {
       life: 3000,
     })
   }
+  processingRequest.value = false
+}
+
+// Fonction d'envoi de la demande de modification de l'entité
+async function sendEditRequest() {
+  processingRequest.value = true
+
+  try {
+    // Construction du message final
+    const finalMessage
+      = `Bonjour, une modification a été demandée pour cette fiche : ${editRequest.value.type}\n\n`
+        + `${editRequest.value.text || ''}`
+
+    // Envoi au backend
+    await state.client.createComment({
+      comment: {
+        author: editRequest.value.author,
+        entity_id: props.entity.id,
+        entity_category_id: props.entity.category_id,
+        text: finalMessage,
+        data: {},
+      },
+    })
+
+    // Affichage d'un message de succès
+    toast.add({
+      severity: 'success',
+      summary: 'Envoyé',
+      detail: 'Votre demande de modification a été envoyée.',
+      life: 3000,
+    })
+
+    // Reset formulaire
+    formVisible.value = false
+    editRequest.value = { author: '', type: '', text: '' }
+  }
+  // Affichage d'un message d'erreur en cas d'echec de l'envoi
+  catch {
+    toast.add({
+      severity: 'error',
+      summary: 'Erreur',
+      detail: 'Impossible d’envoyer la demande.',
+      life: 3000,
+    })
+  }
+
   processingRequest.value = false
 }
 </script>
