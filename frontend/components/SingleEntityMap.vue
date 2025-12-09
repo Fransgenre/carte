@@ -40,10 +40,23 @@
 import type Map from 'ol/Map'
 import type { Coordinate } from 'ol/coordinate'
 
+const props = defineProps<{
+  coordinates: Coordinate[]
+  borderColor?: string | undefined
+  fillColor?: string | undefined
+  iconHash?: string | null | undefined
+  zoom: number
+  locked: boolean
+}>()
+
 const mapRef = ref<{ map: Map }>()
-let map: Map | null = null
-onMounted(() => {
-  map = mapRef.value!.map
+
+onMounted(centerViewOnCoordinates)
+watch(() => props.coordinates, centerViewOnCoordinates)
+
+function centerViewOnCoordinates() {
+  const map = mapRef.value?.map
+  if (!map) return
   const view = map.getView()
 
   if (props.coordinates.length === 1) {
@@ -71,16 +84,7 @@ onMounted(() => {
 
     view.fit(extent)
   }
-})
-
-const props = defineProps<{
-  coordinates: Coordinate[]
-  borderColor?: string | undefined
-  fillColor?: string | undefined
-  iconHash?: string | null | undefined
-  zoom: number
-  locked: boolean
-}>()
+}
 </script>
 
 <style scoped>
