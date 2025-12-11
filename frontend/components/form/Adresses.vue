@@ -47,31 +47,11 @@
     </Column>
   </DataTable>
 
-  <Dialog
-    v-model:visible="displayNominatimPicker"
-    header="Sélectionner une adresse"
-    :modal="true"
-    :closable="true"
-    dismissable-mask
-    :style="{ width: '40rem' }"
-  >
-    <NominatimPicker
-      v-model="currentlyEditedLocation!.loc"
-      @select="handleAddressSelect"
-    />
-    <template #footer>
-      <Button
-        label="Annuler"
-        severity="secondary"
-        @click="displayNominatimPicker = false"
-      />
-      <Button
-        label="Sélectionner"
-        :disabled="!addressSelected"
-        @click="applyAddressChanges"
-      />
-    </template>
-  </Dialog>
+  <AddressDialog
+    v-model:visible="displayAddressDialog"
+    :address="editedLocation"
+    @select="value => onAddressSelected(value)"
+  />
 </template>
 
 <script setup lang="ts">
@@ -85,43 +65,45 @@ const emit = defineEmits(['update:locations'])
 
 const toast = useToast()
 
-const currentlyEditedLocation = ref<{ index: number, loc: UnprocessedLocation } | null>(null)
-const displayNominatimPicker = ref(false)
-const addressSelected = ref(false)
+const displayAddressDialog = ref(false)
+
+const editedIndex = ref<number | undefined>()
+const editedLocation = ref<UnprocessedLocation | undefined>()
 
 function addNewAddress() {
-  currentlyEditedLocation.value = { index: props.locations.length, loc: { plain_text: '', lat: 0, long: 0 } }
-  displayNominatimPicker.value = true
-  addressSelected.value = false
-}
-
-function removeAddress(index: number) {
-  const updatedLocations = [...props.locations]
-  updatedLocations.splice(index, 1)
-  emit('update:locations', updatedLocations)
+  editedIndex.value = undefined
+  editedLocation.value = undefined
+  displayAddressDialog.value = true
 }
 
 function editAddress(index: number) {
-  currentlyEditedLocation.value = { index: index, loc: { ...props.locations[index] } }
-  displayNominatimPicker.value = true
-  addressSelected.value = false
+  editedIndex.value = index
+  editedLocation.value = props.locations[index]
+  displayAddressDialog.value = true
 }
 
-function applyAddressChanges() {
-  if (addressSelected.value) {
-    if (props.locations.some(loc => loc.plain_text == currentlyEditedLocation.value!.loc.plain_text))
-      toast.add({ severity: 'error', summary: 'Erreur', detail: `Addresse déjà présente`, life: 3000 })
-    else {
-      const updatedLocations = [...props.locations]
-      updatedLocations[currentlyEditedLocation.value!.index] = { ...currentlyEditedLocation.value!.loc }
-      emit('update:locations', updatedLocations)
-    }
-    displayNominatimPicker.value = false
+function removeAddress(index: number) {
+  const locations = [...props.locations]
+  locations.splice(index, 1)
+  emit('update:locations', locations)
+}
+
+function onAddressSelected(address: UnprocessedLocation) {
+  const isDuplicate = props.locations.some((loc, index) => {
+    return index != editedIndex.value && loc.plain_text == address.plain_text
+  })
+  if (isDuplicate) {
+    toast.add({ severity: 'error', summary: 'Erreur', detail: `Addresse déjà présente`, life: 3000 })
+    return
   }
-}
 
-function handleAddressSelect(location: UnprocessedLocation) {
-  currentlyEditedLocation.value!.loc = location
-  addressSelected.value = true
+  const locations = [...props.locations]
+  if (editedIndex.value == undefined)
+    locations.push({ ...address })
+  else
+    locations[editedIndex.value] = { ...address }
+  emit('update:locations', locations)
+
+  displayAddressDialog.value = false
 }
 </script>
