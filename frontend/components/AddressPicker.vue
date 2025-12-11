@@ -32,7 +32,7 @@
       <CoordinatePickerMap
         class="!h-80"
         :center="transformedCenter"
-        :zoom="10"
+        :zoom="14"
         :model-value="transformedCoordinate"
         @update:model-value="value => onMapClick(value)"
       />
