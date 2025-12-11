@@ -107,7 +107,7 @@ watch([
   () => name.value,
 ], () => {
   if (coordinate.value && name.value.trim() != '')
-    emits('update:modelValue', { lat: coordinate.value[1]!, long: coordinate.value[0]!, plain_text: name.value })
+    emits('update:modelValue', { lat: coordinate.value[1]!, long: coordinate.value[0]!, plain_text: name.value.trim() })
   else
     emits('update:modelValue', undefined)
 })
