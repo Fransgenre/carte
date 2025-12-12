@@ -8,7 +8,8 @@
     "generate-api": "openapi-typescript ./openapi.json -o ./lib/api.d.ts",
     "build": "npm run generate-api && MINIMAL=1 nuxt generate",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "typecheck": "nuxt typecheck"
   },
   "dependencies": {
     "@hcaptcha/vue3-hcaptcha": "^1.3.0",
