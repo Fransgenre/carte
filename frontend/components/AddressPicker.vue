@@ -36,7 +36,7 @@
         :model-value="transformedCoordinate"
         @update:model-value="value => onMapClick(value)"
       />
-      <small class="text-secondary text-center block mt-1">Cliquer sur la carte pour déplacer le point au bon endroit si nécessaire.</small>
+      <small class="text-secondary text-center block mt-1">Cliquer sur la carte pour déplacer le point si besoin.</small>
     </div>
 
     <div v-if="coordinate">
