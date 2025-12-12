@@ -30,7 +30,7 @@
 
     <div v-if="coordinate">
       <CoordinatePickerMap
-        class="!h-80"
+        class="!h-[18rem]"
         :center="transformedCenter"
         :zoom="14"
         :model-value="transformedCoordinate"
