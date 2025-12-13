@@ -28,7 +28,7 @@
     >
       <template
         v-for="(event, index) in displayedEvents"
-        :key="event"
+        :key="index"
       >
         <AccordionPanel
           :value="index"
