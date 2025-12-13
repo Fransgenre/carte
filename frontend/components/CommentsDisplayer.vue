@@ -32,7 +32,6 @@
           class="rich-text-content"
           v-html="purify_strict(comment.text)"
         />
-
         <ViewerCommonFormFields
           :fields="props.commentFormFields
             .filter(field => field.categories == null || field.categories.includes(props.entityCategoryId))"
