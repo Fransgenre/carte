@@ -57,6 +57,7 @@
               npm ci
               npm run generate-api
               npm run lint
+              npm run typecheck
             echo "::endgroup::"
           popd
         '';
