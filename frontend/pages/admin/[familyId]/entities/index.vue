@@ -39,6 +39,7 @@
     </span>
 
     <DataTable
+      :key="tableKeyRefresh"
       :rows="state.tablesQueryParams[table_key].pageSize"
       :first="firstRow"
       lazy
@@ -148,6 +149,7 @@ import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { AdminPaginatedCachedEntities } from '~/lib'
 import state from '~/lib/admin-state'
 
+const tableKeyRefresh = ref(0)
 const max_tags_displayed = 2
 const familyId = useRoute().params.familyId as string
 if (state.families == null) {
@@ -207,18 +209,22 @@ else {
 
 let forceFullRefresh = false
 
-watch([
-  ...state.tablesQueryParams[table_key].categoryFilteringList!,
-  ...state.tablesQueryParams[table_key].tagFilteringList!,
+watch(() => [
   state.tablesQueryParams[table_key].search_query,
+  state.tablesQueryParams[table_key].categoryFilteringList!.map(c => c.active),
+  state.tablesQueryParams[table_key].tagFilteringList!.map(t => t.active),
+  state.tablesQueryParams[table_key].enumsFilteringList!.map(e => e.active),
 ], () => {
   forceFullRefresh = true
-})
+},
+{ flush: 'sync' })
 
 const currentEntitiesResults: Ref<AdminPaginatedCachedEntities | null> = ref(null)
 async function refreshTable() {
   if (forceFullRefresh) {
     state.tablesQueryParams[table_key].currentPage = 1
+    firstRow.value = 0
+    tableKeyRefresh.value++
     forceFullRefresh = false
   }
 
