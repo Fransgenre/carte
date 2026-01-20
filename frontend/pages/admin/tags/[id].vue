@@ -114,7 +114,7 @@ function isDisabled() {
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  isNew ? `Création d'un nouveau tag` : `Édition du jeton ${fetchedTag!.title}`,
+  isNew ? `Création d'un nouveau tag` : `Édition du tag ${fetchedTag!.title}`,
   'tag',
   [],
   isNew
@@ -123,8 +123,8 @@ initAdminLayout(
         { label: `Création d'un nouveau tag`, url: `/admin/tags/new` },
       ]
     : [
-        { label: 'Jetons d\'accès', url: '/admin/tags' },
-        { label: `Édition du jeton ${fetchedTag!.title}`, url: `/admin/tags/${tagId}` },
+        { label: 'Tags', url: '/admin/tags' },
+        { label: `Édition du tag ${fetchedTag!.title}`, url: `/admin/tags/${tagId}` },
       ],
 )
 
