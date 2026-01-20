@@ -138,7 +138,7 @@ async function onSave() {
     }
 
     if (isNew) {
-      state.client.createUser(newUser)
+      await state.client.createUser(newUser)
       navigateTo('/admin/users')
       toast.add({
         severity: 'success',
