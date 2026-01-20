@@ -136,7 +136,7 @@ async function onSave() {
   processingRequest.value = true
   try {
     const { id } = await state.client.createEntity(editedEntity.value)
-    navigateTo(`/admin/${familyId}/${entitiesUrl}/${id}`)
+    navigateTo(`/admin/${familyId}/entities/${id}`)
     toast.add({ severity: 'success', summary: 'Succès', detail: 'Entité créée avec succès', life: 3000 })
   }
   catch {
