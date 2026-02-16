@@ -4,7 +4,10 @@
     :key="field.key"
     :legend="field.display_name"
   >
-    <div v-if="(field.field_type == 'SingleLineText' || field.field_type == 'MultiLineText')">
+    <div
+      v-if="(field.field_type == 'SingleLineText' || field.field_type == 'MultiLineText')"
+      class="text-field"
+    >
       <div v-if="isUrlField(field.key)">
         <a
           :href="getKeyValue(field.key)"
@@ -175,3 +178,9 @@ function hasKey(key) {
     && props.data[key] !== null
 }
 </script>
+
+<style scoped>
+  .text-field p {
+    white-space: pre-wrap;
+  }
+</style>
