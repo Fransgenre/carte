@@ -29,13 +29,14 @@
     </div>
 
     <div v-if="coordinate">
-      <CoordinatePickerMap
-        class="!h-[18rem]"
-        :center="transformedCenter"
-        :zoom="14"
-        :model-value="transformedCoordinate"
-        @update:model-value="value => onMapClick(value)"
-      />
+      <div class="map_wrapper">
+        <CoordinatePickerMap
+          :center="transformedCenter"
+          :zoom="14"
+          :model-value="transformedCoordinate"
+          @update:model-value="value => onMapClick(value)"
+        />
+      </div>
       <Message
         severity="info"
         class="mt-2"
@@ -120,3 +121,19 @@ watch([
     emits('update:modelValue', undefined)
 })
 </script>
+
+<style scoped>
+.map_wrapper{ height: 14rem; }
+@media screen and (min-height: 745px){
+  .map_wrapper{ height: 15rem; }
+}
+@media screen and (min-height: 764px){
+  .map_wrapper{ height: 16rem; }
+}
+@media screen and (min-height: 780px){
+  .map_wrapper{ height: 17rem; }
+}
+@media screen and (min-height: 800px){
+  .map_wrapper{ height: 18rem; }
+}
+</style>
