@@ -21,5 +21,5 @@ et ce projet utilise le [Versionnage Sémantique](https://semver.org/spec/v2.0.0
 
 ### Corrigé
 
-- Apporte des corrections mineures à l'interface d'admin, notamment, corrige des redirections erronées
-- Affiche les retours à la ligne dans les champs multi-ligne
+- Apporte des corrections mineures à l'interface d'admin, notamment, corrige des redirections erronées ([#85](https://github.com/Fransgenre/carte/pull/85), [#86](https://github.com/Fransgenre/carte/pull/86) et [#87](https://github.com/Fransgenre/carte/pull/87))
+- Affiche les retours à la ligne dans les champs multi-ligne ([#91](https://github.com/Fransgenre/carte/pull/91))
