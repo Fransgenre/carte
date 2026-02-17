@@ -21,4 +21,5 @@ et ce projet utilise le [Versionnage Sémantique](https://semver.org/spec/v2.0.0
 
 ### Corrigé
 
-- …
+- Apporte des corrections mineures à l'interface d'admin, notamment, corrige des redirections erronées
+- Affiche les retours à la ligne dans les champs multi-ligne
