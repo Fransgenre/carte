@@ -42,6 +42,21 @@ export interface Result {
   boundingbox?: ResultBoundingBox
 }
 
+function alterFullText(fullText: string): string {
+  return fullText.split(', ').map(alterText).join(', ')
+}
+
+function alterText(text: string): string {
+  // Perform text replacements on a given part of the result text
+
+  // France métropolitaine is from colonial origin
+  if (/^France m[ée]tropolitaine$/i.test(text)) return 'France hexagonale'
+
+  // Add more replacements here...
+
+  return text
+}
+
 function fullTextToTitles(fullText: string): { title: string, subtitle: string } {
   const splitted = fullText.split(', ')
 
@@ -94,10 +109,11 @@ export async function freeFormSearch(query: string, take: number = 5): Promise<R
     .sort((a, b) => b.importance - a.importance)
     // Map the results to a more simple object for the frontend
     .map((result: NominatimResponse) => {
-      const titles = fullTextToTitles(result.display_name)
+      const fullText = alterFullText(result.display_name)
+      const titles = fullTextToTitles(fullText)
       const boundingbox = computeResultBoundingBox(result.boundingbox)
       return {
-        display_name: result.display_name,
+        display_name: fullText,
         ...titles,
         id: result.osm_id,
         lat: parseFloat(result.lat),
