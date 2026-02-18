@@ -60,7 +60,9 @@
 <script setup lang="ts">
 import type Map from 'ol/Map'
 import type { Coordinate } from 'ol/coordinate'
+import type { Extent } from 'ol/extent'
 import { transform } from 'ol/proj.js'
+import { getCenter as getExtentCenter } from 'ol/extent'
 import type { AppError, DisplayableCachedEntity, DisplayableCluster } from '~/lib'
 import state from '~/lib/viewer-state'
 
@@ -103,6 +105,8 @@ defineExpose({
   forceRefresh,
   goToGpsCoordinates,
   goToWebMercatorCoordinates,
+  goToGpsExtent,
+  goToWebMercatorExtent,
 })
 
 const zoom = props.zoom
@@ -174,6 +178,38 @@ function goToWebMercatorCoordinates(coordinates: Coordinate, zoom: number) {
     center: coordinates,
     zoom: zoom,
     duration: 1500,
+  })
+}
+
+function goToGpsExtent(extent: Extent, maxZoom?: number) {
+  const transformedMinCoordinate = transform([extent[0], extent[1]] as Coordinate, 'EPSG:4326', 'EPSG:3857')
+  const transformedMaxCoordinate = transform([extent[2], extent[3]] as Coordinate, 'EPSG:4326', 'EPSG:3857')
+  const transformedExtent: Extent = [
+    transformedMinCoordinate[0],
+    transformedMinCoordinate[1],
+    transformedMaxCoordinate[0],
+    transformedMaxCoordinate[1],
+  ]
+  return goToWebMercatorExtent(transformedExtent, maxZoom)
+}
+
+function goToWebMercatorExtent(extent: Extent, maxZoom?: number) {
+  const coordinates = getExtentCenter(extent)
+
+  const view = map!.getView()
+  if (maxZoom == undefined) maxZoom = view.getMaxZoom()
+  let zoom = view.getZoomForResolution(
+    view.getResolutionForExtent(extent),
+  )
+  if (zoom == undefined || zoom > maxZoom) zoom = maxZoom
+  zoom = Math.floor(zoom)
+  if (zoom < view.getMinZoom()) zoom = view.getMinZoom()
+  if (zoom > view.getMaxZoom()) zoom = view.getMaxZoom()
+
+  view.animate({
+    center: coordinates,
+    duration: 1500,
+    zoom,
   })
 }
 

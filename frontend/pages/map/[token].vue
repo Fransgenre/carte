@@ -5,7 +5,7 @@
       :show-map-button="false"
       :show-search-button="true"
       @filters-changed="refreshMap"
-      @location-chosen="goToGpsCoordinates"
+      @location-chosen="goToGpsLocation"
       @entity-chosen="goToEntity"
     />
     <div
@@ -70,6 +70,7 @@ import type { Coordinate } from 'ol/coordinate'
 import type { DisplayableCachedEntity, ViewerSearchedCachedEntity } from '~/lib'
 import state from '~/lib/viewer-state'
 import ViewerMap from '~/components/viewer/Map.vue'
+import type { Extent } from 'ol/extent'
 
 const toast = useToast()
 
@@ -180,6 +181,14 @@ function fitContainer() {
     return { height, top, position: 'absolute' }
   }
   return {} // Return default/fallback styles if needed
+}
+
+function goToGpsLocation(coordinates: Coordinate, extent?: Extent) {
+  return extent ? goToGpsExtent(extent) : goToGpsCoordinates(coordinates)
+}
+
+function goToGpsExtent(extent: Extent, maxZoom = 13) {
+  mapRef.value?.goToGpsExtent(extent, maxZoom)
 }
 
 function goToGpsCoordinates(coordinates: Coordinate, zoom = 13) {

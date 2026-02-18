@@ -392,6 +392,7 @@
 
 <script setup lang="ts">
 import type { Coordinate } from 'ol/coordinate'
+import type { Extent } from 'ol/extent'
 import type { PageState } from 'primevue/paginator'
 import state from '~/lib/viewer-state'
 import defaultLogo from '~/assets/logo_square.svg'
@@ -422,7 +423,7 @@ const entityAddForm = useTemplateRef('entityAddForm')
 
 const emit = defineEmits<{
   filtersChanged: []
-  locationChosen: [Coordinate]
+  locationChosen: [Coordinate, Extent?]
   entityChosen: [ViewerSearchedCachedEntity]
 }>()
 
@@ -516,7 +517,16 @@ function locationChosen(result: NominatimResult) {
     result.lon,
     result.lat,
   ]
-  emit('locationChosen', gpsCoordinates)
+  let extent: Extent | undefined
+  if (result.boundingbox) { // [min lat, min lon, max lat, max lon]
+    extent = [
+      result.boundingbox[2], // minx = min lon
+      result.boundingbox[0], // miny = min lat
+      result.boundingbox[3], // maxx = max lon
+      result.boundingbox[1], // maxy = max lat
+    ]
+  }
+  emit('locationChosen', gpsCoordinates, extent)
 }
 
 function entityChosen(result: ViewerSearchedCachedEntity) {
