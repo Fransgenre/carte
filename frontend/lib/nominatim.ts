@@ -30,6 +30,8 @@ interface NominatimResponse {
   type: string
 }
 
+export type ResultBoundingBox = [number, number, number, number] // [min lat, min lon, max lat, max lon]
+
 export interface Result {
   id: string
   display_name: string
@@ -37,6 +39,7 @@ export interface Result {
   subtitle: string
   lat: number
   lon: number
+  boundingbox?: ResultBoundingBox
 }
 
 function fullTextToTitles(fullText: string): { title: string, subtitle: string } {
@@ -68,6 +71,19 @@ function fullTextToTitles(fullText: string): { title: string, subtitle: string }
   }
 }
 
+function computeResultBoundingBox(boundingbox?: string[]): ResultBoundingBox | undefined {
+  if (!boundingbox) return undefined
+  if (boundingbox.length != 4) return undefined
+  const result: ResultBoundingBox = [
+    parseFloat(boundingbox[0]),
+    parseFloat(boundingbox[1]),
+    parseFloat(boundingbox[2]),
+    parseFloat(boundingbox[3]),
+  ]
+  if (result.some(n => !Number.isFinite(n))) return undefined
+  return result
+}
+
 export async function freeFormSearch(query: string, take: number = 5): Promise<Result[]> {
   const queryEncoded = encodeURIComponent(query)
   const request = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${queryEncoded}`)
@@ -79,12 +95,14 @@ export async function freeFormSearch(query: string, take: number = 5): Promise<R
     // Map the results to a more simple object for the frontend
     .map((result: NominatimResponse) => {
       const titles = fullTextToTitles(result.display_name)
+      const boundingbox = computeResultBoundingBox(result.boundingbox)
       return {
         display_name: result.display_name,
         ...titles,
         id: result.osm_id,
         lat: parseFloat(result.lat),
         lon: parseFloat(result.lon),
+        boundingbox,
       }
     })
     // deduplicate results using titles and subtitles as reference
