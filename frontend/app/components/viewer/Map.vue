@@ -185,10 +185,10 @@ function goToGpsExtent(extent: Extent, maxZoom?: number) {
   const transformedMinCoordinate = transform([extent[0], extent[1]] as Coordinate, 'EPSG:4326', 'EPSG:3857')
   const transformedMaxCoordinate = transform([extent[2], extent[3]] as Coordinate, 'EPSG:4326', 'EPSG:3857')
   const transformedExtent: Extent = [
-    transformedMinCoordinate[0],
-    transformedMinCoordinate[1],
-    transformedMaxCoordinate[0],
-    transformedMaxCoordinate[1],
+    transformedMinCoordinate[0]!,
+    transformedMinCoordinate[1]!,
+    transformedMaxCoordinate[0]!,
+    transformedMaxCoordinate[1]!,
   ]
   return goToWebMercatorExtent(transformedExtent, maxZoom)
 }

@@ -84,7 +84,7 @@ const transformedCoordinate = computed(() => {
   if (!coordinate.value) return undefined
 
   return transform([
-    coordinate.value[0], coordinate.value[1],
+    coordinate.value[0]!, coordinate.value[1]!,
   ], 'EPSG:4326', 'EPSG:3857')
 })
 
