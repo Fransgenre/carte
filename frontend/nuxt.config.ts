@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
   ],
-  ssr: false,
   devtools: { enabled: true },
   app: {
     head: {
@@ -23,12 +22,11 @@ export default defineNuxtConfig({
     '~/assets/main.css',
     '~/assets/richtext.css',
   ],
-  compatibilityDate: '2024-09-13',
-  nitro: {
-    devProxy: {
-      '/api': 'http://localhost:28669/api',
-    },
+  routeRules: {
+    '/**': { ssr: false },
+    '/api/**': { ssr: true },
   },
+  compatibilityDate: '2024-09-13',
   vite: {
     resolve: {
       alias: {
