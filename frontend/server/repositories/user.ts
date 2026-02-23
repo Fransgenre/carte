@@ -1,8 +1,9 @@
 import * as z from 'zod'
 import type { IDbLike } from '../lib/server-state'
-import type { AuthenticableUser, NewOrUpdatedUser, User } from '../models/user'
-import { AuthenticableUserParser, UserParser } from '../models/user'
+import type { AuthenticableUser, NewOrUpdatedUser, User } from '../../shared/models/'
+import { AuthenticableUserSchema, UserSchema } from '../../shared/models/'
 import { hash_password, verify_password } from '../lib/scrypt'
+import { ValidationAppError } from '../lib/errors'
 
 export default class UserRepository {
   db: IDbLike
@@ -19,12 +20,12 @@ export default class UserRepository {
   }
 
   async create_user(user: NewOrUpdatedUser): Promise<User> {
-    if (!user.name.length) throw 'Name cannot be empty'
+    if (!user.name.length) throw new ValidationAppError('Name cannot be empty')
     const new_password = user.password
-    if (new_password == undefined) throw 'Password for new users is required'
-    if (!new_password.length) throw 'Password cannot be empty'
+    if (new_password == undefined) throw new ValidationAppError('Password for new users is required')
+    if (!new_password.length) throw new ValidationAppError('Password cannot be empty')
     const password_hash = await hash_password(new_password)
-    if (password_hash == undefined) throw 'Error hashing password'
+    if (password_hash == undefined) throw new ValidationAppError('Error hashing password')
 
     const res = await this.db.txIf(async (t) => {
       return await t.one<unknown>(`
@@ -38,16 +39,16 @@ export default class UserRepository {
       `, [user.name, password_hash, user.is_admin])
     })
 
-    return UserParser.parse(res)
+    return UserSchema.parse(res)
   }
 
   async update_user(given_id: string, updated_user: NewOrUpdatedUser): Promise<User> {
-    if (!updated_user.name.length) throw 'Name cannot be empty'
+    if (!updated_user.name.length) throw new ValidationAppError('Name cannot be empty')
     let res: unknown
 
     if (updated_user.password != undefined && updated_user.password.length) {
       const password_hash = await hash_password(updated_user.password)
-      if (password_hash == undefined) throw 'Error hashing password'
+      if (password_hash == undefined) throw new ValidationAppError('Error hashing password')
       res = await this.db.txIf(async (t) => {
         return await t.one<unknown>(`
           UPDATE users
@@ -77,19 +78,19 @@ export default class UserRepository {
       })
     }
 
-    return UserParser.parse(res)
+    return UserSchema.parse(res)
   }
 
   async authenticate(given_name: string, given_password: string): Promise<User | undefined> {
-    if (!given_name.length) throw 'Name cannot be empty'
-    if (!given_password.length) throw 'Password cannot be empty'
+    if (!given_name.length) throw new ValidationAppError('Name cannot be empty')
+    if (!given_password.length) throw new ValidationAppError('Password cannot be empty')
 
     let user_result: AuthenticableUser | undefined
     try {
       const res = await this.db.oneOrNone<unknown>(`
         SELECT id, name, password, is_admin, last_login FROM users WHERE name = $1
       `, given_name)
-      user_result = res != undefined ? AuthenticableUserParser.parse(res) : undefined
+      user_result = res != undefined ? AuthenticableUserSchema.parse(res) : undefined
     }
     catch (ex) {
       console.error(ex)
@@ -108,12 +109,12 @@ export default class UserRepository {
       await t.none('UPDATE users SET last_login = NOW() WHERE id = $1', user_result.id)
     })
 
-    return UserParser.parse(user_result)
+    return UserSchema.parse(user_result)
   }
 
   async list_users(): Promise<User[]> {
     const res = await this.db.any<unknown>('SELECT id, name, is_admin, last_login FROM users')
-    return res.map(r => UserParser.parse(r))
+    return res.map(r => UserSchema.parse(r))
   }
 
   async delete_user(given_id: string) {
@@ -124,6 +125,6 @@ export default class UserRepository {
 
   async get_user(given_id: string): Promise<User> {
     const res = await this.db.one<unknown>('SELECT id, name, is_admin, last_login FROM users WHERE id = $1', given_id)
-    return UserParser.parse(res)
+    return UserSchema.parse(res)
   }
 }

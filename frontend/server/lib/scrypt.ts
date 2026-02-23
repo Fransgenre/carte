@@ -54,8 +54,8 @@ function decodePHCScrypt(text: string): ParsedPHCScrypt | undefined {
 
     return { ln, r, p, salt, hash }
   }
-  catch (ex) {
-    console.warn(`Failed to parse phc-scrypt ${text} :`, ex)
+  catch {
+    return undefined
   }
 }
 
@@ -125,8 +125,7 @@ export async function hash_password(password: string, salt?: Buffer, phc?: Pick<
       hash: unpad(hash.toString('base64')),
     })
   }
-  catch (ex) {
-    console.warn('Exception while hashing password : ', ex)
+  catch {
     return undefined
   }
 }
@@ -142,8 +141,7 @@ export async function verify_password(provided_password: string, password_hash: 
 
     return provided_hash == password_hash
   }
-  catch (ex) {
-    console.warn('Exception while verifying password : ', ex)
+  catch {
     return false
   }
 }

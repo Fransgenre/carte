@@ -1,5 +1,5 @@
-import type { ConfigurationOption, SafeHavenOptions } from '../models/options'
-import { CartographyClusterConfig, CartographyClusterConfigParser, CartographyInitConfig, CartographyInitConfigParser, CartographySourceConfig, CartographySourceConfigParser, ConfigurationOptionParser, GeneralOptions, GeneralOptionsParser, InitPopupOptions, InitPopupOptionsParser, SafeHavenOptionsParser, SafeModeConfig, SafeModeConfigParser } from '../models/options'
+import type { GeneralOptions, SafeModeConfig, InitPopupOptions, CartographySourceConfig, CartographyInitConfig, ConfigurationOption, SafeHavenOptions, CartographyClusterConfig } from '../../shared/models/'
+import { CartographyClusterConfigSchema, CartographyClusterConfigWithDefaultsSchema, CartographyInitConfigSchema, CartographyInitConfigWithDefaultsSchema, CartographySourceConfigSchema, CartographySourceConfigWithDefaultsSchema, ConfigurationOptionParser, GeneralOptionsSchema, GeneralOptionsWithDefaultsSchema, InitPopupOptionsSchema, InitPopupOptionsWithDefaultsSchema, SafeHavenOptionsWithDefaultsSchema, SafeModeConfigSchema, SafeModeConfigWithDefaultsSchema } from '../../shared/models/'
 import type { IDbLike } from '../lib/server-state'
 import type { ZodSafeParseResult } from 'zod'
 
@@ -40,44 +40,44 @@ export default class OptionsRepository {
       const repo = new OptionsRepository(t)
       let parsed: ZodSafeParseResult<ConfigurationOption> | undefined
 
-      parsed = GeneralOptionsParser.safeParse(
-        await repo.fetch_option(GeneralOptions.meta()!.option_name as string),
+      parsed = GeneralOptionsWithDefaultsSchema.safeParse(
+        await repo.fetch_option(GeneralOptionsSchema.meta()!.option_name as string),
       )
       if (parsed.success) general = parsed.data as GeneralOptions
       else console.warn('Failed loading general options, using defaults')
 
-      parsed = InitPopupOptionsParser.safeParse(
-        await repo.fetch_option(InitPopupOptions.meta()!.option_name as string),
+      parsed = InitPopupOptionsWithDefaultsSchema.safeParse(
+        await repo.fetch_option(InitPopupOptionsSchema.meta()!.option_name as string),
       )
       if (parsed.success) init_popup = parsed.data as InitPopupOptions
       else console.warn('Failed loading init_popup options, using defaults')
 
-      parsed = SafeModeConfigParser.safeParse(
-        await repo.fetch_option(SafeModeConfig.meta()!.option_name as string),
+      parsed = SafeModeConfigWithDefaultsSchema.safeParse(
+        await repo.fetch_option(SafeModeConfigSchema.meta()!.option_name as string),
       )
       if (parsed.success) safe_mode = parsed.data as SafeModeConfig
       else console.warn('Failed loading safe_mode options, using defaults')
 
-      parsed = CartographyInitConfigParser.safeParse(
-        await repo.fetch_option(CartographyInitConfig.meta()!.option_name as string),
+      parsed = CartographyInitConfigWithDefaultsSchema.safeParse(
+        await repo.fetch_option(CartographyInitConfigSchema.meta()!.option_name as string),
       )
       if (parsed.success) cartography_init = parsed.data as CartographyInitConfig
       else console.warn('Failed loading cartography_init options, using defaults')
 
-      parsed = CartographySourceConfigParser.safeParse(
-        await repo.fetch_option(CartographySourceConfig.meta()!.option_name as string),
+      parsed = CartographySourceConfigWithDefaultsSchema.safeParse(
+        await repo.fetch_option(CartographySourceConfigSchema.meta()!.option_name as string),
       )
       if (parsed.success) cartography_source = parsed.data as CartographySourceConfig
       else console.warn('Failed loading cartography_source options, using defaults')
 
-      parsed = CartographyClusterConfigParser.safeParse(
-        await repo.fetch_option(CartographyClusterConfig.meta()!.option_name as string),
+      parsed = CartographyClusterConfigWithDefaultsSchema.safeParse(
+        await repo.fetch_option(CartographyClusterConfigSchema.meta()!.option_name as string),
       )
       if (parsed.success) cartography_cluster = parsed.data as CartographyClusterConfig
       else console.warn('Failed loading cartography_cluster options, using defaults')
     })
 
-    return SafeHavenOptionsParser.parse({
+    return SafeHavenOptionsWithDefaultsSchema.parse({
       general, init_popup, safe_mode, cartography_init, cartography_source, cartography_cluster,
     })
   }
