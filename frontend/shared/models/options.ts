@@ -2,10 +2,10 @@ import * as z from 'zod'
 
 export const GeneralOptionsSchema = z.object({
   title: z.string(),
-  subtitle: z.string(),
-  logo_url: z.string().nullish(),
-  information: z.string().nullish(),
-  redirect_url: z.string().nullish(),
+  subtitle: z.string().nullable(),
+  logo_url: z.string().nullable(),
+  information: z.string().nullable(),
+  redirect_url: z.string().nullable(),
 }).meta({
   option_name: 'general',
 })
@@ -13,13 +13,16 @@ export const GeneralOptionsSchema = z.object({
 export type GeneralOptions = z.infer<typeof GeneralOptionsSchema>
 
 export const GeneralOptionsWithDefaultsSchema = GeneralOptionsSchema.extend({
-  title: GeneralOptionsSchema.shape.subtitle.default('SafeHaven'),
+  title: GeneralOptionsSchema.shape.title.default('SafeHaven'),
   subtitle: GeneralOptionsSchema.shape.subtitle.default('Carte associative'),
+  logo_url: GeneralOptionsSchema.shape.logo_url.default(null),
+  information: GeneralOptionsSchema.shape.information.default(null),
+  redirect_url: GeneralOptionsSchema.shape.redirect_url.default(null),
 })
 
 export const InitPopupOptionsSchema = z.object({
-  popup: z.string().nullish(),
-  popup_check_text: z.string().nullish(),
+  popup: z.string().nullable(),
+  popup_check_text: z.string().nullable(),
 }).meta({
   option_name: 'init_popup',
 })
@@ -27,12 +30,14 @@ export const InitPopupOptionsSchema = z.object({
 export type InitPopupOptions = z.infer<typeof InitPopupOptionsSchema>
 
 export const InitPopupOptionsWithDefaultsSchema = InitPopupOptionsSchema.extend({
+  popup: InitPopupOptionsSchema.shape.popup.default(null),
+  popup_check_text: InitPopupOptionsSchema.shape.popup_check_text.default(null),
 })
 
 export const SafeModeConfigSchema = z.object({
   enabled: z.boolean(),
-  hcaptcha_secret: z.string().nullish(),
-  hcaptcha_sitekey: z.string().nullish(),
+  hcaptcha_secret: z.string(),
+  hcaptcha_sitekey: z.string(),
 }).meta({
   option_name: 'safe_mode',
 })
@@ -90,9 +95,9 @@ export const CartographyClusterConfigSchema = z.object({
 export type CartographyClusterConfig = z.infer<typeof CartographyClusterConfigSchema>
 
 export const CartographyClusterConfigWithDefaultsSchema = CartographyClusterConfigSchema.extend({
-  minimal_cluster_size: CartographyClusterConfigSchema.shape.minimal_cluster_size.default(1.65),
+  declustering_speed: CartographyClusterConfigSchema.shape.declustering_speed.default(1.65),
   characteristic_distance: CartographyClusterConfigSchema.shape.characteristic_distance.default(5.0),
-  declustering_speed: CartographyClusterConfigSchema.shape.declustering_speed.default(6),
+  minimal_cluster_size: CartographyClusterConfigSchema.shape.minimal_cluster_size.default(6),
 })
 
 export const SafeHavenOptionsSchema = z.object({

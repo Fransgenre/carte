@@ -1,4 +1,4 @@
-import { defineEventHandlerWithAppError, NotFoundAppError } from '../lib/errors'
+import { defineEventHandlerWithAppError, NotFoundAppError } from '~~/server/lib/errors'
 
 /**
  * Default API route handler, which will be called for any unhandled API route

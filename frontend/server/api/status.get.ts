@@ -1,14 +1,15 @@
-import state from '../lib/server-state'
-import { defineEventHandlerWithAppError } from '../lib/errors'
-import type { StatusResponseJson, StatusResponse } from '../../shared/responses'
-import { StatusResponseJsonCodec } from '../../shared/responses'
+import state from '~~/server/lib/server-state'
+import { defineEventHandlerWithAppError } from '~~/server/lib/errors'
+import type { GetStatusResponseJson, GetStatusResponse } from '~~/shared/responses'
+import { GetStatusResponseJsonCodec } from '~~/shared/responses'
 
 /**
  * The /api/status GET endpoint, which returns the public configuration of the app
  */
-export default defineEventHandlerWithAppError((): StatusResponseJson => {
-  const { options } = state
-  const response: StatusResponse = {
+export default defineEventHandlerWithAppError((): GetStatusResponseJson => {
+  const options = structuredClone(state.options)
+
+  const response: GetStatusResponse = {
     status: 'ok',
     general: options.general,
     init_popup: options.init_popup,
@@ -19,5 +20,5 @@ export default defineEventHandlerWithAppError((): StatusResponseJson => {
       hcaptcha_sitekey: options.safe_mode.hcaptcha_sitekey,
     },
   }
-  return StatusResponseJsonCodec.encode(response)
+  return GetStatusResponseJsonCodec.encode(response)
 })

@@ -1,7 +1,8 @@
 import type { ITask } from 'pg-promise'
 import type pgPromise from 'pg-promise'
-import type { SafeHavenConfig } from '../models/'
-import type { SafeHavenOptions } from '../../shared/models/'
+import jsonwebtoken from 'jsonwebtoken'
+import type { SafeHavenConfig } from '~~/server/models/'
+import type { IconCache, SafeHavenOptions } from '~~/shared/models/'
 
 export type IPgp = ReturnType<typeof pgPromise>
 export type IDb = ReturnType<IPgp>
@@ -51,6 +52,17 @@ export class ServerState {
     return this.#options
   }
 
+  #icon_cache: IconCache | undefined
+
+  set icon_cache(icon_cache: IconCache) {
+    this.#icon_cache = icon_cache
+  }
+
+  get icon_cache(): IconCache {
+    if (!this.#icon_cache) this.icon_cache = {}
+    return this.#icon_cache!
+  }
+
   #initialized: boolean = false
 
   set initialized(initialized: boolean) {
@@ -60,6 +72,10 @@ export class ServerState {
 
   get initialized() {
     return this.#initialized
+  }
+
+  generate_token(claims: object): string {
+    return jsonwebtoken.sign(claims, this.config.token_secret)
   }
 }
 

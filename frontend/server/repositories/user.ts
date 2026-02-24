@@ -81,7 +81,7 @@ export default class UserRepository {
     return UserSchema.parse(res)
   }
 
-  async authenticate(given_name: string, given_password: string): Promise<User | undefined> {
+  async authenticate_user(given_name: string, given_password: string): Promise<User | undefined> {
     if (!given_name.length) throw new ValidationAppError('Name cannot be empty')
     if (!given_password.length) throw new ValidationAppError('Password cannot be empty')
 

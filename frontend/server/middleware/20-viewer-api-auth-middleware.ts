@@ -1,6 +1,6 @@
-import { defineEventHandlerWithAppError } from '../lib/errors'
+import { defineEventHandlerWithAppErrorAsync } from '../lib/errors'
 
-export default defineEventHandlerWithAppError((event) => {
+export default defineEventHandlerWithAppErrorAsync((event) => {
   if (!event.path.startsWith('/api/map/')) return
 
   // TODO

@@ -1,2 +1,5 @@
+export { default as IconRepository } from './icon'
 export { default as OptionsRepository } from './options'
+export { default as StatisticsRepository } from './statistics'
+export { default as TagRepository } from './tag'
 export { default as UserRepository } from './user'

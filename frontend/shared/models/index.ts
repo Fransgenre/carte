@@ -1,3 +1,8 @@
+export type { Icon } from './icon'
+export { IconSchema } from './icon'
+export type { IconCache } from './icon'
+export { IconCacheSchema } from './icon'
+
 export type { GeneralOptions } from './options'
 export { GeneralOptionsSchema, GeneralOptionsWithDefaultsSchema } from './options'
 export type { InitPopupOptions } from './options'
@@ -15,9 +20,21 @@ export { SafeHavenOptionsSchema, SafeHavenOptionsWithDefaultsSchema } from './op
 export type { ConfigurationOption } from './options'
 export { ConfigurationOptionParser } from './options'
 
-export type { NewOrUpdatedUser } from './user'
-export { NewOrUpdatedUserSchema } from './user'
+export type { CountResult } from './statistics'
+export { CountResultSchema } from './statistics'
+export type { HomePageStats } from './statistics'
+export { HomePageStatsSchema } from './statistics'
+
+export type { Tag } from './tag'
+export { TagSchema } from './tag'
+export type { NewOrUpdateTag } from './tag'
+export { NewOrUpdateTagSchema } from './tag'
+
 export type { User } from './user'
 export { UserSchema } from './user'
+export type { NewOrUpdatedUser } from './user'
+export { NewOrUpdatedUserSchema } from './user'
 export type { AuthenticableUser } from './user'
 export { AuthenticableUserSchema } from './user'
+export type { AdminUserIdentity } from './user'
+export { AdminUserIdentitySchema } from './user'

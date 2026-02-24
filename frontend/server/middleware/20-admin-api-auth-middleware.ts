@@ -1,10 +1,12 @@
-import { defineEventHandlerWithAppError } from '../lib/errors'
+import { authenticate_request } from '../lib/admin-api-auth'
+import { defineEventHandlerWithAppErrorAsync } from '../lib/errors'
+import state from '../lib/server-state'
 
-export default defineEventHandlerWithAppError((event) => {
+export default defineEventHandlerWithAppErrorAsync(async (event) => {
   if (!event.path.startsWith('/api/admin/')) return
   if (event.path.startsWith('/api/admin/session')) {
     if (['POST', 'DELETE'].includes(event.method)) return
   }
 
-  // TODO
+  await authenticate_request(event, state)
 })

@@ -25,7 +25,9 @@ export default class OptionsRepository {
   async fetch_option(option_name: string): Promise<ConfigurationOption | undefined> {
     const res = await this.db.oneOrNone<{ value: unknown }>('SELECT value FROM options WHERE name = $1', option_name)
     if (res == undefined) return undefined
-    return ConfigurationOptionParser.parse(res.value)
+    const result = ConfigurationOptionParser.safeParse(res.value)
+    if (!result.success) return undefined
+    return result.data
   }
 
   async load(): Promise<SafeHavenOptions> {
