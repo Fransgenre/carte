@@ -11,13 +11,13 @@
          SELECT ee.child_id,
             e.id AS parent_id,
             e.display_name AS parent_display_name,
-            parent_location.value,
-            parent_location.ordinality AS location_index
+            parent_location.id AS location_id,
+            parent_location.longitude,
+            parent_location.latitude,
+            parent_location.address
            FROM entities_entities ee
              JOIN entities e ON ee.parent_id = e.id
-             LEFT JOIN LATERAL ( SELECT location.value,
-                    location.ordinality
-                   FROM jsonb_array_elements(e.locations) WITH ORDINALITY location(value, ordinality)) parent_location ON true
+             LEFT JOIN locations parent_location ON e.id = parent_location.entity_id
           WHERE e.moderated
         ), direct_locations AS (
          SELECT e.id AS entity_id,
@@ -25,8 +25,10 @@
             e.display_name,
             c.family_id,
             e.hidden,
-            location.value AS location,
-            location.ordinality AS location_index,
+            location.id AS location_id,
+            location.longitude,
+            location.latitude,
+            location.address,
             array_remove(array_agg(DISTINCT et.tag_id), NULL::uuid) AS tags_ids,
             COALESCE(jsonb_object_agg(transformed_fields.key,
                 CASE
@@ -48,9 +50,7 @@
              LEFT JOIN entities_entities ee ON e.id = ee.parent_id
              LEFT JOIN entities e2 ON ee.child_id = e2.id
              LEFT JOIN entity_tags cet ON ee.child_id = cet.entity_id
-             LEFT JOIN LATERAL ( SELECT location_1.value,
-                    location_1.ordinality
-                   FROM jsonb_array_elements(e.locations) WITH ORDINALITY location_1(value, ordinality)) location ON true
+             LEFT JOIN locations location ON e.id = location.entity_id 
              LEFT JOIN LATERAL ( SELECT jsonb_each.key,
                     jsonb_each.value
                    FROM jsonb_each(e.data) jsonb_each(key, value)
@@ -58,18 +58,17 @@
                            FROM families_indexed_fields f
                           WHERE f.family_id = c.family_id))) transformed_fields ON true
           WHERE e.moderated
-          GROUP BY e.id, c.family_id, e.display_name, e.category_id, location.value, location.ordinality
+          GROUP BY e.id, c.family_id, e.display_name, e.category_id, location.id, location.longitude, location.latitude, location.address
         )
- SELECT md5((dl.entity_id::text || COALESCE(dl.location_index, '-1'::integer::bigint)::text) || 'alone_loc'::text)::uuid AS id,
+ SELECT md5((dl.entity_id::text || COALESCE(dl.location_id, '-1'::integer::bigint)::text) || 'alone_loc'::text)::uuid AS id,
     dl.entity_id,
     dl.category_id,
     dl.display_name,
     dl.family_id,
-    dl.location_index,
-    (dl.location ->> 'long'::text)::double precision AS longitude,
-    (dl.location ->> 'lat'::text)::double precision AS latitude,
-    st_transform(st_setsrid(st_makepoint((dl.location ->> 'long'::text)::double precision, (dl.location ->> 'lat'::text)::double precision), 4326), 3857) AS web_mercator_location,
-    dl.location ->> 'plain_text'::text AS plain_text_location,
+    dl.longitude,
+    dl.latitude,
+    st_transform(st_setsrid(st_makepoint(dl.longitude, dl.latitude), 4326), 3857) AS web_mercator_location,
+    dl.address AS plain_text_location,
     dl.tags_ids,
     NULL::uuid AS parent_id,
     NULL::text AS parent_display_name,
@@ -78,16 +77,15 @@
     dl.enums
    FROM direct_locations dl
 UNION
- SELECT md5(((tl.child_id::text || tl.parent_id::text) || COALESCE(tl.location_index, '-1'::integer::bigint)::text) || 'with_parent'::text)::uuid AS id,
+ SELECT md5(((tl.child_id::text || tl.parent_id::text) || COALESCE(tl.location_id, '-1'::integer::bigint)::text) || 'with_parent'::text)::uuid AS id,
     tl.child_id AS entity_id,
     dl.category_id,
     dl.display_name,
     dl.family_id,
-    tl.location_index,
-    (tl.value ->> 'long'::text)::double precision AS longitude,
-    (tl.value ->> 'lat'::text)::double precision AS latitude,
-    st_transform(st_setsrid(st_makepoint((tl.value ->> 'long'::text)::double precision, (tl.value ->> 'lat'::text)::double precision), 4326), 3857) AS web_mercator_location,
-    tl.value ->> 'plain_text'::text AS plain_text_location,
+    dl.longitude,
+    dl.latitude,
+    st_transform(st_setsrid(st_makepoint(dl.longitude, dl.latitude), 4326), 3857) AS web_mercator_location,
+    dl.address AS plain_text_location,
     dl.tags_ids,
     tl.parent_id,
     tl.parent_display_name,
