@@ -121,3 +121,176 @@ UNION
 CREATE UNIQUE INDEX entities_caches_id_idx ON entities_caches(id);
 
 ALTER TABLE entities DROP COLUMN IF EXISTS locations;
+
+DROP FUNCTION search_entities;
+
+CREATE OR REPLACE FUNCTION search_entities(
+    search_query TEXT,
+    geographic_restriction TEXT,
+    input_family_id UUID,
+
+    at_allow_all_categories BOOL,
+    at_allow_all_tags BOOL,
+    at_allowed_categories_ids  UUID[],
+    at_allowed_tags_ids UUID[],
+    at_excluded_categories_ids UUID[],
+    at_excluded_tags_ids UUID[],
+
+    current_page BIGINT,
+    page_size BIGINT,
+
+    user_active_categories_ids UUID[],
+    user_required_tags_ids UUID[],
+    user_excluded_tags_ids UUID[],
+
+    require_locations BOOL,
+
+    user_enum_constraints JSONB
+) RETURNS TABLE (
+    id UUID,
+    entity_id UUID,
+    category_id UUID,
+    tags_ids UUID[],
+    family_id UUID,
+    display_name TEXT,
+    parents JSONB,
+    longitude DOUBLE PRECISION,
+    latitude DOUBLE PRECISION,
+    plain_text_location TEXT,
+    total_results BIGINT,
+    total_pages BIGINT,
+    response_current_page BIGINT
+) AS $$
+BEGIN
+    RETURN QUERY
+    WITH included_entities AS (
+        SELECT ec.*
+        FROM entities_caches ec
+        WHERE
+            -- Family filter
+            ec.family_id = input_family_id
+            -- Hidden filter
+            AND NOT ec.hidden
+            -- Access tokens blacklists
+            AND NOT (ec.category_id = ANY(at_excluded_categories_ids))
+            AND NOT (ec.tags_ids && at_excluded_tags_ids)
+            -- User filters blacklists
+            AND NOT (ec.tags_ids && user_excluded_tags_ids)
+    ),
+    filtered_entities AS (
+        SELECT
+            ie.*,
+            CASE
+                WHEN search_query IS NOT NULL AND search_query = '' AND
+                    (ie.display_name ILIKE '%' || lower(search_query) || '%')
+                THEN 1 ELSE 0
+            END AS exact_match_score
+        FROM included_entities ie
+        WHERE
+            (
+                search_query IS NULL OR search_query = '' OR (
+                    ie.display_name ILIKE '%' || lower(search_query) || '%'
+                        OR (full_text_search_ts @@ plainto_tsquery(search_query))
+                    )
+            )
+            AND (
+                geographic_restriction IS NULL OR
+                ST_Intersects(ie.web_mercator_location, st_geomfromtext(geographic_restriction))
+            )
+            AND ie.family_id = input_family_id
+            AND NOT ie.hidden
+            -- Categories
+            AND (at_allow_all_categories OR ie.category_id = ANY(at_allowed_categories_ids))
+            -- Tags
+            AND (at_allow_all_tags OR (ie.tags_ids && at_allowed_tags_ids))
+            -- User filters
+            AND (ie.category_id = ANY(user_active_categories_ids))
+            AND (array_length(user_required_tags_ids, 1) = 0 OR user_required_tags_ids <@ ie.tags_ids)
+            -- Enum constraints
+            AND (
+                user_enum_constraints IS NULL OR
+                user_enum_constraints = '{}'::jsonb OR
+                (
+                    SELECT bool_and(
+                        ie.enums->key ?| array(SELECT jsonb_array_elements_text(value))
+                    )
+                    FROM jsonb_each(user_enum_constraints) AS constraints(key, value)
+                    WHERE key IS NOT NULL AND ie.enums ? key
+                )
+            )
+    ),
+    aggregated_entities AS (
+        SELECT
+            fe.entity_id,
+            fe.category_id,
+            fe.tags_ids,
+            fe.family_id,
+            fe.display_name,
+            COALESCE (
+                jsonb_agg(
+                    DISTINCT jsonb_build_object(
+                        'id', fe.parent_id,
+                        'display_name', fe.parent_display_name
+                    )
+                ) FILTER (
+                    WHERE fe.parent_id IS NOT NULL
+                        AND fe.parent_id IS NOT NULL
+                        AND fe.parent_display_name IS NOT NULL
+                ),
+                '[]'::jsonb
+            ) AS parents,
+            fe.longitude,
+            fe.latitude,
+            fe.plain_text_location,
+            fe.exact_match_score,
+            fe.full_text_search_ts
+        FROM filtered_entities fe
+        GROUP BY
+            fe.entity_id,
+            fe.category_id,
+            fe.tags_ids,
+            fe.family_id,
+            fe.display_name,
+            fe.exact_match_score,
+            fe.full_text_search_ts
+    ),
+    ranked_entities AS (
+        SELECT
+            ae.*,
+            RANK() OVER (
+                ORDER BY
+                exact_match_score DESC,
+                CASE
+                    WHEN search_query IS NOT NULL AND search_query <> '' THEN
+                        ts_rank(full_text_search_ts, plainto_tsquery(search_query))
+                    ELSE 0
+                END DESC
+            ) AS rank
+        FROM aggregated_entities ae
+        WHERE ((NOT require_locations) OR ae.longitude != NULL OR ae.latitude OR ae.plain_text_location)
+    ),
+    total_count AS (
+        SELECT COUNT(*) AS total_results FROM ranked_entities
+    ),
+    paginated_results AS (
+        SELECT
+            re.entity_id AS id,
+            re.entity_id,
+            re.category_id,
+            re.tags_ids,
+            re.family_id,
+            re.display_name,
+            re.parents,
+            re.longitude,
+            re.latitude,
+            re.plain_text_location,
+            tc.total_results,
+            CEIL(tc.total_results / page_size::FLOAT)::BIGINT AS total_pages,
+            current_page as response_current_page
+        FROM ranked_entities re, total_count tc
+        LIMIT page_size
+        OFFSET (current_page - 1) * page_size
+    )
+    SELECT * FROM paginated_results;
+END;
+$$ LANGUAGE plpgsql;
