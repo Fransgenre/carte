@@ -9,6 +9,8 @@ export type AppError = {
   details?: string
 }
 
+export type AdmonitionType = api.components['schemas']['AdmonitionType']
+
 export type InitConfig = api.components['schemas']['StatusResponse']
 
 export type SafeHavenOptions = api.components['schemas']['SafeHavenOptions']
