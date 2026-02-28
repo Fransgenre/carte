@@ -1,0 +1,95 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO categories (title, family_id, default_status, fill_color, border_color, message_text, message_type)\n            VALUES ($1, $2, $3, $4, $5, $6, ($7::text)::admonition_type)\n            RETURNING\n                id,\n                title,\n                family_id,\n                default_status,\n                (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,\n                fill_color,\n                border_color,\n                version,\n                message_text,\n                message_type AS \"message_type: AdmonitionType\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "family_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "default_status",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "icon_hash",
+        "type_info": "Bpchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "fill_color",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "border_color",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "version",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "message_text",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "message_type: AdmonitionType",
+        "type_info": {
+          "Custom": {
+            "name": "admonition_type",
+            "kind": {
+              "Enum": [
+                "neutral",
+                "info",
+                "success",
+                "fail",
+                "warning"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Uuid",
+        "Bool",
+        "Varchar",
+        "Varchar",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      null,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "1541e7159711d51364afc6678b5274e220131e414c8c9419247f8d1b011c4efc"
+}

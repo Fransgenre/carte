@@ -1,4 +1,4 @@
-use crate::api::AppError;
+use crate::{api::AppError, helpers::admonitions::AdmonitionType};
 use serde::{Deserialize, Serialize};
 use sqlx::PgConnection;
 use utoipa::ToSchema;
@@ -12,6 +12,8 @@ pub struct NewOrUpdateCategory {
     pub fill_color: String,
     pub border_color: String,
     pub version: Option<i32>,
+    pub message_text: Option<String>,
+    pub message_type: Option<AdmonitionType>,
 }
 
 #[derive(Deserialize, Serialize, ToSchema, Debug)]
@@ -24,6 +26,8 @@ pub struct Category {
     pub fill_color: String,
     pub border_color: String,
     pub version: i32,
+    pub message_text: Option<String>,
+    pub message_type: Option<AdmonitionType>,
 }
 
 impl Category {
@@ -34,8 +38,8 @@ impl Category {
         sqlx::query_as!(
             Category,
             r#"
-            INSERT INTO categories (title, family_id, default_status, fill_color, border_color)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO categories (title, family_id, default_status, fill_color, border_color, message_text, message_type)
+            VALUES ($1, $2, $3, $4, $5, $6, ($7::text)::admonition_type)
             RETURNING
                 id,
                 title,
@@ -44,13 +48,17 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                message_text,
+                message_type AS "message_type: AdmonitionType"
             "#,
             category.title,
             category.family_id,
             category.default_status,
             category.fill_color,
-            category.border_color
+            category.border_color,
+            category.message_text,
+            category.message_type as Option<AdmonitionType>
         )
         .fetch_one(conn)
         .await
@@ -69,7 +77,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                message_text,
+                message_type AS "message_type: AdmonitionType"
             FROM categories
             WHERE id = $1
             "#,
@@ -93,7 +103,8 @@ impl Category {
             Category,
             r#"
             UPDATE categories
-            SET title = $2, family_id = $3, default_status = $4, fill_color = $5, border_color = $6, version = $7
+            SET title = $2, family_id = $3, default_status = $4, fill_color = $5, border_color = $6, version = $7, message_text = $8,
+                message_type = ($9::text)::admonition_type
             WHERE id = $1
             RETURNING
                 id,
@@ -103,7 +114,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                message_text,
+                message_type AS "message_type: AdmonitionType"
             "#,
             id,
             update.title,
@@ -111,7 +124,9 @@ impl Category {
             update.default_status,
             update.fill_color,
             update.border_color,
-            update.version
+            update.version,
+            update.message_text,
+            update.message_type as Option<AdmonitionType>
         )
         .fetch_one(conn)
         .await
@@ -145,7 +160,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                message_text,
+                message_type AS "message_type: AdmonitionType"
             FROM categories
             "#
         )
@@ -170,7 +187,9 @@ impl Category {
                 (SELECT hash FROM icons WHERE id = icon_id) AS icon_hash,
                 fill_color,
                 border_color,
-                version
+                version,
+                message_text,
+                message_type AS "message_type: AdmonitionType"
             FROM categories
             WHERE NOT (id = ANY($1)) AND family_id = ANY($2)
             "#,

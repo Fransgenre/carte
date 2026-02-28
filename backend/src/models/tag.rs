@@ -1,4 +1,4 @@
-use crate::api::AppError;
+use crate::{api::AppError, helpers::admonitions::AdmonitionType};
 use serde::{Deserialize, Serialize};
 use sqlx::PgConnection;
 use utoipa::ToSchema;
@@ -15,6 +15,8 @@ pub struct Tag {
     pub fill_color: String,
     pub border_color: String,
     pub version: i32,
+    pub message_text: Option<String>,
+    pub message_type: Option<AdmonitionType>,
 }
 
 #[derive(Deserialize, Serialize, ToSchema, Debug)]
@@ -27,6 +29,8 @@ pub struct NewOrUpdateTag {
     pub version: Option<i32>,
     pub fill_color: String,
     pub border_color: String,
+    pub message_text: Option<String>,
+    pub message_type: Option<AdmonitionType>,
 }
 
 impl Tag {
@@ -35,10 +39,11 @@ impl Tag {
             Tag,
             r#"
             INSERT INTO tags (title, is_filter, is_primary_filter, 
-                filter_description, default_filter_status, fill_color, border_color)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+                filter_description, default_filter_status, fill_color, border_color, message_text, message_type)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, ($9::text)::admonition_type)
             RETURNING id, title, is_filter, is_primary_filter, filter_description,
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color,
+                message_text, message_type AS "message_type: AdmonitionType"
             "#,
             tag.title,
             tag.is_filter,
@@ -47,6 +52,8 @@ impl Tag {
             tag.default_filter_status,
             tag.fill_color,
             tag.border_color,
+            tag.message_text,
+            tag.message_type as Option<AdmonitionType>
         )
         .fetch_one(conn)
         .await
@@ -68,10 +75,12 @@ impl Tag {
             r#"
             UPDATE tags
             SET title = $2, is_filter = $3, is_primary_filter = $4, filter_description = $5, 
-                default_filter_status = $6, version = $7, fill_color = $8, border_color = $9
+                default_filter_status = $6, version = $7, fill_color = $8, border_color = $9,
+                message_text = $10, message_type = ($11::text)::admonition_type
             WHERE id = $1
             RETURNING id, title, is_filter, is_primary_filter, filter_description, 
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color,
+                message_text, message_type AS "message_type: AdmonitionType"
             "#,
             given_id,
             update.title,
@@ -81,7 +90,9 @@ impl Tag {
             update.default_filter_status,
             update.version,
             update.fill_color,
-            update.border_color
+            update.border_color,
+            update.message_text,
+            update.message_type as Option<AdmonitionType>
         )
         .fetch_one(conn)
         .await
@@ -108,7 +119,8 @@ impl Tag {
             Tag,
             r#"
             SELECT id, title, is_filter, is_primary_filter, filter_description, 
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color,
+                message_text, message_type AS "message_type: AdmonitionType"
             FROM tags
             WHERE id = $1
             "#,
@@ -124,7 +136,8 @@ impl Tag {
             Tag,
             r#"
             SELECT id, title, is_filter, is_primary_filter, filter_description,
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color,
+                message_text, message_type AS "message_type: AdmonitionType"
             FROM tags
             "#
         )
@@ -141,7 +154,8 @@ impl Tag {
             Tag,
             r#"
             SELECT id, title, is_filter, is_primary_filter, filter_description,
-                default_filter_status, version, fill_color, border_color
+                default_filter_status, version, fill_color, border_color,
+                message_text, message_type AS "message_type: AdmonitionType"
             FROM tags
             WHERE NOT (id = ANY($1))
             "#,
