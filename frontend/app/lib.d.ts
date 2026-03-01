@@ -10,6 +10,10 @@ export type AppError = {
 }
 
 export type AdmonitionType = api.components['schemas']['AdmonitionType']
+export type Admonition = {
+  text: string
+  type: AdmonitionType
+}
 
 export type InitConfig = api.components['schemas']['StatusResponse']
 
