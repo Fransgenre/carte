@@ -154,9 +154,7 @@ CREATE OR REPLACE FUNCTION search_entities(
     family_id UUID,
     display_name TEXT,
     parents JSONB,
-    longitude DOUBLE PRECISION,
-    latitude DOUBLE PRECISION,
-    plain_text_location TEXT,
+    locations JSONB,
     total_results BIGINT,
     total_pages BIGINT,
     response_current_page BIGINT
@@ -239,6 +237,16 @@ BEGIN
                 ),
                 '[]'::jsonb
             ) AS parents,
+            COALESCE(
+                jsonb_agg(
+                    DISTINCT jsonb_build_object(
+                        'longitude', fe.longitude,
+                        'latitude', fe.latitude,
+                        'address', fe.address
+                    )
+                ),
+                '[]'::jsonb
+            ) AS locations,
             fe.longitude,
             fe.latitude,
             fe.plain_text_location,
@@ -292,5 +300,27 @@ BEGIN
         OFFSET (current_page - 1) * page_size
     )
     SELECT * FROM paginated_results;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION replace_locations_for_entity(
+    p_entity_id UUID,
+    p_locations JSONB
+) RETURNS VOID AS $$
+BEGIN
+    DELETE FROM locations WHERE entity_id = p_entity_id;
+    INSERT INTO locations (
+        entity_id,
+        latitude,
+        longitude,
+        address
+    )
+        SELECT
+            p_entity_id,
+            location -> lat,
+            location -> long,
+            location -> plain_text
+        FROM jsonb_array_elements(locations) location;
 END;
 $$ LANGUAGE plpgsql;
