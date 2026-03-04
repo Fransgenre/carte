@@ -2,7 +2,7 @@ CREATE TABLE locations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     latitude FLOAT,
     longitude FLOAT,
-    address VARCHAR,
+    address TEXT,
     entity_id UUID NOT NULL REFERENCES entities(id));
 
 WITH expanded_entities AS (
@@ -316,11 +316,11 @@ BEGIN
         longitude,
         address
     )
-        SELECT
-            p_entity_id,
-            location -> lat,
-            location -> long,
-            location -> plain_text
-        FROM jsonb_array_elements(locations) location;
+    SELECT
+        p_entity_id,
+        location -> 'lat' AS latitude,
+        location -> 'long' AS longitude,
+        location -> 'plain_text' AS address
+    FROM jsonb_array_elements(p_locations) location;
 END;
 $$ LANGUAGE plpgsql;
