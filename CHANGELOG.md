@@ -37,3 +37,4 @@ et ce projet utilise le [Versionnage Sémantique](https://semver.org/spec/v2.0.0
 ### Interne
 
 - CI : Validation des types TypeScript ([#84](https://github.com/Fransgenre/carte/pull/84))
+- Nix n’est plus utilisé pour construire l’image, et est optionnel pour développer. ([#52](https://github.com/Fransgenre/carte/pull/52))
