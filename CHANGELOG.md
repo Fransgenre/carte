@@ -22,10 +22,6 @@ et ce projet utilise le [Versionnage Sémantique](https://semver.org/spec/v2.0.0
 - Zoom dynamique selon la zone géographique retournée lors de la recherche de lieu ([#99](https://github.com/Fransgenre/carte/pull/99))
 - Renomme "France métropolitaine" en "France hexagonale" lors de la recherche de lieu et d'adresse ([#100](https://github.com/Fransgenre/carte/pull/100))
 
-### Supprimé
-
-- …
-
 ### Corrigé
 
 - Apporte des corrections mineures à l'interface d'admin, notamment, corrige des redirections erronées ([#85](https://github.com/Fransgenre/carte/pull/85), [#86](https://github.com/Fransgenre/carte/pull/86) et [#87](https://github.com/Fransgenre/carte/pull/87))
