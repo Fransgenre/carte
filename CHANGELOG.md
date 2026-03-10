@@ -12,6 +12,8 @@ et ce projet utilise le [Versionnage Sémantique](https://semver.org/spec/v2.0.0
 - L'identifiant de l'entité est desormais affiché sur sa fiche dans le backend, avec un bouton pour le copier facilement ([#57](https://github.com/Fransgenre/carte/pull/57))
 - L'UUID d'un jeton d'accès à la carte peut desormais être généré automatiquement à l'aide d'un bouton à côté de son champ de saisie. ([#59](https://github.com/Fransgenre/carte/pull/59))
 - Le journal des changements fait sa première apparition ! ([#98](https://github.com/Fransgenre/carte/pull/98))
+- Ajout d’un bouton pour aller à l’entité rattachée à un commentaire. ([#72](https://github.com/Fransgenre/carte/pull/72))
+- Boutons pour déplier ou replier tous les évènements. ([#73](https://github.com/Fransgenre/carte/pull/73))
 
 ### Modifié
 
@@ -34,6 +36,7 @@ et ce projet utilise le [Versionnage Sémantique](https://semver.org/spec/v2.0.0
 - Correction de l'erreur dans les listes d'entités en admin si une entité parente n'a pas d'adresse ([#67](https://github.com/Fransgenre/carte/pull/67))
 - Correction d'un bug permettant la soumission d'entités ou de commentaires avec un champ `data` nul ([#80](https://github.com/Fransgenre/carte/pull/80))
 - Recentre la carte de saisie d'adresse lors de recherches successives ([#82](https://github.com/Fransgenre/carte/pull/82))
+- Dépliage et repliage un par un des évènements. ([#73](https://github.com/Fransgenre/carte/pull/73))
 
 ### Interne
 
