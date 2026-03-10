@@ -30,8 +30,9 @@ Dockerfile
 /frontend/dist
 
 # Node dependencies
+/node_modules
 /frontend/node_modules
 
 # Generated from the backend openapi
-/frontend/lib/api.d.ts
+/frontend/app/lib/api.d.ts
 
