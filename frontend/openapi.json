@@ -3275,6 +3275,16 @@
           }
         }
       },
+      "AdmonitionType": {
+        "type": "string",
+        "enum": [
+          "neutral",
+          "info",
+          "success",
+          "fail",
+          "warning"
+        ]
+      },
       "BootstrapPermissions": {
         "type": "object",
         "required": [
@@ -3486,6 +3496,18 @@
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "message_text": {
+            "type": "string",
+            "nullable": true
+          },
+          "message_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdmonitionType"
+              }
+            ],
+            "nullable": true
           },
           "title": {
             "type": "string"
@@ -4023,6 +4045,18 @@
           "fill_color": {
             "type": "string"
           },
+          "message_text": {
+            "type": "string",
+            "nullable": true
+          },
+          "message_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdmonitionType"
+              }
+            ],
+            "nullable": true
+          },
           "title": {
             "type": "string"
           },
@@ -4091,6 +4125,18 @@
           },
           "is_primary_filter": {
             "type": "boolean"
+          },
+          "message_text": {
+            "type": "string",
+            "nullable": true
+          },
+          "message_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdmonitionType"
+              }
+            ],
+            "nullable": true
           },
           "title": {
             "type": "string"
@@ -4647,6 +4693,18 @@
           },
           "is_primary_filter": {
             "type": "boolean"
+          },
+          "message_text": {
+            "type": "string",
+            "nullable": true
+          },
+          "message_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdmonitionType"
+              }
+            ],
+            "nullable": true
           },
           "title": {
             "type": "string"

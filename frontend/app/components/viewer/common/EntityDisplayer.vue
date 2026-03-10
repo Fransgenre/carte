@@ -1,5 +1,17 @@
 <template>
   <div>
+    <div
+      v-if="admonitions.length"
+      class="mb-4"
+    >
+      <ViewerCommonAdmonition
+        v-for="(admonition, admonition_index) in admonitions"
+        :key="admonition_index"
+        class="mt-4"
+        :admonition="admonition"
+      />
+    </div>
+
     <Tabs v-model:value="tabValue">
       <TabList>
         <Tab
@@ -167,7 +179,7 @@
 
 <script setup lang="ts">
 import Tabs from 'primevue/tabs'
-import type { Category, ResolvedFetchedEntity } from '~/lib'
+import type { Admonition, Category, ResolvedFetchedEntity } from '~/lib'
 
 const props = defineProps<{
   entity: ResolvedFetchedEntity
@@ -184,6 +196,16 @@ function getCategory(id: string) {
 
 const sortedTags = computed(() => {
   return [...props.entity.tags].sort((a, b) => a.title.localeCompare(b.title))
+})
+
+const admonitions = computed(() => {
+  const result: Admonition[] = []
+  if (props.entity.category.message_text)
+    result.push({ text: props.entity.category.message_text, type: props.entity.category.message_type || 'neutral' })
+  sortedTags.value.forEach((tag) => {
+    if (tag.message_text) result.push({ text: tag.message_text, type: tag.message_type || 'neutral' })
+  })
+  return result
 })
 
 const discreteScoreAveragesOnComments = ref<{

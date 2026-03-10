@@ -12,6 +12,7 @@ use crate::{
         root::{self, BootstrapPermissions, BootstrapResponse, SafeMode, StatusResponse},
         ErrorResponse,
     },
+    helpers::admonitions::AdmonitionType,
     helpers::postgis_polygons::MultiPolygon,
     models::{
         access_token::{
@@ -122,6 +123,7 @@ use utoipa::OpenApi;
     components(schemas(
         // general
         ErrorResponse,
+        AdmonitionType,
         // admin
         AdminUserIdentity,
         // stats

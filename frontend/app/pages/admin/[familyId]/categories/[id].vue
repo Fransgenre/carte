@@ -35,6 +35,21 @@
       :object-id="categoryId"
       object-type="categories"
     />
+
+    <AdminInputSwitchField
+      id="show_admonition_field"
+      v-model="showAdmonitionField"
+      label="Afficher un message sur les fiches entités"
+    />
+    <AdminInputAdmonitionField
+      v-if="showAdmonitionField"
+      id="admonition"
+      :model-value="{ text: editedCategory.message_text, type: editedCategory.message_type }"
+      :content-variant="hasBeenEdited('message_text')"
+      :type-variant="hasBeenEdited('message_type')"
+      @update:model-value="(value) => { editedCategory.message_text = value.text; editedCategory.message_type = value.type }"
+    />
+
     <span class="flex gap-1 justify-end">
       <NuxtLink :to="`/admin/${familyId}/categories`">
         <Button
@@ -82,8 +97,18 @@ const editedCategory: Ref<NewOrUpdateCategory> = ref(isNew
       family_id: familyId,
       fill_color: '#000000',
       title: '',
+      message_text: '',
+      message_type: undefined,
     }
   : JSON.parse(JSON.stringify(fetchedCategory!)))
+
+const showAdmonitionField = ref(editedCategory.value.message_type != undefined || editedCategory.value.message_text != undefined)
+watch(showAdmonitionField, (value) => {
+  if (!value) {
+    editedCategory.value.message_type = undefined
+    editedCategory.value.message_text = undefined
+  }
+})
 
 const processingRequest = ref(false)
 const toast = useToast()
@@ -93,6 +118,8 @@ function isDisabled() {
     || !isValidText(editedCategory.value.title)
     || !isValidHexColor(editedCategory.value.border_color)
     || !isValidHexColor(editedCategory.value.fill_color)
+    || (showAdmonitionField.value && editedCategory.value.message_type == undefined)
+    || (showAdmonitionField.value && (editedCategory.value.message_text == undefined || editedCategory.value.message_text == ''))
 }
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!

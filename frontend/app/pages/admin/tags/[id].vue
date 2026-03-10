@@ -55,6 +55,20 @@
       :variant="hasBeenEdited('fill_color')"
     />
 
+    <AdminInputSwitchField
+      id="show_admonition_field"
+      v-model="showAdmonitionField"
+      label="Afficher un message sur les fiches entités"
+    />
+    <AdminInputAdmonitionField
+      v-if="showAdmonitionField"
+      id="admonition"
+      :model-value="{ text: editedTag.message_text, type: editedTag.message_type }"
+      :content-variant="hasBeenEdited('message_text')"
+      :type-variant="hasBeenEdited('message_type')"
+      @update:model-value="(value) => { editedTag.message_text = value.text; editedTag.message_type = value.type }"
+    />
+
     <span class="flex gap-1 justify-end">
       <NuxtLink to="/admin/tags">
         <Button
@@ -97,9 +111,19 @@ const editedTag: Ref<NewOrUpdateTag> = ref(isNew
       filter_description: '',
       border_color: '#deb9c9',
       fill_color: '#824261',
+      message_text: '',
+      message_type: undefined,
     }
   : JSON.parse(JSON.stringify(fetchedTag)),
 )
+
+const showAdmonitionField = ref(editedTag.value.message_type != undefined || editedTag.value.message_text != undefined)
+watch(showAdmonitionField, (value) => {
+  if (!value) {
+    editedTag.value.message_type = undefined
+    editedTag.value.message_text = undefined
+  }
+})
 
 const processingRequest = ref(false)
 const toast = useToast()
@@ -110,6 +134,8 @@ function isDisabled() {
     || (editedTag.value.is_primary_filter && !isValidText(editedTag.value.filter_description))
     || !isValidHexColor(editedTag.value.border_color)
     || !isValidHexColor(editedTag.value.fill_color)
+    || (showAdmonitionField.value && editedTag.value.message_type == undefined)
+    || (showAdmonitionField.value && (editedTag.value.message_text == undefined || editedTag.value.message_text == ''))
 }
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
