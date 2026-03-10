@@ -11,6 +11,7 @@ et ce projet utilise le [Versionnage Sémantique](https://semver.org/spec/v2.0.0
 
 - L'identifiant de l'entité est desormais affiché sur sa fiche dans le backend, avec un bouton pour le copier facilement ([#57](https://github.com/Fransgenre/carte/pull/57))
 - L'UUID d'un jeton d'accès à la carte peut desormais être généré automatiquement à l'aide d'un bouton à côté de son champ de saisie. ([#59](https://github.com/Fransgenre/carte/pull/59))
+- Le journal des changements fait sa première apparition ! ([#98](https://github.com/Fransgenre/carte/pull/98))
 
 ### Modifié
 
