@@ -108,6 +108,14 @@ In the `backend` directory, run `cargo sqlx prepare --database-url postgresql://
 
 If you use the Nix flake, you can run `cargo sqlx prepare` without the `--database-url` argument.
 
+### How to publish a new release?
+
+1. Choose the version number following [Semantic Versioning](https://semver.org/).
+2. Open a pull request for the release:
+   1. Add a new `[Unreleased]` section in the `CHANGELOG.md` file.
+3. Once the pull request has been merged, tag its commit on `main` with the version number.
+4. That's it! 🎉
+
 ## License
 
 Licensed under the GNU General Public License v3.0, see [LICENSE](LICENSE).
