@@ -318,8 +318,8 @@ BEGIN
     )
     SELECT
         p_entity_id,
-        location -> 'lat'::DOUBLE PRECISION AS latitude,
-        location -> 'long'::DOUBLE PRECISION AS longitude,
+        (location -> 'lat')::DOUBLE PRECISION AS latitude,
+        (location -> 'long')::DOUBLE PRECISION AS longitude,
         location -> 'plain_text' AS address
     FROM jsonb_array_elements(p_locations) location;
 END;

@@ -262,7 +262,7 @@ pub struct AdminEntity {
     pub category_id: Uuid,
     pub family_id: Uuid,
     #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: Vec<Uuid>,
+    pub locations: Vec<UnprocessedLocation>,
     pub data: Value,
     pub tags: Vec<Uuid>,
     pub hidden: bool,
@@ -344,8 +344,8 @@ impl AdminEntity {
                 e.display_name, 
                 e.category_id, 
                 COALESCE(
-                    (SELECT array_agg(l.id) FROM locations l WHERE l.entity_id = e.id), 
-                    array[]::uuid[]
+                    (SELECT jsonb_agg(l) FROM locations l WHERE l.entity_id = e.id),
+                    '[]'::jsonb
                 ) AS "locations!",
                 e.data,
                 e.hidden,
