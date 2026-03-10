@@ -619,7 +619,7 @@ impl AdminEntity {
             INNER JOIN categories c ON e.category_id = c.id
             WHERE e.id = $1
             "#,
-            given_id
+            given_id,
         )
         .fetch_one(conn)
         .await
