@@ -7,6 +7,8 @@ et ce projet utilise le [Versionnage Sémantique](https://semver.org/spec/v2.0.0
 
 ## [Prochaine version]
 
+## [1.4.0] - 11/03/2026
+
 ### Ajouté
 
 - L'identifiant de l'entité est desormais affiché sur sa fiche dans le backend, avec un bouton pour le copier facilement ([#57](https://github.com/Fransgenre/carte/pull/57))
