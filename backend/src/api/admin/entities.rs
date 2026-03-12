@@ -12,7 +12,7 @@ use crate::{
     api::{AppError, AppJson, DbConn},
     models::{
         comment::AdminComment,
-        entity::{AdminEntity, AdminListedEntity, AdminNewOrUpdateEntity, UnprocessedLocation},
+        entity::{AdminEntity, AdminListedEntity, AdminNewOrUpdateEntity, Location},
         entity_cache::{
             AdminCachedEntitiesWithPagination, AdminCachedEntity, AdminSearchEntitiesRequest,
         },
@@ -43,7 +43,7 @@ pub struct AdminEntityWithRelations {
     pub family_id: Uuid,
 
     #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: sqlx::types::Json<Vec<UnprocessedLocation>>,
+    pub locations: Vec<Location>,
 
     pub data: Value,
     pub tags: Vec<Uuid>,
@@ -147,13 +147,14 @@ pub async fn admin_entity_get(
     // Fetch related children and parents
     let children = AdminEntity::get_children(id, &mut conn).await?;
     let parents = AdminEntity::get_parents(id, &mut conn).await?;
+    let locations = AdminEntity::get_locations(id, &mut conn).await?;
     // Recompose AdminEntityWithRelations
     let admin_entity_with_relations = AdminEntityWithRelations {
         id: admin_entity.id,
         display_name: admin_entity.display_name,
         category_id: admin_entity.category_id,
         family_id: admin_entity.family_id,
-        locations: admin_entity.locations,
+        locations: locations,
         data: admin_entity.data,
         tags: admin_entity.tags,
         hidden: admin_entity.hidden,
