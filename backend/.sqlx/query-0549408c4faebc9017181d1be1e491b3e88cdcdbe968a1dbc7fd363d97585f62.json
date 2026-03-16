@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE entities\n            SET\n                display_name = $2,\n                category_id = $3,\n                data = $4,\n                hidden = $5,\n                moderation_notes = $6,\n                moderated = $7,\n                version = $8\n            WHERE id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Uuid",
+        "Jsonb",
+        "Bool",
+        "Text",
+        "Bool",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "0549408c4faebc9017181d1be1e491b3e88cdcdbe968a1dbc7fd363d97585f62"
+}

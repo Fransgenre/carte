@@ -27,19 +27,19 @@
 </template>
 
 <script setup lang="ts">
-import type { UnprocessedLocation } from '~/lib'
+import type { Location } from '~/lib'
 
 const props = defineProps<{
-  address: UnprocessedLocation | undefined
+  address: Location | undefined
   visible: boolean
 }>()
 
 const emits = defineEmits<{
   'update:visible': [boolean]
-  'select': [UnprocessedLocation]
+  'select': [Location]
 }>()
 
-const editedAddress = ref<UnprocessedLocation | undefined>(props.address)
+const editedAddress = ref<Location | undefined>(props.address)
 
 watch([
   () => props.visible,

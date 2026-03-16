@@ -7,8 +7,8 @@ export { CategorySchema, validateCategories } from './category.ts'
 export type { PublicComment, AdminComment, AdminListedComment } from './comment.ts'
 export { PublicCommentSchema, AdminCommentSchema, AdminListedCommentSchema, validatePublicComments, validateAdminComments, validateAdminListedComments } from './comment.ts'
 
-export type { PublicListedEntity, UnprocessedLocation, PublicEntity, AdminListedEntity, AdminEntity } from './entity.ts'
-export { PublicListedEntitySchema, UnprocessedLocationSchema, PublicEntitySchema, AdminListedEntitySchema, AdminEntitySchema, validatePublicListedEntities, validatePublicEntities, validateAdminListedEntities, validateAdminEntities } from './entity.ts'
+export type { PublicListedEntity, Location, PublicEntity, AdminListedEntity, AdminEntity } from './entity.ts'
+export { PublicListedEntitySchema, LocationSchema, PublicEntitySchema, AdminListedEntitySchema, AdminEntitySchema, validatePublicListedEntities, validatePublicEntities, validateAdminListedEntities, validateAdminEntities } from './entity.ts'
 
 export type { ViewerCachedEntity, AdminCachedEntity } from './entity_cache.ts'
 export { ViewerCachedEntitySchema, AdminCachedEntitySchema, validateViewerCachedEntities, validateAdminCachedEntities } from './entity_cache.ts'

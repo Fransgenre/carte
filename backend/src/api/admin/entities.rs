@@ -12,7 +12,7 @@ use crate::{
     api::{AppError, AppJson, DbConn},
     models::{
         comment::AdminComment,
-        entity::{AdminEntity, AdminListedEntity, AdminNewOrUpdateEntity, UnprocessedLocation},
+        entity::{AdminEntity, AdminListedEntity, AdminNewOrUpdateEntity, Location},
         entity_cache::{
             AdminCachedEntitiesWithPagination, AdminCachedEntity, AdminSearchEntitiesRequest,
         },
@@ -41,10 +41,8 @@ pub struct AdminEntityWithRelations {
     pub display_name: String,
     pub category_id: Uuid,
     pub family_id: Uuid,
-
-    #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: sqlx::types::Json<Vec<UnprocessedLocation>>,
-
+    #[schema(value_type = Vec<Location>)]
+    pub locations: sqlx::types::Json<Vec<Location>>,
     pub data: Value,
     pub tags: Vec<Uuid>,
     pub hidden: bool,

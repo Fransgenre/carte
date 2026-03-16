@@ -62,23 +62,23 @@
 <script setup lang="ts">
 import type { Coordinate } from 'ol/coordinate'
 import { transform } from 'ol/proj'
-import type { UnprocessedLocation } from '~/lib'
+import type { Location } from '~/lib'
 import { freeFormSearch } from '~/lib/nominatim'
 import type { Result } from '~/lib/nominatim'
 
 const props = defineProps<{
-  modelValue: UnprocessedLocation | undefined
+  modelValue: Location | undefined
 }>()
 
 const emits = defineEmits<{
-  'update:modelValue': [UnprocessedLocation | undefined]
+  'update:modelValue': [Location | undefined]
 }>()
 
 const search = ref('')
 const nominatimResult = ref<Result | undefined>()
 const searched = ref(false)
-const coordinate = ref<Coordinate | undefined>(props.modelValue ? [props.modelValue.long, props.modelValue.lat] : undefined)
-const name = ref<string>(props.modelValue ? props.modelValue.plain_text : '')
+const coordinate = ref<Coordinate | undefined>(props.modelValue ? [props.modelValue.longitude, props.modelValue.latitude] : undefined)
+const name = ref<string>(props.modelValue ? props.modelValue.address : '')
 
 const transformedCoordinate = computed(() => {
   if (!coordinate.value) return undefined
@@ -116,7 +116,7 @@ watch([
   () => name.value,
 ], () => {
   if (coordinate.value && name.value.trim() != '')
-    emits('update:modelValue', { lat: coordinate.value[1]!, long: coordinate.value[0]!, plain_text: name.value.trim() })
+    emits('update:modelValue', { latitude: coordinate.value[1]!, longitude: coordinate.value[0]!, address: name.value.trim() })
   else
     emits('update:modelValue', undefined)
 })

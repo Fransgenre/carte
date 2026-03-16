@@ -54,7 +54,7 @@
         />
 
         <FormAdresses
-          v-model:locations="editedEntity.locations as UnprocessedLocation[]"
+          v-model:locations="editedEntity.locations as Location[]"
         />
 
         <span class="flex gap-1 justify-end">
@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
-import type { AdminNewOrUpdateEntity, EntityOrCommentData, FormField, UnprocessedLocation } from '~/lib'
+import type { AdminNewOrUpdateEntity, EntityOrCommentData, FormField, Location } from '~/lib'
 import state from '~/lib/admin-state'
 
 definePageMeta({

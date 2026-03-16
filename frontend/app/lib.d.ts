@@ -72,7 +72,7 @@ export type User = api.components['schemas']['User']
 export type NewOrUpdatedUser = api.components['schemas']['NewOrUpdatedUser']
 export type AdminUserTokenClaims = api.components['schemas']['AdminUserTokenClaims']
 
-export type UnprocessedLocation = api.components['schemas']['UnprocessedLocation']
+export type Location = api.components['schemas']['Location']
 
 export interface CanBeHighlighted {
   highlighted: boolean

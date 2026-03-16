@@ -9,12 +9,12 @@ use uuid::Uuid;
 
 use super::family::Form;
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct UnprocessedLocation {
+#[derive(FromRow, Serialize, Deserialize, ToSchema, Debug)]
+pub struct Location {
+    pub latitude: f64,
+    pub longitude: f64,
     #[serde(deserialize_with = "empty_string_is_invalid")]
-    pub plain_text: String,
-    pub lat: f64,
-    pub long: f64,
+    pub address: String,
 }
 
 #[derive(Deserialize, Serialize, ToSchema, Debug)]
@@ -22,7 +22,7 @@ pub struct PublicNewEntity {
     #[serde(deserialize_with = "empty_string_is_invalid")]
     pub display_name: String,
     pub category_id: Uuid,
-    pub locations: Vec<UnprocessedLocation>,
+    pub locations: Vec<Location>,
     pub data: Value,
 }
 
@@ -40,8 +40,8 @@ pub struct PublicEntity {
     pub display_name: String,
     pub category_id: Uuid,
     pub family_id: Uuid,
-    #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: Json<Vec<UnprocessedLocation>>,
+    #[schema(value_type = Vec<Location>)]
+    pub locations: Json<Vec<Location>>,
     pub data: Value,
     pub tags: Vec<Uuid>,
     #[schema(value_type = Form)]
@@ -78,40 +78,67 @@ impl PublicEntity {
             .entity_form
             .validate_data(&entity.data, entity.category_id)?;
 
-        let locations = to_value(entity.locations).unwrap();
+        let mut transaction: Transaction<'_, Postgres> =
+            conn.begin().await.map_err(AppError::Database)?;
 
-        sqlx::query_as!(
-            PublicEntity,
+        let entity_id = sqlx::query_scalar!(
             r#"
-            WITH inserted AS (
-                INSERT INTO entities (display_name, category_id, locations, data)
-                VALUES ($1, $2, $3, $4)
-                RETURNING *
-            ) 
-            SELECT 
-                i.id, 
-                i.category_id, 
-                i.display_name, 
-                i.data,
-                i.locations AS "locations: Json<Vec<UnprocessedLocation>>",
-                i.created_at,
-                i.updated_at,
+            INSERT INTO entities (display_name, category_id, data)
+            VALUES ($1, $2, $3)
+            RETURNING id
+            "#,
+            entity.display_name,
+            entity.category_id,
+            entity.data,
+        )
+        .fetch_one(&mut *transaction)
+        .await
+        .map_err(AppError::Database)?;
+
+        let locations = to_value(entity.locations).unwrap();
+        sqlx::query!(
+            r#"
+            SELECT replace_locations_for_entity($1, $2)
+            "#,
+            entity_id,
+            locations,
+        )
+        .execute(&mut *transaction)
+        .await
+        .map_err(AppError::Database)?;
+        let created_entity = sqlx::query_as!(
+            PublicEntity,
+            r#"SELECT 
+                e.id, 
+                e.category_id, 
+                e.display_name, 
+                e.data,
+                COALESCE(
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
+                e.created_at,
+                e.updated_at,
                 array[]::uuid[] AS "tags!", 
                 c.family_id,
                 f.entity_form AS "entity_form: Json<Form>", 
                 f.comment_form AS "comment_form: Json<Form>"
-            FROM inserted i
-            JOIN categories c ON c.id = i.category_id
+            FROM entities e
+            JOIN categories c ON c.id = e.category_id
             JOIN families f ON f.id = c.family_id
+            WHERE e.id = $1
             "#,
-            entity.display_name,
-            entity.category_id,
-            locations,
-            entity.data,
+            entity_id,
         )
-        .fetch_one(conn)
+        .fetch_one(&mut *transaction)
         .await
-        .map_err(AppError::Database)
+        .map_err(AppError::Database)?;
+
+        transaction.commit().await.map_err(AppError::Database)?;
+
+        Ok(created_entity)
     }
 
     pub async fn get(given_id: Uuid, conn: &mut PgConnection) -> Result<PublicEntity, AppError> {
@@ -119,11 +146,16 @@ impl PublicEntity {
             PublicEntity,
             r#"
             SELECT e.id, c.family_id, e.category_id, e.display_name, e.data, e.created_at, e.updated_at,
-                e.locations AS "locations: Json<Vec<UnprocessedLocation>>",
                 COALESCE(
                     (SELECT array_agg(t.tag_id) FROM entity_tags t WHERE t.entity_id = e.id), 
                     array[]::uuid[]
                 ) AS "tags!",
+                COALESCE(
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
                 f.entity_form AS "entity_form: Json<Form>",
                 f.comment_form AS "comment_form: Json<Form>"
             FROM entities e
@@ -198,8 +230,7 @@ impl PublicEntity {
 pub struct AdminNewOrUpdateEntity {
     pub display_name: String,
     pub category_id: Uuid,
-    #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: Json<Vec<UnprocessedLocation>>,
+    pub locations: Vec<Location>,
     pub data: Value,
     pub tags: Vec<Uuid>,
     pub hidden: bool,
@@ -226,8 +257,8 @@ pub struct AdminEntity {
     pub display_name: String,
     pub category_id: Uuid,
     pub family_id: Uuid,
-    #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: Json<Vec<UnprocessedLocation>>,
+    #[schema(value_type = Vec<Location>)]
+    pub locations: Json<Vec<Location>>,
     pub data: Value,
     pub tags: Vec<Uuid>,
     pub hidden: bool,
@@ -252,48 +283,41 @@ impl AdminEntity {
             .entity_form
             .validate_data(&new_entity.data, new_entity.category_id)?;
 
-        // Serialize locations to JSON
-        let locations = to_value(new_entity.locations).unwrap();
-
-        // Insert the new entity using a CTE (WITH clause) and fetch the result
-        let mut created_entity = sqlx::query_as!(
-            AdminEntity,
+        let entity_id = sqlx::query_scalar!(
             r#"
-            WITH inserted AS (
-                INSERT INTO entities (display_name, category_id, locations, data, hidden, moderation_notes, moderated)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
-                RETURNING *
+            INSERT INTO entities (
+                display_name,
+                category_id,
+                data,
+                hidden,
+                moderation_notes,
+                moderated
             )
-            SELECT 
-                i.id,
-                i.display_name,
-                i.category_id,
-                i.locations AS "locations: Json<Vec<UnprocessedLocation>>",
-                i.data,
-                i.hidden,
-                i.moderation_notes,
-                i.moderated,
-                i.created_at,
-                i.updated_at,
-                i.version,
-                c.family_id,
-                COALESCE(array(
-                    SELECT tag_id
-                    FROM entity_tags
-                    WHERE entity_id = i.id
-                ), array[]::uuid[]) AS "tags!"
-            FROM inserted i
-            JOIN categories c ON c.id = i.category_id
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id
             "#,
             new_entity.display_name,
             new_entity.category_id,
-            locations,
             new_entity.data,
             new_entity.hidden,
             new_entity.moderation_notes,
-            new_entity.moderated
+            new_entity.moderated,
         )
         .fetch_one(&mut *tx)
+        .await
+        .map_err(AppError::Database)?;
+
+        // Handle locations
+        // Serialize locations to JSON
+        let locations = to_value(new_entity.locations).unwrap();
+        sqlx::query!(
+            r#"
+            SELECT replace_locations_for_entity($1, $2)
+            "#,
+            entity_id,
+            locations,
+        )
+        .execute(&mut *tx)
         .await
         .map_err(AppError::Database)?;
 
@@ -301,18 +325,48 @@ impl AdminEntity {
         sqlx::query!(
             r#"
                 SELECT replace_tags_for_entity($1, $2)
-                "#,
-            created_entity.id,
+            "#,
+            entity_id,
             &new_entity.tags
         )
         .execute(&mut *tx)
         .await
         .map_err(AppError::Database)?;
 
+        let created_entity = sqlx::query_as!(
+            AdminEntity,
+            r#"SELECT 
+                e.id, 
+                e.display_name, 
+                e.category_id, 
+                COALESCE(
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
+                e.data,
+                e.hidden,
+                e.moderation_notes,
+                e.moderated,
+                e.created_at,
+                e.updated_at,
+                e.version,
+                c.family_id,
+                array[]::uuid[] AS "tags!"
+            FROM entities e
+            JOIN categories c ON c.id = e.category_id
+            WHERE e.id = $1
+            "#,
+            entity_id,
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(AppError::Database)?;
+
         // Commit the transaction if all operations succeeded
         tx.commit().await.map_err(AppError::Database)?;
 
-        created_entity.tags = new_entity.tags;
         Ok(created_entity)
     }
 
@@ -335,8 +389,19 @@ impl AdminEntity {
             .entity_form
             .validate_data(&update.data, update.category_id)?;
 
+        // Handle locations
         // Serialize locations to JSON
         let locations = to_value(update.locations).unwrap();
+        sqlx::query!(
+            r#"
+            SELECT replace_locations_for_entity($1, $2)
+            "#,
+            id,
+            locations,
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(AppError::Database)?;
 
         // Handle the many-to-many relationship for tags
         sqlx::query!(
@@ -350,54 +415,59 @@ impl AdminEntity {
         .await
         .map_err(AppError::Database)?;
 
-        // Update the entity itselfand return the updated record using a CTE
-        let updated_entity = sqlx::query_as!(
-            AdminEntity,
+        sqlx::query!(
             r#"
-            WITH updated AS (
-                UPDATE entities
-                SET 
-                    display_name = $2, 
-                    category_id = $3, 
-                    locations = $4, 
-                    data = $5, 
-                    hidden = $6, 
-                    moderation_notes = $7, 
-                    moderated = $8,
-                    version = $9
-                WHERE id = $1
-                RETURNING *
-            )
-            SELECT 
-                u.id,
-                u.display_name,
-                u.category_id,
-                u.locations AS "locations: Json<Vec<UnprocessedLocation>>",
-                u.data,
-                u.hidden,
-                u.moderation_notes,
-                u.moderated,
-                u.created_at,
-                u.updated_at,
-                u.version,
-                c.family_id,
-                COALESCE(array(
-                    SELECT tag_id
-                    FROM entity_tags
-                    WHERE entity_id = u.id
-                ), array[]::uuid[]) AS "tags!"
-            FROM updated u
-            JOIN categories c ON c.id = u.category_id
+            UPDATE entities
+            SET
+                display_name = $2,
+                category_id = $3,
+                data = $4,
+                hidden = $5,
+                moderation_notes = $6,
+                moderated = $7,
+                version = $8
+            WHERE id = $1
             "#,
             id,
             update.display_name,
             update.category_id,
-            locations,
             update.data,
             update.hidden,
             update.moderation_notes,
             update.moderated,
-            update.version
+            update.version,
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(AppError::Database)?;
+        let updated_entity = sqlx::query_as!(
+            AdminEntity,
+            r#"SELECT 
+                e.id,
+                e.display_name,
+                e.category_id,
+                COALESCE(
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
+                e.data,
+                e.hidden,
+                e.moderation_notes,
+                e.moderated,
+                e.created_at,
+                e.updated_at,
+                e.version,
+                c.family_id,
+                COALESCE(array(
+                    SELECT tag_id
+                    FROM entity_tags
+                    WHERE entity_id = e.id
+                ), array[]::uuid[]) AS "tags!"
+            FROM entities e
+            JOIN categories c ON c.id = e.category_id
+            "#,
         )
         .fetch_one(&mut *tx)
         .await
@@ -517,7 +587,12 @@ impl AdminEntity {
             AdminEntity,
             r#"
             SELECT e.id, c.family_id, e.display_name, e.category_id, 
-                e.locations AS "locations: Json<Vec<UnprocessedLocation>>", 
+                COALESCE(
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
                 e.data, e.hidden, e.moderation_notes, e.moderated, 
                 e.created_at, e.updated_at, e.version,
                 COALESCE(
@@ -528,7 +603,7 @@ impl AdminEntity {
             INNER JOIN categories c ON e.category_id = c.id
             WHERE e.id = $1
             "#,
-            given_id
+            given_id,
         )
         .fetch_one(conn)
         .await
