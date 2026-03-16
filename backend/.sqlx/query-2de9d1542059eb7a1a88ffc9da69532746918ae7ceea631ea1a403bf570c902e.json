@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            WITH inserted AS (\n                INSERT INTO entities (display_name, category_id, locations, data, hidden, moderation_notes, moderated)\n                VALUES ($1, $2, $3, $4, $5, $6, $7)\n                RETURNING *\n            )\n            SELECT \n                i.id,\n                i.display_name,\n                i.category_id,\n                i.locations AS \"locations: Json<Vec<UnprocessedLocation>>\",\n                i.data,\n                i.hidden,\n                i.moderation_notes,\n                i.moderated,\n                i.created_at,\n                i.updated_at,\n                i.version,\n                c.family_id,\n                COALESCE(array(\n                    SELECT tag_id\n                    FROM entity_tags\n                    WHERE entity_id = i.id\n                ), array[]::uuid[]) AS \"tags!\"\n            FROM inserted i\n            JOIN categories c ON c.id = i.category_id\n            ",
+  "query": "SELECT \n                e.id,\n                e.display_name,\n                e.category_id,\n                COALESCE(\n                    (SELECT jsonb_agg(\n                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)\n                    ) FROM locations l WHERE l.entity_id = e.id), \n                    '[]'::jsonb\n                ) AS \"locations!: Json<Vec<Location>>\",\n                e.data,\n                e.hidden,\n                e.moderation_notes,\n                e.moderated,\n                e.created_at,\n                e.updated_at,\n                e.version,\n                c.family_id,\n                COALESCE(array(\n                    SELECT tag_id\n                    FROM entity_tags\n                    WHERE entity_id = e.id\n                ), array[]::uuid[]) AS \"tags!\"\n            FROM entities e\n            JOIN categories c ON c.id = e.category_id\n            ",
   "describe": {
     "columns": [
       {
@@ -20,7 +20,7 @@
       },
       {
         "ordinal": 3,
-        "name": "locations: Json<Vec<UnprocessedLocation>>",
+        "name": "locations!: Json<Vec<Location>>",
         "type_info": "Jsonb"
       },
       {
@@ -70,21 +70,13 @@
       }
     ],
     "parameters": {
-      "Left": [
-        "Text",
-        "Uuid",
-        "Jsonb",
-        "Jsonb",
-        "Bool",
-        "Text",
-        "Bool"
-      ]
+      "Left": []
     },
     "nullable": [
       false,
       false,
       false,
-      false,
+      null,
       false,
       false,
       true,
@@ -96,5 +88,5 @@
       null
     ]
   },
-  "hash": "8690986b3442cedfce1de17432b38892be2fdfe2daee611e8b64970772acb17b"
+  "hash": "2de9d1542059eb7a1a88ffc9da69532746918ae7ceea631ea1a403bf570c902e"
 }

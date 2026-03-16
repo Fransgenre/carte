@@ -2925,7 +2925,7 @@
           "locations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UnprocessedLocation"
+              "$ref": "#/components/schemas/Location"
             }
           },
           "moderated": {
@@ -3003,7 +3003,7 @@
           "locations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UnprocessedLocation"
+              "$ref": "#/components/schemas/Location"
             }
           },
           "moderated": {
@@ -3189,7 +3189,7 @@
           "locations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UnprocessedLocation"
+              "$ref": "#/components/schemas/Location"
             }
           },
           "moderated": {
@@ -3890,6 +3890,27 @@
           }
         }
       },
+      "Location": {
+        "type": "object",
+        "required": [
+          "latitude",
+          "longitude",
+          "address"
+        ],
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "LocationRepresentation": {
         "type": "object",
         "required": [
@@ -4308,7 +4329,7 @@
           "locations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UnprocessedLocation"
+              "$ref": "#/components/schemas/Location"
             }
           },
           "tags": {
@@ -4405,7 +4426,7 @@
           "locations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UnprocessedLocation"
+              "$ref": "#/components/schemas/Location"
             }
           }
         }
@@ -4654,27 +4675,6 @@
           "version": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "UnprocessedLocation": {
-        "type": "object",
-        "required": [
-          "plain_text",
-          "lat",
-          "long"
-        ],
-        "properties": {
-          "lat": {
-            "type": "number",
-            "format": "double"
-          },
-          "long": {
-            "type": "number",
-            "format": "double"
-          },
-          "plain_text": {
-            "type": "string"
           }
         }
       },

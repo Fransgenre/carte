@@ -9,19 +9,12 @@ use uuid::Uuid;
 
 use super::family::Form;
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct UnprocessedLocation {
-    #[serde(deserialize_with = "empty_string_is_invalid")]
-    pub plain_text: String,
-    pub lat: f64,
-    pub long: f64,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
+#[derive(FromRow, Serialize, Deserialize, ToSchema, Debug)]
 pub struct Location {
-    pub latitude: Option<f64>,
-    pub longitude: Option<f64>,
-    pub address: Option<String>,
+    pub latitude: f64,
+    pub longitude: f64,
+    #[serde(deserialize_with = "empty_string_is_invalid")]
+    pub address: String,
 }
 
 #[derive(Deserialize, Serialize, ToSchema, Debug)]
@@ -29,7 +22,7 @@ pub struct PublicNewEntity {
     #[serde(deserialize_with = "empty_string_is_invalid")]
     pub display_name: String,
     pub category_id: Uuid,
-    pub locations: Vec<UnprocessedLocation>,
+    pub locations: Vec<Location>,
     pub data: Value,
 }
 
@@ -47,8 +40,8 @@ pub struct PublicEntity {
     pub display_name: String,
     pub category_id: Uuid,
     pub family_id: Uuid,
-    #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: Vec<Uuid>,
+    #[schema(value_type = Vec<Location>)]
+    pub locations: Json<Vec<Location>>,
     pub data: Value,
     pub tags: Vec<Uuid>,
     #[schema(value_type = Form)]
@@ -121,9 +114,11 @@ impl PublicEntity {
                 e.display_name, 
                 e.data,
                 COALESCE(
-                    (SELECT array_agg(l.id) FROM locations l WHERE l.entity_id = e.id), 
-                    array[]::uuid[]
-                ) AS "locations!",
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
                 e.created_at,
                 e.updated_at,
                 array[]::uuid[] AS "tags!", 
@@ -156,9 +151,11 @@ impl PublicEntity {
                     array[]::uuid[]
                 ) AS "tags!",
                 COALESCE(
-                    (SELECT array_agg(l.id) FROM locations l WHERE l.entity_id = e.id), 
-                    array[]::uuid[]
-                ) AS "locations!",
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
                 f.entity_form AS "entity_form: Json<Form>",
                 f.comment_form AS "comment_form: Json<Form>"
             FROM entities e
@@ -233,8 +230,7 @@ impl PublicEntity {
 pub struct AdminNewOrUpdateEntity {
     pub display_name: String,
     pub category_id: Uuid,
-    #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: Json<Vec<UnprocessedLocation>>,
+    pub locations: Vec<Location>,
     pub data: Value,
     pub tags: Vec<Uuid>,
     pub hidden: bool,
@@ -261,8 +257,8 @@ pub struct AdminEntity {
     pub display_name: String,
     pub category_id: Uuid,
     pub family_id: Uuid,
-    #[schema(value_type = Vec<UnprocessedLocation>)]
-    pub locations: Vec<UnprocessedLocation>,
+    #[schema(value_type = Vec<Location>)]
+    pub locations: Json<Vec<Location>>,
     pub data: Value,
     pub tags: Vec<Uuid>,
     pub hidden: bool,
@@ -344,9 +340,11 @@ impl AdminEntity {
                 e.display_name, 
                 e.category_id, 
                 COALESCE(
-                    (SELECT jsonb_agg(l) FROM locations l WHERE l.entity_id = e.id),
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
                     '[]'::jsonb
-                ) AS "locations!",
+                ) AS "locations!: Json<Vec<Location>>",
                 e.data,
                 e.hidden,
                 e.moderation_notes,
@@ -449,9 +447,11 @@ impl AdminEntity {
                 e.display_name,
                 e.category_id,
                 COALESCE(
-                    (SELECT array_agg(l.id) FROM locations l WHERE l.entity_id = e.id), 
-                    array[]::uuid[]
-                ) AS "locations!",
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
                 e.data,
                 e.hidden,
                 e.moderation_notes,
@@ -582,33 +582,17 @@ impl AdminEntity {
         .map_err(AppError::Database)
     }
 
-    pub async fn get_locations(
-        given_id: Uuid,
-        conn: &mut PgConnection,
-    ) -> Result<Vec<Location>, AppError> {
-        sqlx::query_as!(
-            Location,
-            r#"
-            SELECT latitude, longitude, address
-            FROM locations
-            WHERE entity_id = $1
-            "#,
-            given_id,
-        )
-        .fetch_all(conn)
-        .await
-        .map_err(AppError::Database)
-    }
-
     pub async fn get(given_id: Uuid, conn: &mut PgConnection) -> Result<AdminEntity, AppError> {
         sqlx::query_as!(
             AdminEntity,
             r#"
             SELECT e.id, c.family_id, e.display_name, e.category_id, 
                 COALESCE(
-                    (SELECT array_agg(l.id) FROM locations l WHERE l.entity_id = e.id), 
-                    array[]::uuid[]
-                ) AS "locations!",
+                    (SELECT jsonb_agg(
+                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+                    ) FROM locations l WHERE l.entity_id = e.id), 
+                    '[]'::jsonb
+                ) AS "locations!: Json<Vec<Location>>",
                 e.data, e.hidden, e.moderation_notes, e.moderated, 
                 e.created_at, e.updated_at, e.version,
                 COALESCE(

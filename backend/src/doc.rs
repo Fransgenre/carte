@@ -23,8 +23,8 @@ use crate::{
             PublicNewComment,
         },
         entity::{
-            AdminEntity, AdminListedEntity, AdminNewOrUpdateEntity, PublicEntity,
-            PublicListedEntity, PublicNewEntity, UnprocessedLocation,
+            AdminEntity, AdminListedEntity, AdminNewOrUpdateEntity, Location, PublicEntity,
+            PublicListedEntity, PublicNewEntity,
         },
         entity_cache::{
             AdminCachedEntitiesWithPagination, AdminCachedEntity, Cluster, EntitiesAndClusters,
@@ -169,7 +169,7 @@ use utoipa::OpenApi;
         AdminCachedEntity,
         Cluster,
         EntitiesAndClusters,
-        UnprocessedLocation,
+        Location,
         AdminSearchRequest,
         PublicNewEntityResponse,
         // comments

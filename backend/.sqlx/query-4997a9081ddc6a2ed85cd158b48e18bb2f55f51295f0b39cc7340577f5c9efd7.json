@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            WITH inserted AS (\n                INSERT INTO entities (display_name, category_id, locations, data)\n                VALUES ($1, $2, $3, $4)\n                RETURNING *\n            ) \n            SELECT \n                i.id, \n                i.category_id, \n                i.display_name, \n                i.data,\n                i.locations AS \"locations: Json<Vec<UnprocessedLocation>>\",\n                i.created_at,\n                i.updated_at,\n                array[]::uuid[] AS \"tags!\", \n                c.family_id,\n                f.entity_form AS \"entity_form: Json<Form>\", \n                f.comment_form AS \"comment_form: Json<Form>\"\n            FROM inserted i\n            JOIN categories c ON c.id = i.category_id\n            JOIN families f ON f.id = c.family_id\n            ",
+  "query": "SELECT \n                e.id, \n                e.category_id, \n                e.display_name, \n                e.data,\n                COALESCE(\n                    (SELECT jsonb_agg(\n                        jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)\n                    ) FROM locations l WHERE l.entity_id = e.id), \n                    '[]'::jsonb\n                ) AS \"locations!: Json<Vec<Location>>\",\n                e.created_at,\n                e.updated_at,\n                array[]::uuid[] AS \"tags!\", \n                c.family_id,\n                f.entity_form AS \"entity_form: Json<Form>\", \n                f.comment_form AS \"comment_form: Json<Form>\"\n            FROM entities e\n            JOIN categories c ON c.id = e.category_id\n            JOIN families f ON f.id = c.family_id\n            WHERE e.id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -25,7 +25,7 @@
       },
       {
         "ordinal": 4,
-        "name": "locations: Json<Vec<UnprocessedLocation>>",
+        "name": "locations!: Json<Vec<Location>>",
         "type_info": "Jsonb"
       },
       {
@@ -61,10 +61,7 @@
     ],
     "parameters": {
       "Left": [
-        "Text",
-        "Uuid",
-        "Jsonb",
-        "Jsonb"
+        "Uuid"
       ]
     },
     "nullable": [
@@ -72,7 +69,7 @@
       false,
       false,
       false,
-      false,
+      null,
       false,
       false,
       null,
@@ -81,5 +78,5 @@
       false
     ]
   },
-  "hash": "3775dfc21e07361d7e0d4915fdb35c03403e04a2f1149f05ced03dbde368b1ed"
+  "hash": "4997a9081ddc6a2ed85cd158b48e18bb2f55f51295f0b39cc7340577f5c9efd7"
 }

@@ -39,17 +39,17 @@ export async function validatePublicListedEntities(db: IDbLike) {
   console.info('Found ', valid, ' valid publiclistedentities, and ', invalid, ' invalid publiclistedentities, total ', valid + invalid, ' publiclistedentities')
 }
 
-export const UnprocessedLocationSchema = z.object({
-  plain_text: z.string().nonempty(),
-  lat: z.float64(),
-  long: z.float64(),
+export const LocationSchema = z.object({
+  latitude: z.float64(),
+  longitude: z.float64(),
+  address: z.string().nonempty(),
 })
 
-export type UnprocessedLocation = z.infer<typeof UnprocessedLocationSchema>
+export type Location = z.infer<typeof LocationSchema>
 
 export const PublicEntitySchema = PublicListedEntitySchema.extend({
   family_id: z.uuid(),
-  locations: z.array(UnprocessedLocationSchema),
+  locations: z.array(LocationSchema),
   data: z.looseObject({}),
   entity_form: FormSchema,
   comment_form: FormSchema,
@@ -68,6 +68,12 @@ export async function validatePublicEntities(db: IDbLike) {
           (SELECT array_agg(t.tag_id) FROM entity_tags t WHERE t.entity_id = e.id), 
             array[]::uuid[]
       ) AS tags,
+      COALESCE(
+        (SELECT jsonb_agg(
+          jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+        ) FROM locations l WHERE l.entity_id = e.id), 
+        '[]'::jsonb
+      ) AS "locations",
       f.entity_form AS entity_form,
       f.comment_form AS comment_form
     FROM entities e
@@ -123,7 +129,7 @@ export async function validateAdminListedEntities(db: IDbLike) {
 
 export const AdminEntitySchema = AdminListedEntitySchema.extend({
   family_id: z.uuid(),
-  locations: z.array(UnprocessedLocationSchema),
+  locations: z.array(LocationSchema),
   data: z.looseObject({}),
   entity_form: FormSchema,
   comment_form: FormSchema,
@@ -146,6 +152,12 @@ export async function validateAdminEntities(db: IDbLike) {
           (SELECT array_agg(t.tag_id) FROM entity_tags t WHERE t.entity_id = e.id), 
             array[]::uuid[]
       ) AS tags,
+      COALESCE(
+        (SELECT jsonb_agg(
+          jsonb_build_object('address', l.address, 'latitude', l.latitude, 'longitude', l.longitude)
+        ) FROM locations l WHERE l.entity_id = e.id), 
+        '[]'::jsonb
+      ) AS "locations",
       f.entity_form AS entity_form,
       f.comment_form AS comment_form
     FROM entities e

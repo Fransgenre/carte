@@ -13,7 +13,7 @@
     :value="props.locations"
   >
     <Column
-      field="plain_text"
+      field="address"
       header="Adresses"
       sortable
     />
@@ -55,10 +55,10 @@
 </template>
 
 <script setup lang="ts">
-import type { UnprocessedLocation } from '~/lib'
+import type { Location } from '~/lib'
 
 const props = defineProps<{
-  locations: UnprocessedLocation[]
+  locations: Location[]
 }>()
 
 const emit = defineEmits(['update:locations'])
@@ -68,7 +68,7 @@ const toast = useToast()
 const displayAddressDialog = ref(false)
 
 const editedIndex = ref<number | undefined>()
-const editedLocation = ref<UnprocessedLocation | undefined>()
+const editedLocation = ref<Location | undefined>()
 
 function addNewAddress() {
   editedIndex.value = undefined
@@ -88,9 +88,9 @@ function removeAddress(index: number) {
   emit('update:locations', locations)
 }
 
-function onAddressSelected(address: UnprocessedLocation) {
+function onAddressSelected(address: Location) {
   const isDuplicate = props.locations.some((loc, index) => {
-    return index != editedIndex.value && loc.plain_text == address.plain_text
+    return index != editedIndex.value && loc.address == address.address
   })
   if (isDuplicate) {
     toast.add({ severity: 'error', summary: 'Erreur', detail: `Addresse déjà présente`, life: 3000 })

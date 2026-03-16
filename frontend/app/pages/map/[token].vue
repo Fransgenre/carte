@@ -156,7 +156,7 @@ onMounted(async () => {
     if (hasEntity && entity.locations[0]) {
       // The entity is loaded, its infos are displayed and it has a location
       // Go to the entity location optionally using the given zoom
-      goToGpsCoordinates([entity.locations[0].long, entity.locations[0].lat], customStartZoom)
+      goToGpsCoordinates([entity.locations[0].longitude, entity.locations[0].latitude], customStartZoom)
     }
     else if (customStartCenter) {
       // Either the entity isn't loaded or it doesn't have a location, fallback to the custom location (and optional zoom) provided

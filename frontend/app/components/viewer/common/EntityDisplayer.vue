@@ -82,9 +82,9 @@
             <ul class="list-disc list-inside">
               <li
                 v-for="location in props.entity?.entity.locations"
-                :key="location.plain_text"
+                :key="location.address"
               >
-                {{ location.plain_text }}
+                {{ location.address }}
               </li>
             </ul>
           </Fieldset>
