@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            UPDATE tags\n            SET title = $2, is_filter = $3, is_primary_filter = $4, filter_description = $5, \n                default_filter_status = $6, version = $7, fill_color = $8, border_color = $9\n            WHERE id = $1\n            RETURNING id, title, is_filter, is_primary_filter, filter_description, \n                default_filter_status, version, fill_color, border_color\n            ",
+  "query": "\n            UPDATE tags\n            SET title = $2, is_filter = $3, is_primary_filter = $4, filter_description = $5, \n                default_filter_status = $6, version = $7, fill_color = $8, border_color = $9,\n                message_text = $10, message_type = ($11::text)::admonition_type\n            WHERE id = $1\n            RETURNING id, title, is_filter, is_primary_filter, filter_description, \n                default_filter_status, version, fill_color, border_color,\n                message_text, message_type AS \"message_type: AdmonitionType\"\n            ",
   "describe": {
     "columns": [
       {
@@ -47,6 +47,29 @@
         "ordinal": 8,
         "name": "border_color",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "message_text",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "message_type: AdmonitionType",
+        "type_info": {
+          "Custom": {
+            "name": "admonition_type",
+            "kind": {
+              "Enum": [
+                "neutral",
+                "info",
+                "success",
+                "fail",
+                "warning"
+              ]
+            }
+          }
+        }
       }
     ],
     "parameters": {
@@ -59,7 +82,9 @@
         "Bool",
         "Int4",
         "Varchar",
-        "Varchar"
+        "Varchar",
+        "Text",
+        "Text"
       ]
     },
     "nullable": [
@@ -71,8 +96,10 @@
       false,
       false,
       false,
-      false
+      false,
+      true,
+      true
     ]
   },
-  "hash": "e4bcd40211792477d6dff5d1d64d5b5b6ae3904d613c8285f750a8c6b5bd8e25"
+  "hash": "672d5f0310d405b3fad7ba825df7f0146afe52d4143cc20ce215e5edf524ee5b"
 }

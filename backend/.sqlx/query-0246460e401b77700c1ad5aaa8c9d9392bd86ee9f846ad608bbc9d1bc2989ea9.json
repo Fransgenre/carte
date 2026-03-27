@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT id, title, is_filter, is_primary_filter, filter_description, \n                default_filter_status, version, fill_color, border_color\n            FROM tags\n            WHERE id = $1\n            ",
+  "query": "\n            SELECT id, title, is_filter, is_primary_filter, filter_description, \n                default_filter_status, version, fill_color, border_color,\n                message_text, message_type AS \"message_type: AdmonitionType\"\n            FROM tags\n            WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -47,6 +47,29 @@
         "ordinal": 8,
         "name": "border_color",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "message_text",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "message_type: AdmonitionType",
+        "type_info": {
+          "Custom": {
+            "name": "admonition_type",
+            "kind": {
+              "Enum": [
+                "neutral",
+                "info",
+                "success",
+                "fail",
+                "warning"
+              ]
+            }
+          }
+        }
       }
     ],
     "parameters": {
@@ -63,8 +86,10 @@
       false,
       false,
       false,
-      false
+      false,
+      true,
+      true
     ]
   },
-  "hash": "73773148b323ae294e78a121105d0f02f74cb91cc91ad87e33880e15996e7419"
+  "hash": "0246460e401b77700c1ad5aaa8c9d9392bd86ee9f846ad608bbc9d1bc2989ea9"
 }
