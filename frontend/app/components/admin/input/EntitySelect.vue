@@ -16,13 +16,13 @@
       >
         <InputText
           v-model="search_query"
-          placeholder="Tapez votre recherche ici"
+          :placeholder="$t('cmp.admin.input.entitySelect.placeholder')"
         />
 
         <Button
           type="button"
           severity="warn"
-          label="Filtres"
+          :label="$t('cmp.admin.input.entitySelect.filters')"
           @click="(event: Event) => filters_overlay?.toggle(event)"
         >
           <template #icon>
@@ -63,13 +63,13 @@
     <div class="flex justify-end gap-2">
       <Button
         type="button"
-        label="Annuler"
+        :label="$t('cmp.admin.input.entitySelect.cancel')"
         severity="secondary"
         @click="emit('update:visible', false)"
       />
       <Button
         type="button"
-        label="Confirmer"
+        :label="$t('cmp.admin.input.entitySelect.confirm')"
         :disabled="!Object.hasOwn(chosenEntity, 'display_name')"
         @click="() => {
           emit('update:visible', false)
@@ -107,7 +107,7 @@ const props = withDefaults(defineProps<{
   visible: boolean
   previousEntityId?: string
 }>(), {
-  title: 'Choix d\'une entité',
+  title: () => useI18n().t('cmp.admin.input.entitySelect.title'),
 })
 
 const filters_overlay = useTemplateRef('filters_overlay')

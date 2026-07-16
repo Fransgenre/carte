@@ -4,11 +4,11 @@
       <InputGroup class="mb-6 mt-2">
         <InputText
           v-model="search"
-          placeholder="Rechercher une adresse"
+          :placeholder="$t('cmp.addressPicker.searchAddress')"
         />
         <Button
           v-tooltip.bottom="'Lancer la recherche'"
-          aria-label="Lancer la recherche"
+          :aria-label="$t('cmp.addressPicker.startSearch')"
           severity="primary"
           type="submit"
         >
@@ -21,7 +21,7 @@
 
     <div v-if="searched && !nominatimResult">
       <Message severity="error">
-        Aucun résultat trouvé
+        {{ $t('cmp.addressPicker.noResults') }}
       </Message>
     </div>
     <div v-else-if="nominatimResult">
@@ -44,7 +44,7 @@
         <template #icon>
           <AppIcon icon-name="information" />
         </template>
-        <span class="ml-2">Cliquer sur la carte pour déplacer le point si besoin.</span>
+        <span class="ml-2">{{ $t('cmp.addressPicker.movePoint') }}</span>
       </Message>
     </div>
 
@@ -53,7 +53,7 @@
         id="address_name"
         v-model="name"
         class="mt-6"
-        label="Intitulé complet de l'adresse"
+        :label="$t('cmp.addressPicker.fullAddress')"
       />
     </div>
   </div>

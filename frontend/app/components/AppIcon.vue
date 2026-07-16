@@ -82,6 +82,7 @@ const iconDict: Record<string, string> = {
   externalLink: mdi.mdiOpenInNew,
   expandAll: mdi.mdiExpandAll,
   collapseAll: mdi.mdiCollapseAll,
+  i18n: mdi.mdiTranslate,
 }
 </script>
 

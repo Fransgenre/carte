@@ -261,6 +261,18 @@ export class AppState {
   get countsByCategory() {
     return this.countsByCategoryData ?? {}
   }
+
+  // Tables local storage
+  registerTable(tableKey: string, selectedColumKeys: string[]) {
+    if (!(tableKey in state.tablesSelectedColumns)) {
+      this.tablesSelectedColumns[tableKey] = selectedColumKeys
+    }
+    if (!(tableKey in state.tablesFilters)) {
+      this.tablesFilters[tableKey] = {
+        global: { value: null, matchMode: 'contains' },
+      }
+    }
+  }
 }
 
 const state = reactive(new AppState())

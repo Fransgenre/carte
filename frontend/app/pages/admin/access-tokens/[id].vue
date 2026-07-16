@@ -6,7 +6,7 @@
     <AdminInputTextField
       id="title"
       v-model="editedAccessToken.title"
-      label="Titre"
+      :label="$t('page.admin.accessTokens.id.title')"
       :variant="hasBeenEdited('title')"
     />
 
@@ -14,10 +14,10 @@
       <AdminInputTextField
         id="token"
         v-model="editedAccessToken.token"
-        label="Jeton"
+        :label="$t('page.admin.accessTokens.id.token')"
         :variant="hasBeenEdited('token')"
         class="flex-1"
-        helper-text="(utilisé dans l'url d'accès après /map/ ou /search/)"
+        :helper-text="$t('page.admin.accessTokens.id.tokenHelperText')"
       />
 
       <Button
@@ -25,7 +25,7 @@
         rounded
         type="button"
         class="mx-2"
-        aria-label="générer un UUID"
+        :aria-label="$t('page.admin.accessTokens.id.generateUuid')"
         style="align-self: flex-start; margin-top: 2rem;"
         @click="generateUUID"
       >
@@ -38,7 +38,7 @@
     <AdminInputSwitchField
       id="active"
       v-model="editedAccessToken.active"
-      label="Actif"
+      :label="$t('page.admin.accessTokens.id.active')"
     />
 
     <Divider class="!my-2" />
@@ -46,34 +46,34 @@
     <AdminInputSwitchField
       id="list_entities"
       v-model="editedAccessToken.permissions.can_list_entities"
-      label="Permission de lister les entités"
-      helper-text="Comprend le nom, la catégorie, les tags, les parents, les adresses et la date de création de chaque entité"
+      :label="$t('page.admin.accessTokens.id.canListEntities')"
+      :helper-text="$t('page.admin.accessTokens.id.canListEntitiesHelperText')"
     />
 
     <AdminInputSwitchField
       id="access_entities"
       v-model="editedAccessToken.permissions.can_access_entity"
-      label="Permission de consulter les entités"
+      :label="$t('page.admin.accessTokens.id.canAccessEntities')"
       :disabled="!editedAccessToken.permissions.can_list_entities"
     />
 
     <AdminInputSwitchField
       id="add_entity"
       v-model="editedAccessToken.permissions.can_add_entity"
-      label="Permission d'ajouter une entité"
+      :label="$t('page.admin.accessTokens.id.canAddEntities')"
     />
 
     <AdminInputSwitchField
       id="access_comments"
       v-model="editedAccessToken.permissions.can_access_comments"
-      label="Permission de lister et consulter les commentaires"
+      :label="$t('page.admin.accessTokens.id.canAccessComments')"
       :disabled="!editedAccessToken.permissions.can_access_entity"
     />
 
     <AdminInputSwitchField
       id="add_comment"
       v-model="editedAccessToken.permissions.can_add_comment"
-      label="Permission d'ajouter un commentaire"
+      :label="$t('page.admin.accessTokens.id.canAddComments')"
       :disabled="!editedAccessToken.permissions.can_list_entities && !editedAccessToken.permissions.can_add_entity"
     />
 
@@ -82,20 +82,20 @@
     <AdminInputSwitchField
       id="list_entities"
       v-model="editedAccessToken.permissions.can_list_without_query"
-      label="Permission de lister textuellement les entités avec une recherche vide"
-      helper-text="Si désactivée mais que le listage est activé, 4 caractères minimum seront nécessaires pour réaliser une recherche"
+      :label="$t('page.admin.accessTokens.id.canListWithoutQuery')"
+      :helper-text="$t('page.admin.accessTokens.id.canListWithoutQueryHelperText')"
     />
 
     <AdminInputSwitchField
       id="list_entities"
       v-model="editedAccessToken.permissions.can_list_with_filters"
-      label="Permission de filtrer les entités par tags"
+      :label="$t('page.admin.accessTokens.id.canListWithFilters')"
     />
 
     <AdminInputSwitchField
       id="list_entities"
       v-model="editedAccessToken.permissions.can_list_with_enum_constraints"
-      label="Permission de filtrer les entités par contraintes sur les réponses au formulaire d'entité"
+      :label="$t('page.admin.accessTokens.id.canListWithEnumConstraints')"
     />
 
     <Divider class="!my-2" />
@@ -103,7 +103,7 @@
     <AdminInputPolicyPermissionField
       v-model="editedAccessToken.permissions.families_policy"
       :policy-name="'families_policy'"
-      :label="'familles'"
+      :label="$t('page.admin.accessTokens.id.families')"
       :options="families"
     />
 
@@ -112,7 +112,7 @@
     <AdminInputPolicyPermissionField
       v-model="editedAccessToken.permissions.categories_policy"
       :policy-name="'categories_policy'"
-      :label="'catégories'"
+      :label="$t('page.admin.accessTokens.id.categories')"
       :options="categories"
     />
 
@@ -121,7 +121,7 @@
     <AdminInputPolicyPermissionField
       v-model="editedAccessToken.permissions.tags_policy"
       :policy-name="'tags_policy'"
-      :label="'tags'"
+      :label="$t('page.admin.accessTokens.id.tags')"
       :options="tags"
     />
 
@@ -130,12 +130,12 @@
     <AdminInputSwitchField
       id="geographic_restriction"
       v-model="geographicRestrictionsOn"
-      label="Restreindre géographiquement"
+      :label="$t('page.admin.accessTokens.id.geographicRestriction')"
     />
     <span>
       <Button
         v-if="geographicRestrictionsOn"
-        label="Définir les restrictions"
+        :label="$t('page.admin.accessTokens.id.saveGeographicRestriction')"
         @click="() => polygonDrawer!.show()"
       />
     </span>
@@ -149,14 +149,14 @@
     <span class="flex gap-1 justify-end">
       <NuxtLink to="/admin/access-tokens">
         <Button
-          label="Annuler"
+          :label="$t('page.admin.accessTokens.id.cancel')"
           severity="secondary"
           :loading="processingRequest"
           :disabled="processingRequest"
         />
       </NuxtLink>
       <Button
-        label="Sauvegarder"
+        :label="$t('page.admin.accessTokens.id.save')"
         type="submit"
         :loading="processingRequest"
         :disabled="isDisabled()"
@@ -171,6 +171,8 @@ import type { NewOrUpdateAccessToken, Permissions } from '~/lib'
 import state from '~/lib/admin-state'
 import { isValidText } from '~/lib/validation'
 import type PolygonDrawerComponent from '~/components/PolygonDrawer.vue'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -265,15 +267,15 @@ watch(
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  isNew ? `Édition d'un nouveau jeton` : `Édition du jeton ${fetchedAccessToken!.title}`,
+  isNew ? t('page.admin.accessTokens.id.newTokenTitle') : t('page.admin.accessTokens.id.editTokenTitle', { title: fetchedAccessToken!.title }),
   'accessToken',
   [],
   [
-    { label: 'Jetons d\'accès', url: '/admin/access-tokens' },
+    { label: t('page.admin.accessTokens.id.breadCrumb'), url: '/admin/access-tokens' },
     (
       isNew
-        ? { label: `Édition d'un nouveau jeton`, url: `/admin/access-tokens/new` }
-        : { label: `Édition du jeton ${fetchedAccessToken!.title}`, url: `/admin/access-tokens/${accessTokenId}` }
+        ? { label: t('page.admin.accessTokens.id.newTokenTitle'), url: `/admin/access-tokens/new` }
+        : { label: t('page.admin.accessTokens.id.editTokenTitle', { title: fetchedAccessToken!.title }), url: `/admin/access-tokens/${accessTokenId}` }
     ),
   ],
 )
@@ -299,17 +301,32 @@ async function onSave() {
 
     if (isNew) {
       await state.client.createAccessToken(editedAccessToken.value)
-      toast.add({ severity: 'success', summary: 'Succès', detail: 'Jeton créé avec succès', life: 3000 })
+      toast.add({
+        severity: 'success',
+        summary: t('page.admin.accessTokens.id.success'),
+        detail: t('page.admin.accessTokens.id.createTokenSuccess'),
+        life: 3000,
+      })
     }
     else {
       await state.client.updateAccessToken(accessTokenId, editedAccessToken.value)
-      toast.add({ severity: 'success', summary: 'Succès', detail: 'Jeton modifié avec succès', life: 3000 })
+      toast.add({
+        severity: 'success',
+        summary: t('page.admin.accessTokens.id.success'),
+        detail: t('page.admin.accessTokens.id.editTokenSuccess'),
+        life: 3000,
+      })
     }
 
     navigateTo('/admin/access-tokens')
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur de modification du jeton', life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.accessTokens.id.error'),
+      detail: t('page.admin.accessTokens.id.editTokenError'),
+      life: 3000,
+    })
   }
   processingRequest.value = false
 }

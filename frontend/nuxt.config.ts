@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
+    '@nuxtjs/i18n',
   ],
   ssr: false,
   devtools: { enabled: true },
@@ -43,6 +44,36 @@ export default defineNuxtConfig({
   eslint: {
     config: {
       stylistic: true,
+    },
+  },
+  i18n: {
+    locales: [
+      {
+        code: 'en',
+        name: 'English',
+        file: 'en.json',
+      },
+      {
+        code: 'fr',
+        name: 'Français',
+        file: 'fr.json',
+      },
+      {
+        code: 'it',
+        name: 'Italiano',
+        file: 'it.json',
+      },
+    ],
+    langDir: 'locales/',
+    lazy: true,
+    strategy: 'no_prefix',
+    defaultLocale: 'en',
+
+    detectBrowserLanguage: {
+      useCookie: true, // Use a cookie to remember the user's chosen language
+      cookieKey: 'i18n_redirected',
+      alwaysRedirect: true, // Always redirect to browser locale if it's different
+      fallbackLocale: 'en', // Fallback if no match is found or browser locale unsupported
     },
   },
   primevue: {

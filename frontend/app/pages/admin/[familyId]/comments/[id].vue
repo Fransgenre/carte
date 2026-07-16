@@ -7,16 +7,16 @@
       <AdminInputTextField
         id="author"
         v-model="editedComment.author"
-        label="Auteurice"
+        :label="$t('page.admin.familyId.comments.id.author')"
         :variant="hasBeenEdited('author')"
       />
 
       <div class="flex flex-col gap-2">
-        <label for="comment_text">Texte du commentaire <RequiredIndicator /></label>
+        <label for="comment_text">{{ $t('page.admin.familyId.comments.id.commentText') }} <RequiredIndicator /></label>
         <ViewerRichTextEditor
           id="comment_text"
           v-model="editedComment.text"
-          label="Texte du commentaire"
+          :label="$t('page.admin.familyId.comments.id.commentText')"
         />
       </div>
 
@@ -31,25 +31,26 @@
     </div>
 
     <div class="flex flex-col grow gap-4 max-w-[30rem]">
-      <span v-if="!isNew">Commentaire créé le
-        {{ Intl.DateTimeFormat('fr-FR', {
+      <span v-if="!isNew">
+        {{ $t('page.admin.familyId.comments.id.createdAt', { date: $d(new Date(fetchedComment!.created_at), {
           dateStyle: 'long',
           timeStyle: 'short',
-        }).format(new Date(fetchedComment!.created_at)) }}, mise à jour pour la dernière fois le
-        {{ Intl.DateTimeFormat('fr-FR', {
+        }) }) }},
+        {{ $t('page.admin.familyId.comments.id.updatedAt', { date: $d(new Date(fetchedComment!.updated_at), {
           dateStyle: 'long',
           timeStyle: 'short',
-        }).format(new Date(fetchedComment!.updated_at)) }}
+        }) }) }}
       </span>
       <span>
-        Rattaché à {{ parentEntityToDisplay?.display_name }} <CategoryTag
+        {{ $t('page.admin.familyId.comments.id.attachedTo', { entity: parentEntityToDisplay?.display_name }) }}
+        <CategoryTag
           v-if="parentEntityToDisplay?.category_id"
           :category="state.categoryRecord[parentEntityToDisplay!.category_id]!"
         />
 
       </span>
       <Button
-        label="Modifier l'entité de rattachement"
+        :label="$t('page.admin.familyId.comments.id.changeEntity')"
         outlined
         @click="entitySelectVisible=true"
       />
@@ -66,12 +67,12 @@
           target="_blank"
         >
           <AppIcon icon-name="externalLink" />
-          Aller à l'entité de rattachement
+          {{ $t('page.admin.familyId.comments.id.goToEntity') }}
         </NuxtLink>
       </Button>
       <AdminInputEntitySelect
         v-model:visible="entitySelectVisible"
-        title="Choix de l'entité de rattachement du commentaire"
+        :title="$t('page.admin.familyId.comments.id.entityChangeTitle')"
         :categories="categories"
         :tags="tags"
         :family-id="familyId"
@@ -86,20 +87,20 @@
       <AdminInputSwitchField
         id="moderated"
         v-model="editedComment.moderated"
-        label="Modérée"
-        helper-text="Si activé, cette entité quittera la liste des entités en attente et sera rendue publique."
+        :label="$t('page.admin.familyId.comments.id.moderated')"
+        :helper-text="$t('page.admin.familyId.comments.id.moderatedHelperText')"
       />
       <span class="flex gap-1 justify-end">
         <NuxtLink :to="returnUrl">
           <Button
-            label="Annuler"
+            :label="$t('page.admin.familyId.comments.id.cancel')"
             severity="secondary"
             :disabled="processingRequest"
             :loading="processingRequest"
           />
         </NuxtLink>
         <Button
-          label="Sauvegarder"
+          :label="$t('page.admin.familyId.comments.id.save')"
           type="submit"
           :loading="processingRequest"
           :disabled="processingRequest || !editedComment.author || !editedComment.text || !editedComment.entity_id"
@@ -114,6 +115,8 @@ import type { LocationQueryValue } from 'vue-router'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { AdminNewOrUpdateComment, AdminComment, EntityOrCommentData, FormField } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -173,15 +176,17 @@ const entitySelectVisible = ref(false)
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  isNew ? `Nouveau commentaire` : `Édition du commentaire de ${fetchedComment!.author}`,
+  isNew ? t('page.admin.familyId.comments.id.newCommentTitle') : t('page.admin.familyId.comments.id.editCommentTitle', { author: fetchedComment!.author }),
   'comment',
   [],
   [
     { label: `${family.title}`, url: '/admin/families' },
-    { label: urlEntityId ? `Commentaires de l'entité ${parentEntityToDisplay.value.display_name}` : `Commentaires en attente`, url: returnUrl.value },
+    { label: urlEntityId
+      ? t('page.admin.familyId.comments.id.entityCommentsBreadcrumb', { entity: parentEntityToDisplay.value.display_name })
+      : t('page.admin.familyId.comments.id.pendingCommentsBreadcrumb'), url: returnUrl.value },
     isNew
-      ? { label: `Nouveau commentaire`, url: `/admin/${familyId}/comments/new` }
-      : { label: `Édition d'un commentaire`, url: `/admin/${familyId}/comments/${commentId}` },
+      ? { label: t('page.admin.familyId.comments.id.newCommentBreadcrumb'), url: `/admin/${familyId}/comments/new` }
+      : { label: t('page.admin.familyId.comments.id.editCommentBreadcrumb'), url: `/admin/${familyId}/comments/${commentId}` },
   ],
 )
 
@@ -199,10 +204,20 @@ async function onSave() {
       await state.client.updateComment(commentId, editedComment.value)
     }
     navigateTo(returnUrl.value)
-    toast.add({ severity: 'success', summary: 'Succès', detail: 'Commentaire modifié avec succès', life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.familyId.comments.id.success'),
+      detail: t('page.admin.familyId.comments.id.editSuccess'),
+      life: 3000,
+    })
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur de modification du commentaire', life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.familyId.comments.id.error'),
+      detail: t('page.admin.familyId.comments.id.editError'),
+      life: 3000,
+    })
   }
   processingRequest.value = false
 }

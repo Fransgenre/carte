@@ -6,21 +6,21 @@
     <AdminInputTextField
       id="title"
       v-model="editedFamily.title"
-      label="Titre"
+      :label="$t('page.admin.families.id.general.familyName')"
       :variant="hasBeenEdited('title')"
     />
 
     <AdminInputTextField
       id="entity_form_title"
       v-model="editedFamily.entity_form.title"
-      label="Titre du formulaire d'ajout d'entité"
+      :label="$t('page.admin.families.id.general.entityFormTitle')"
       :variant="editedFamily.entity_form.title !== fetchedFamily.entity_form.title"
     />
 
     <AdminInputTextField
       id="entity_form_title"
       v-model="editedFamily.entity_form.help"
-      label="Texte d'aide du formulaire d'ajout d'entité"
+      :label="$t('page.admin.families.id.general.entityFormHelp')"
       :variant="editedFamily.entity_form.help !== fetchedFamily.entity_form.help"
       text-length="long"
     />
@@ -28,14 +28,14 @@
     <AdminInputTextField
       id="comment_form_title"
       v-model="editedFamily.comment_form.title"
-      label="Titre du formulaire d'ajout de commentaire"
+      :label="$t('page.admin.families.id.general.commentFormTitle')"
       :variant="editedFamily.comment_form.title !== fetchedFamily.comment_form.title"
     />
 
     <AdminInputTextField
       id="comment_form_help"
       v-model="editedFamily.comment_form.help"
-      label="Texte d'aide du formulaire d'ajout de commentaire"
+      :label="$t('page.admin.families.id.general.commentFormHelp')"
       :variant="editedFamily.comment_form.help !== fetchedFamily.comment_form.help"
       text-length="long"
     />
@@ -47,7 +47,7 @@
         :options="Array.from({ length: state.families.length }, (_, i) => i + 1)"
         class="w-full md:w-56"
       />
-      <label for="sort_order">Ordre d'affichage parmi les familles</label>
+      <label for="sort_order">{{ $t('page.admin.families.id.general.sortOrder') }}</label>
     </span>
 
     <AdminInputIconUpload
@@ -57,14 +57,14 @@
     <span class="flex gap-1 justify-end">
       <NuxtLink to="/admin/families">
         <Button
-          label="Annuler"
+          :label="$t('page.admin.families.id.general.cancel')"
           severity="secondary"
           :loading="processingRequest"
           :disabled="processingRequest"
         />
       </NuxtLink>
       <Button
-        label="Sauvegarder"
+        :label="$t('page.admin.families.id.general.save')"
         type="submit"
         :loading="processingRequest"
         :disabled="processingRequest || !editedFamily.title || !editedFamily.comment_form.title || !editedFamily.entity_form.title"
@@ -77,6 +77,8 @@
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { NewOrUpdateFamily } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -95,12 +97,12 @@ const toast = useToast()
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Édition de la famille ${fetchedFamily.title}`,
+  t('page.admin.families.id.general.title', { title: fetchedFamily.title }),
   'family',
   [],
   [
-    { label: 'Familles', url: '/admin/families' },
-    { label: `Édition de l'affichage de la famille ${fetchedFamily.title}`, url: `/admin/families/${id}/general` },
+    { label: t('page.admin.families.id.general.families'), url: '/admin/families' },
+    { label: t('page.admin.families.id.general.title', { title: fetchedFamily.title }), url: `/admin/families/${id}/general` },
   ],
 )
 
@@ -113,10 +115,20 @@ async function onSave() {
   try {
     await state.client.updateFamily(id, editedFamily.value)
     navigateTo('/admin/families')
-    toast.add({ severity: 'success', summary: 'Succès', detail: 'Famille modifiée avec succès', life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.families.id.general.success'),
+      detail: t('page.admin.families.id.general.editFamilySuccess'),
+      life: 3000,
+    })
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur de modification de la famille', life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.families.id.general.error'),
+      detail: t('page.admin.families.id.general.editFamilyError'),
+      life: 3000,
+    })
   }
   processingRequest.value = false
 }

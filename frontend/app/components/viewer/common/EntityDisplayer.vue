@@ -6,23 +6,22 @@
           v-if="hasChildren"
           value="0"
         >
-          Rattachés
+          {{ $t('cmp.viewer.common.entityDisplayer.attached') }}
         </Tab>
         <Tab value="1">
-          Informations
+          {{ $t('cmp.viewer.common.entityDisplayer.information') }}
         </Tab>
         <Tab
           v-if="hasParent"
           value="2"
         >
-          Rattachements
+          {{ $t('cmp.viewer.common.entityDisplayer.attachments') }}
         </Tab>
         <Tab
           v-if="hasComments"
           value="3"
         >
-          Commentaire{{ props.entity.comments.length > 1 ? 's' : '' }}
-          ({{ props.entity.comments.length }})
+          {{ $t('cmp.viewer.common.entityDisplayer.comments', { count: props.entity.comments.length }) }}
         </Tab>
       </TabList>
 
@@ -54,7 +53,7 @@
                   severity="secondary"
                   @click="newEntitySelected(child.id)"
                 >
-                  Voir
+                  {{ $t('cmp.viewer.common.entityDisplayer.view') }}
                 </Button>
               </div>
             </template>
@@ -77,7 +76,7 @@
 
           <Fieldset
             v-if="props.entity?.entity.locations.length > 0"
-            :legend="props.entity?.entity.locations.length > 1 ? 'Adresses' : 'Adresse' "
+            :legend="props.entity?.entity.locations.length > 1 ? $t('cmp.viewer.common.entityDisplayer.addresses') : $t('cmp.viewer.common.entityDisplayer.address')"
           >
             <ul class="list-disc list-inside">
               <li
@@ -94,7 +93,7 @@
           -->
           <Fieldset
             v-if="hasScores"
-            legend="Notes"
+            :legend="$t('cmp.viewer.common.entityDisplayer.notes')"
           >
             <div
               v-for="score in discreteScoreAveragesOnComments"
@@ -142,7 +141,7 @@
                   severity="secondary"
                   @click="newEntitySelected(parent.id)"
                 >
-                  Voir
+                  {{ $t('cmp.viewer.common.entityDisplayer.view') }}
                 </Button>
               </div>
             </template>

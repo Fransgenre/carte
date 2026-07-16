@@ -22,7 +22,7 @@
           <AdminInputTextField
             id="display_name"
             v-model="editedEntity.display_name"
-            label="Nom d'affichage"
+            :label="$t('cmp.viewer.entityAddForm.displayName')"
           />
 
           <FormCategorySelect
@@ -46,7 +46,7 @@
                 input-id="include_comment"
                 @change="onIncludeCommentToggle"
               />
-              <label for="include_comment">Inclure un commentaire</label>
+              <label for="include_comment">{{ $t('cmp.viewer.entityAddForm.includeComment') }}</label>
             </span>
           </div>
         </template>
@@ -64,12 +64,12 @@
         <span class="flex gap-1 justify-end">
           <Button
             v-if="page > 0"
-            label="Précédent"
+            :label="$t('cmp.viewer.entityAddForm.previous')"
             outlined
             @click="curr_page -= 1"
           />
           <Button
-            :label="include_comment || curr_page < entityPageCount ? 'Suivant' : 'Sauvegarder'"
+            :label="include_comment || curr_page < entityPageCount ? $t('cmp.viewer.entityAddForm.next') : $t('cmp.viewer.entityAddForm.save')"
             type="submit"
             :outlined="include_comment || curr_page < entityPageCount"
             :disabled="!isEntityPageValid(page)"
@@ -94,15 +94,15 @@
           <AdminInputTextField
             id="author"
             v-model="editedComment.author"
-            label="Auteurice"
+            :label="$t('cmp.viewer.entityAddForm.author')"
           />
 
           <div class="flex flex-col gap-2">
-            <label for="comment_text">Texte du commentaire<RequiredIndicator /></label>
+            <label for="comment_text">{{ $t('cmp.viewer.entityAddForm.commentText') }}<RequiredIndicator /></label>
             <ViewerRichTextEditor
               id="comment_text"
               v-model="editedComment!.text"
-              label="Texte du commentaire"
+              :label="$t('cmp.viewer.entityAddForm.commentText')"
             />
           </div>
         </template>
@@ -122,12 +122,12 @@
           class="flex gap-1 justify-end"
         >
           <Button
-            label="Précédent"
+            :label="$t('cmp.viewer.entityAddForm.previous')"
             outlined
             @click="curr_page -= 1"
           />
           <Button
-            :label="curr_page == lastNonCaptchaPage ? 'Sauvegarder' : 'Suivant'"
+            :label="curr_page == lastNonCaptchaPage ? $t('cmp.viewer.entityAddForm.save') : $t('cmp.viewer.entityAddForm.next')"
             type="submit"
             :outlined="curr_page != lastNonCaptchaPage"
             :loading="processingRequest"
@@ -139,7 +139,7 @@
           class="flex flex-col justify-center items-center "
         >
           <div class="text-center font-bold">
-            Une petite seconde, on doit vérifier que vous n'êtes pas un robot...
+            {{ $t('cmp.viewer.entityAddForm.captchaCheck') }}
           </div>
 
           <div class="m-3">
@@ -265,6 +265,7 @@ watch(
 
 const processingRequest = ref(false)
 const toast = useToast()
+const { t } = useI18n()
 
 function entityFieldsSortedByPage(page: number) {
   return props.family.entity_form.fields
@@ -303,8 +304,8 @@ function hCaptchaVerify(token: string) {
 function hCaptchaExpired() {
   toast.add({
     severity: 'error',
-    summary: 'Erreur',
-    detail: 'Le captcha a expiré',
+    summary: t('cmp.viewer.entityAddForm.error'),
+    detail: t('cmp.viewer.entityAddForm.captchaExpired'),
     life: 3000,
   })
 }
@@ -312,8 +313,8 @@ function hCaptchaExpired() {
 function hCaptchaError() {
   toast.add({
     severity: 'error',
-    summary: 'Erreur',
-    detail: 'Erreur de validation du captcha',
+    summary: t('cmp.viewer.entityAddForm.error'),
+    detail: t('cmp.viewer.entityAddForm.captchaValidationError'),
     life: 3000,
   })
 }
@@ -336,13 +337,21 @@ async function realOnSave(token: string | null) {
       hcaptcha_token: token,
     })
     formVisible.value = false
-    toast.add({ severity: 'success', summary: 'Succès',
-      detail: include_comment.value ? 'Entité et commentaire ajoutés avec succès' : 'Entité ajoutée avec succès', life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('cmp.viewer.entityAddForm.success'),
+      detail: include_comment.value ? t('cmp.viewer.entityAddForm.entityAndCommentSuccess') : t('cmp.viewer.entityAddForm.entitySuccess'),
+      life: 3000,
+    })
     reset_refs()
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur',
-      detail: include_comment.value ? 'Erreur lors de l\'ajout de l\'entité ou du commentaire' : 'Erreur lors de l\'ajout de l\'entité', life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('cmp.viewer.entityAddForm.error'),
+      detail: include_comment.value ? t('cmp.viewer.entityAddForm.entityAndCommentError') : t('cmp.viewer.entityAddForm.entityError'),
+      life: 3000,
+    })
   }
   processingRequest.value = false
 }
@@ -353,15 +362,13 @@ function onIncludeCommentToggle(event: Event) {
     const options: ConfirmationOptions = {
       target: event.currentTarget as HTMLElement,
       group: 'confirm_dialog',
-      message: `Ne pas inclure de commentaire ne vous laissera préciser que des informations générales. 
-      Si vous avez des retours ou une expérience personelle à partager, 
-      il est recommandé d'inclure un commentaire.`,
-      header: 'Confirmation',
+      message: t('cmp.viewer.entityAddForm.confirmationMessage'),
+      header: t('cmp.viewer.entityAddForm.confirmationHeader'),
       icon: 'warning',
       rejectClass: 'p-button-secondary p-button-outlined p-button-sm',
       acceptClass: 'p-button-sm',
-      rejectLabel: 'Ne pas inclure de commentaire',
-      acceptLabel: 'Annuler',
+      rejectLabel: t('cmp.viewer.entityAddForm.rejectLabel'),
+      acceptLabel: t('cmp.viewer.entityAddForm.acceptLabel'),
       reject: () => {},
       accept: () => include_comment.value = true,
       onHide: () => include_comment.value = true,

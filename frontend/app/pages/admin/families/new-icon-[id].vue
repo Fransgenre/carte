@@ -9,7 +9,7 @@
     <span class="flex gap-1 justify-end">
       <NuxtLink :to="`/admin/families`">
         <Button
-          label="Retour à la liste"
+          :label="$t('page.admin.families.newIconId.backToList')"
           severity="secondary"
         />
       </NuxtLink>
@@ -20,6 +20,8 @@
 <script setup lang="ts">
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -34,12 +36,12 @@ const fetchedFamily = await state.fetchFamily(id)
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Édition de l'icône de la catégorie ${fetchedFamily.title}`,
+  t('page.admin.families.newIconId.title', { title: fetchedFamily.title }),
   'family',
   [],
   [
-    { label: 'Familles', url: '/admin/families' },
-    { label: `Édition de l'icône de la famille ${fetchedFamily.title}`, url: `/admin/families/${id}/general` },
+    { label: t('page.admin.families.newIconId.families'), url: '/admin/families' },
+    { label: t('page.admin.families.newIconId.title', { title: fetchedFamily.title }), url: `/admin/families/${id}/general` },
   ],
 )
 </script>

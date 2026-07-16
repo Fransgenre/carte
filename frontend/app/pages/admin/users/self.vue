@@ -3,14 +3,14 @@
     class="flex flex-col gap-4 max-w-[30rem] mx-6"
     @submit.prevent="onSave"
   >
-    <span class="font-medium">Nom d'utilisateur⋅ice: <span class="font-normal"> {{ state.username }} </span></span>
+    <span class="font-medium">{{ $t('page.admin.users.self.username') }}: <span class="font-normal"> {{ state.username }} </span></span>
 
-    <span class="font-medium"> Statut: <span class="font-normal"> {{ state.is_admin ? 'Administrateur⋅ice' : 'Modérateur⋅ice' }} </span></span>
+    <span class="font-medium">{{ $t('page.admin.users.self.state') }}: <span class="font-normal"> {{ state.is_admin ? $t('page.admin.users.self.stateAdmin') : $t('page.admin.users.self.stateModerator') }} </span></span>
 
     <AdminInputSwitchField
       id="editPassword"
       v-model="editPassword"
-      label="Écraser l'ancien mot de passe"
+      :label="$t('page.admin.users.self.editPasswordLabel')"
     />
 
     <div
@@ -22,7 +22,7 @@
         for="password"
         class="font-medium"
       >
-        Nouveau mot de passe :
+        {{ $t('page.admin.users.self.newPasswordLabel') }}:
       </label>
       <Password
         v-model="newPassword"
@@ -37,7 +37,7 @@
         for="passwordConfirm"
         class="font-medium"
       >
-        Confirmer le nouveau mot de passe :
+        {{ $t('page.admin.users.self.newPasswordConfirmLabel') }}:
       </label>
       <Password
         v-model="newPasswordConfirm"
@@ -55,7 +55,7 @@
         to="/admin/"
       >
         <Button
-          label="Revenir à l'accueil"
+          :label="$t('page.admin.users.self.backButton')"
           severity="secondary"
           :loading="processingRequest"
           :disabled="processingRequest"
@@ -63,7 +63,7 @@
       </NuxtLink>
       <Button
         v-if="editPassword"
-        label="Sauvegarder"
+        :label="$t('page.admin.users.self.saveButton')"
         type="submit"
         :loading="processingRequest"
         :disabled="processingRequest || (newPassword!=newPasswordConfirm || !isValidText(newPassword))"
@@ -83,6 +83,7 @@ const newPasswordConfirm = ref('')
 
 const processingRequest = ref(false)
 const toast = useToast()
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -90,11 +91,11 @@ definePageMeta({
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Profil`,
+  t('page.admin.users.self.sectionName'),
   'user',
   [],
   [
-    { label: `Profil`, url: `/admin/users/self` },
+    { label: t('page.admin.users.self.sectionName'), url: `/admin/users/self` },
   ],
 )
 
@@ -103,10 +104,10 @@ async function onSave() {
   try {
     await state.client.changeSelfPassword({ is_admin: state.is_admin!, name: state.username!, password: newPassword.value })
     editPassword.value = false
-    toast.add({ severity: 'success', summary: 'Succès', detail: 'Mot de passe mis à jour avec succès', life: 3000 })
+    toast.add({ severity: 'success', summary: t('page.admin.users.self.editPassword.success.summary'), detail: t('page.admin.users.self.editPassword.success.details'), life: 3000 })
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur de modification de mise à jour du mot de passe ', life: 3000 })
+    toast.add({ severity: 'error', summary: t('page.admin.users.self.editPassword.error.summary'), detail: t('page.admin.users.self.editPassword.error.details'), life: 3000 })
   }
   processingRequest.value = false
 }

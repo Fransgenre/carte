@@ -2,17 +2,16 @@
   <Tabs v-model:value="tabValue">
     <TabList>
       <Tab value="0">
-        Éditeur visuel
+        {{ $t('page.admin.families.id.comments.visualEditor') }}
       </Tab>
       <Tab value="1">
-        Éditeur avancé
+        {{ $t('page.admin.families.id.comments.advancedEditor') }}
       </Tab>
     </TabList>
     <TabPanels>
       <TabPanel value="0">
         <p class="text-muted-color">
-          Une page additionelle est insérée automatiquement au début du formulaire,
-          contenant le nom de l'auteurice ainsi qu'un champ libre.
+          {{ $t('page.admin.families.id.comments.firstPageExplanation') }}
         </p>
 
         <AdminFamiliesEditForm
@@ -21,7 +20,7 @@
           :on-save-callback="onSave"
           class="-ml-4"
           kind="comment"
-          kind-name="commentaire"
+          :kind-name="$t('page.admin.families.id.comments.kindName')"
         />
       </TabPanel>
       <TabPanel value="1">
@@ -29,7 +28,7 @@
           :original-form-fields="fetchedFamily.comment_form.fields"
           :on-sync-callback="onSynchronise"
           kind="comment"
-          kind-name="commentaire"
+          :kind-name="$t('page.admin.families.id.comments.kindName')"
         />
       </TabPanel>
     </TabPanels>
@@ -40,6 +39,8 @@
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { FormField } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -57,12 +58,12 @@ const categories = state.categories.filter(category => category.family_id == fet
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Édition du formulaire d'ajout de commentaires de la famille ${fetchedFamily.title}`,
+  t('page.admin.families.id.comments.title', { title: fetchedFamily.title }),
   'family',
   [],
   [
-    { label: 'Familles', url: '/admin/families' },
-    { label: `Édition du formulaire d'ajout de commentaires de la famille ${fetchedFamily.title}`, url: `/admin/families/${id}/comments` },
+    { label: t('page.admin.families.id.comments.families'), url: '/admin/families' },
+    { label: t('page.admin.families.id.comments.title', { title: fetchedFamily.title }), url: `/admin/families/${id}/comments` },
   ],
 )
 

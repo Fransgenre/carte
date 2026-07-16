@@ -35,7 +35,7 @@
 
     <div v-else-if="field.field_type == 'Date'">
       <p>
-        {{ new Date(getKeyValue(field.key)).toLocaleDateString() }}
+        {{ $d(new Date(getKeyValue(field.key)), { dateStyle: 'short' }) }}
       </p>
     </div>
 
@@ -47,7 +47,7 @@
 
     <div v-else-if="field.field_type == 'Boolean'">
       <p>
-        {{ getKeyValue(field.key) ? '✅ Oui' : '❌ Non' }}
+        {{ getKeyValue(field.key) ? $t('cmp.viewer.common.formFields.yes') : $t('cmp.viewer.common.formFields.no') }}
       </p>
     </div>
 

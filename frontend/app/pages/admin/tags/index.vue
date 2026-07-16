@@ -10,15 +10,16 @@
         /></InputIcon>
         <InputText
           v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
-          placeholder="Recherche"
+          :placeholder="$t('page.admin.tags.index.searchPlaceholder')"
         />
       </IconField>
       <MultiSelect
         v-model="state.tablesSelectedColumns[table_key]"
         :options="optionalColumns"
-
+        option-label="label"
+        option-value="key"
         display="chip"
-        placeholder="Sélectionner des colonnes"
+        :placeholder="$t('page.admin.tags.index.selectColumns')"
         class="w-full md:w-80"
       />
     </span>
@@ -29,7 +30,7 @@
       data-key="id"
       paginator
       paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
-      current-page-report-template="&nbsp&nbsp&nbsp({totalPages} page·s, {totalRecords} tag·s)"
+      :current-page-report-template="$t('page.admin.tags.index.currentPageReport')"
       :value="tags"
       striped-rows
       :rows="10"
@@ -40,7 +41,7 @@
     >
       <Column
         field="title"
-        header="Titre"
+        :header="$t('page.admin.tags.index.column_title')"
         sortable
       >
         <template #body="slotProps">
@@ -48,36 +49,36 @@
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Filtrage')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('is_filter')"
         field="is_filter"
-        header="Filtrage"
+        :header="$t('page.admin.tags.index.column_is_filter')"
         sortable
       >
         <template #body="slotProps">
           <Tag
-            :value="slotProps.data.is_filter ? 'Filtrant' : 'Non-filtrant'"
+            :value="slotProps.data.is_filter ? $t('page.admin.tags.index.filtering') : $t('page.admin.tags.index.nonFiltering')"
             :severity="slotProps.data.is_filter ? 'success' : 'warning'"
           />
         </template>
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Valeur de filtre par défaut')"
-        header="Valeur de filtre par défaut"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('default_filter_status')"
+        :header="$t('page.admin.tags.index.column_default_filter_status')"
         field="default_filter_status"
         sortable
       >
         <template #body="slotProps">
           <Tag
-            :value="slotProps.data.is_filter ? (slotProps.data.default_filter_status ? 'Inclus' : 'Exclus') : 'Non-filtrant'"
+            :value="slotProps.data.is_filter ? (slotProps.data.default_filter_status ? $t('page.admin.tags.index.included') : $t('page.admin.tags.index.excluded')) : $t('page.admin.tags.index.nonFiltering')"
             :severity="slotProps.data.is_filter ? (slotProps.data.default_filter_status ? 'success' : 'danger') : 'warning'"
           />
         </template>
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Description de filtre')"
-        header="Description de filtre"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('filter_description')"
+        :header="$t('page.admin.tags.index.column_filter_description')"
         field="filter_description"
         sortable
       />
@@ -86,7 +87,7 @@
         <template #body="slotProps">
           <AdminEditDeleteButtons
             :id="slotProps.data.id"
-            model-name="du tag"
+            :model-name="$t('page.admin.tags.index.modelName')"
             :name="slotProps.data.title"
             @delete="onDelete"
             @edit="id => navigateTo(`/admin/tags/${id}`)"
@@ -103,17 +104,19 @@ import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { Tag } from '~/lib'
 import state from '~/lib/admin-state'
 
-const isSmallScreen = useMediaQuery('(max-width: 768px)')
-const optionalColumns = ref(['Filtrage', 'Valeur de filtre par défaut', 'Description de filtre'])
+const { t } = useI18n()
+
+// 'Filtrage', 'Valeur de filtre par défaut', 'Description de filtre'
+const optionalColumnsKeys = ['is_filter', 'default_filter_status', 'filter_description']
+const optionalColumns = optionalColumnsKeys.map(column_key => ({
+  key: column_key,
+  label: t('page.admin.tags.index.column_' + column_key),
+}))
+
 const table_key = `dt-state-tags`
-if (!(table_key in state.tablesSelectedColumns)) {
-  state.tablesSelectedColumns[table_key] = isSmallScreen.value ? [] : ['Filtrage', 'Valeur de filtre par défaut']
-}
-if (!(table_key in state.tablesFilters)) {
-  state.tablesFilters[table_key] = {
-    global: { value: null, matchMode: 'contains' },
-  }
-}
+const isSmallScreen = useMediaQuery('(max-width: 768px)')
+const selectedColumKeys = isSmallScreen.value ? [] : ['is_filter', 'default_filter_status']
+state.registerTable(table_key, selectedColumKeys)
 
 definePageMeta({
   layout: 'admin-ui',
@@ -121,18 +124,18 @@ definePageMeta({
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  'Tags',
+  t('page.admin.tags.index.title'),
   'tag',
   [
     {
       icon: 'add',
-      label: 'Nouveau tag',
+      label: t('page.admin.tags.index.newTag'),
       severity: 'success',
       url: `/admin/tags/new`,
     },
   ],
   [
-    { label: 'Tags', url: '/admin/tags' },
+    { label: t('page.admin.tags.index.title'), url: '/admin/tags' },
   ],
 )
 
@@ -149,11 +152,21 @@ const toast = useToast()
 async function onDelete(tag_id: string, tag_name: string, onDeleteDone: () => void) {
   try {
     await state.client.deleteTag(tag_id)
-    toast.add({ severity: 'success', summary: 'Succès', detail: `Tag ${tag_name} supprimé avec succès`, life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.tags.index.success'),
+      detail: t('page.admin.tags.index.deleteTagSuccess', { tag_name }),
+      life: 3000,
+    })
     refreshTable()
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: `Erreur de suppression du tag ${tag_name}`, life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.tags.index.error'),
+      detail: t('page.admin.tags.index.deleteTagError', { tag_name }),
+      life: 3000,
+    })
   }
   onDeleteDone()
 }

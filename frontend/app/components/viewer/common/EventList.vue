@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-1">
     <div class="self-end flex gap-1">
       <Button
-        label="Tout déplier"
+        :label="$t('cmp.viewer.common.eventList.openAllComments')"
         size="small"
         outlined
         @click="openAllComments"
@@ -12,7 +12,7 @@
         </template>
       </Button>
       <Button
-        label="Tout replier"
+        :label="$t('cmp.viewer.common.eventList.closeAllComments')"
         size="small"
         outlined
         @click="closeAllComments"
@@ -42,11 +42,11 @@
 
           <AccordionContent>
             <p>
-              <strong>Date :</strong> {{ event.date ? event.date.toLocaleDateString() : 'Date inconnue' }}
+              <strong>{{ $t('cmp.viewer.common.eventList.date') }} :</strong> {{ event.date ? $d(event.date, { dateStyle: 'short' }) : $t('cmp.viewer.common.eventList.noDate') }}
             </p>
 
             <p v-if="event.details && event.details.length > 0">
-              <strong>Commentaire :</strong>
+              <strong>{{ $t('cmp.viewer.common.eventList.comment') }} :</strong>
               <br>
               {{ event.details }}
             </p>

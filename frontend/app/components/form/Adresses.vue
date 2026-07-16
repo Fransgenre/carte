@@ -3,7 +3,7 @@
     <Button
       outlined
       severity="success"
-      label="Ajouter une adresse"
+      :label="$t('cmp.form.adresses.addAddress')"
       @click="addNewAddress"
     />
   </div>
@@ -14,7 +14,7 @@
   >
     <Column
       field="plain_text"
-      header="Adresses"
+      :header="$t('cmp.form.adresses.addresses')"
       sortable
     />
     <Column>
@@ -64,6 +64,7 @@ const props = defineProps<{
 const emit = defineEmits(['update:locations'])
 
 const toast = useToast()
+const { t } = useI18n()
 
 const displayAddressDialog = ref(false)
 
@@ -93,7 +94,7 @@ function onAddressSelected(address: UnprocessedLocation) {
     return index != editedIndex.value && loc.plain_text == address.plain_text
   })
   if (isDuplicate) {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: `Addresse déjà présente`, life: 3000 })
+    toast.add({ severity: 'error', summary: t('cmp.form.adresses.error'), detail: t('cmp.form.adresses.addressAlreadyExists'), life: 3000 })
     return
   }
 

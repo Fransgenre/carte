@@ -7,17 +7,17 @@
     >
       <AccordionHeader>
         <span class="flex items-center gap-2 w-full">
-          {{ comment.author }} - {{ new Date(comment.created_at).toLocaleDateString() }}
+          {{ comment.author }} - {{ $d(new Date(comment.created_at), { dateStyle: 'short' }) }}
           <Tag
             v-if="!public && !(comment as AdminComment).moderated"
-            value="À modérer"
+            :value="$t('cmp.commentDisplayer.toModerate')"
           />
           <AdminEditDeleteButtons
             v-if="!public"
             :id="comment.id"
-            model-name="du commentaire"
+            :model-name="$t('cmp.commentDisplayer.commentModelName')"
             :loading="false"
-            :name="`de ${comment.author}`"
+            :name="$t('cmp.commentDisplayer.commentAuthor', { author: comment.author })"
             class="ml-auto mr-2"
             @edit="id => emit('edit', id)"
             @delete="(id, name, onDeleteDone) => emit('delete', id, name, onDeleteDone)"

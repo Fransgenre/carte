@@ -6,19 +6,19 @@
     <AdminInputTextField
       id="title"
       v-model="editedFamily.title"
-      label="Titre"
+      :label="$t('page.admin.families.new.familyName')"
     />
 
     <AdminInputTextField
       id="entity_form_title"
       v-model="editedFamily.entity_form.title"
-      label="Titre du formulaire d'ajout d'entité"
+      :label="$t('page.admin.families.new.entityFormTitle')"
     />
 
     <AdminInputTextField
       id="comment_form_title"
       v-model="editedFamily.comment_form.title"
-      label="Titre du formulaire d'ajout de commentaire"
+      :label="$t('page.admin.families.new.commentFormTitle')"
     />
 
     <span class="flex items-center gap-2">
@@ -28,20 +28,20 @@
         :options="Array.from({ length: state.families.length + 1 }, (_, i) => i + 1)"
         class="w-full md:w-56"
       />
-      <label for="sort_order">Ordre d'affichage parmi les familles</label>
+      <label for="sort_order">{{ $t('page.admin.families.new.sortOrder') }}</label>
     </span>
 
     <span class="flex gap-1 justify-end">
       <NuxtLink to="/admin/families">
         <Button
-          label="Annuler"
+          :label="$t('page.admin.families.new.cancel')"
           severity="secondary"
           :loading="processingRequest"
           :disabled="processingRequest"
         />
       </NuxtLink>
       <Button
-        label="Sauvegarder"
+        :label="$t('page.admin.families.new.save')"
         type="submit"
         :loading="processingRequest"
         :disabled="processingRequest || !editedFamily.title || !editedFamily.comment_form.title || !editedFamily.entity_form.title"
@@ -54,6 +54,8 @@
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { NewOrUpdateFamily } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -83,12 +85,12 @@ const toast = useToast()
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Création d'une nouvelle famille`,
+  t('page.admin.families.new.title'),
   'family',
   [],
   [
-    { label: 'Familles', url: '/admin/families' },
-    { label: 'Création d\'une nouvelle famille', url: '/admin/families/new' },
+    { label: t('page.admin.families.new.families'), url: '/admin/families' },
+    { label: t('page.admin.families.new.title'), url: '/admin/families/new' },
   ],
 )
 
@@ -97,10 +99,20 @@ async function onSave() {
   try {
     const { id } = await state.client.createFamily(editedFamily.value)
     navigateTo(`/admin/families/new-icon-${id}`)
-    toast.add({ severity: 'success', summary: 'Succès', detail: 'Famille créée avec succès', life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.families.new.success'),
+      detail: t('page.admin.families.new.createFamilySuccess'),
+      life: 3000,
+    })
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur de création de la famille', life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.families.new.error'),
+      detail: t('page.admin.families.new.createFamilyError'),
+      life: 3000,
+    })
   }
   processingRequest.value = false
 }

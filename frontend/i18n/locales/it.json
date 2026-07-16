@@ -1,0 +1,883 @@
+{
+  "cmp": {
+    "viewer": {
+      "common": {
+        "entityDisplayer": {
+          "attached": "Entità discendenti",
+          "information": "Informazioni",
+          "attachments": "Entità collegate",
+          "comments": "{count} commento | {count} commenti",
+          "view": "Mostra",
+          "addresses": "Indirizzi",
+          "address": "Indirizzo",
+          "notes": "Note"
+        },
+        "eventList": {
+          "openAllComments": "Espandi tutto",
+          "closeAllComments": "Chiudi tutto",
+          "date": "Data",
+          "noDate": "Data sconosciuta",
+          "comment": "Commento"
+        },
+        "formFields": {
+          "yes": "✅ Sì",
+          "no": "❌ No"
+        }
+      },
+      "commentAddForm": {
+        "newComment": "Nuovo commento",
+        "addComment": "Aggiungi un commento",
+        "author": "Autorǝ",
+        "commentText": "Testo del commento",
+        "previous": "Precedente",
+        "next": "Successivo",
+        "save": "Salva",
+        "captchaCheck": "Aspetta un attimo, dobbiamo verificare che tu non sia un robot...",
+        "captchaExpired": "Il codice di verifica è scaduto",
+        "captchaValidationError": "Errore nella verifica del captcha",
+        "success": "Successo",
+        "commentSuccess": "Commento modificato con successo",
+        "error": "Errore",
+        "commentError": "Impossibile modificare il commento"
+      },
+      "entityAddForm": {
+        "displayName": "Nome da visualizzare",
+        "includeComment": "Aggiungi un commento",
+        "author": "Autorǝ",
+        "commentText": "Testo del commento",
+        "captchaCheck": "Aspetta un attimo, dobbiamo verificare che tu non sia un robot...",
+        "captchaExpired": "Il codice di verifica è scaduto",
+        "captchaValidationError": "Errore nella verifica del captcha",
+        "success": "Successo",
+        "entitySuccess": "Entità aggiunta con successo",
+        "entityAndCommentSuccess": "Entità e commento aggiunti con successo",
+        "error": "Errore",
+        "entityError": "Impossibile aggiungere l'entità",
+        "entityAndCommentError": "Impossibile aggiungere l'entità o il commento",
+        "previous": "Precedente",
+        "next": "Successivo",
+        "save": "Salva",
+        "confirmationHeader": "Conferma",
+        "confirmationMessage": "Non includere un commento ti consentirà di fornire solo informazioni generali. Se hai feedback o un'esperienza personale da condividere, ti consigliamo di includere un commento.",
+        "acceptLabel": "Torna indietro",
+        "rejectLabel": "Non includere un commento"
+      },
+      "filterConfig": {
+        "general": "Generale",
+        "tags": "Tag",
+        "constraints": "Vincoli",
+        "categories": "Categorie",
+        "selectAll": "Seleziona tutti",
+        "deselectAll": "Deseleziona tuttti",
+        "reset": "Ripristina",
+        "filters": "Filtri",
+        "hidden": "Nascondi",
+        "displayed": "Mostra",
+        "required": "Richiesto",
+        "searchTag": "Cerca un tag",
+        "clearSearch": "Cancella ricerca",
+        "clearFilters": "Cancella tutti i filtri"
+      },
+      "fullResult": {
+        "noGeo": "Nessuna posizione disponibile",
+        "viewDetails": "Vedi dettagli"
+      },
+      "information": {
+        "safeHaven": "SafeHaven",
+        "safeHavenDescription": "SafeHaven è una soluzione open source per la creazione di mappe collaborative.",
+        "safeHavenDescriptionPart2": "Puoi creare facilmente la tua mappa!",
+        "discoverOnGithub": "Scopri su GitHub"
+      },
+      "map": {
+        "error": "Errore",
+        "refreshError": "Impossibile aggiornare la mappa",
+        "entityLoadError": "Impossibile caricare l'entità selezionata"
+      },
+      "navbar": {
+        "add": "Aggiungi",
+        "filters": "Filtri",
+        "mapMode": "Passa alla modalità mappa",
+        "listMode": "Passa alla modalità elenco",
+        "info": "Info",
+        "search": "Ricerca",
+        "darkMode": "Tema chiaro/scuro",
+        "language": "Lingua",
+        "searchPoint": "Cerca un luogo",
+        "searchPlace": "Cerca un indirizzo",
+        "searchPlaceholder": "Digita qui la tua ricerca",
+        "searchPointOnMap": "Cerca un luogo sulla mappa",
+        "minChars": "Almeno 4 caratteri",
+        "placeSearchPlaceholder": "Roma, Italia",
+        "searchPlaceOrAddress": "Cerca una città, un luogo, o un indirizzo",
+        "noResults": "Nessun risultato",
+        "information": "Informazioni",
+        "error": "Errore",
+        "resultsLoadError": "Impossibile caricare i risultati",
+        "noKnownAddress": "Nessun indirizzo conosciuto",
+        "searchWithNominatim": "Cerca con Nominatim © OpenStreetMap Contributor"
+      },
+      "richTextEditor": {
+        "bold": "Grassetto",
+        "italic": "Corsivo",
+        "underline": "Sottolineato",
+        "strike": "Cancellato",
+        "subscript": "Pedice",
+        "superscript": "Apice"
+      }
+    },
+    "admin": {
+      "families": {
+        "editform": {
+          "newPage": "Nuova pagina",
+          "page": "Pagina {page}",
+          "fieldTitle": "Titolo",
+          "fieldTitlePlaceholder": "Titolo del campo",
+          "editKey": "Modifica la chiave",
+          "fieldType": "Tipo",
+          "options": "Opzioni",
+          "events": "Eventi",
+          "fieldChangeWarning": "Cambiare il tipo, sotto tipo, o formato potrebbe causare inconsistenze.",
+          "helpText": "Testo di aiuto",
+          "displayOrder": "Ordine di visualizzazione",
+          "notDisplayedPublicly": "Non mostrare pubblicamente",
+          "required": "Richiesto",
+          "searchable": "Ricercabile",
+          "filterable": "Filtrabile",
+          "adminFilterOnly": "Filtrabile solo dagli amministratori",
+          "restrictedByCategories": "Restringi per categoria",
+          "selectedCategories": "{0} categorie selezionate",
+          "newField": "Nuovo campo",
+          "cancel": "Annulla",
+          "confirm": "Conferma",
+          "save": "Salva",
+          "confirmDeleteField": "Conferma la cancellazione del campo",
+          "acceptDelete": "Conferma",
+          "rejectDelete": "Annulla",
+          "fieldDeleteTooltip": "Questo campo non sarà più visibile dentro {kindName} che già lo contengono, a meno che la chiave non venga riutilizzata. Tuttavia, le informazioni rimarranno nel database.",
+          "editFieldOptions": "Modifica le opzioni del campo {display_name}",
+          "editFieldEvents": "Modifica gli eventi del campo {display_name}",
+          "editFieldKey": "Modifica la chiave del campo {display_name}",
+          "optionLabel": "Etichetta opzione",
+          "optionLabelPlaceholder": "Nome dell'opzione",
+          "optionKey": "Chiave",
+          "optionKeyPlaceholder": "Chiave univoca",
+          "optionKeyWarning": "La modifica della chiave o l'eliminazione dell'opzione potrebbero causare incongruenze nell'utilizzo di questa opzione dentro {kindName}.",
+          "optionHiddenTooltip": "Se abilitato, questo campo non verrà visualizzato nei risultati quando questa opzione è selezionata",
+          "hidden": "Nascosto",
+          "optionDeleteTooltip": "Questa opzione non sarà più visibile dentro {kindName} che già la contengono, a meno che la chiave non venga riutilizzata. Tuttavia, le informazioni rimarranno nel database.",
+          "addOption": "Aggiungi un'opzione",
+          "eventLabel": "Etichetta evento",
+          "eventLabelPlaceholder": "Nome dell'evento",
+          "eventColor": "Colore",
+          "eventKey": "Chiave",
+          "eventKeyPlaceholder": "Chiave univoca",
+          "eventKeyWarning": "La modifica della chiave o l'eliminazione dell'evento potrebbero causare incongruenze nell'utilizzo di questo evento dentro {kindName}.",
+          "eventDeleteTooltip": "Questo evento non sarà più visibile dentro {kindName} che già lo contengono, a meno che la chiave non venga riutilizzata. Tuttavia, le informazioni rimarranno nel database.",
+          "addEvent": "Aggiungi un evento",
+          "addNewField": "Aggiungi un nuovo campo",
+          "fieldKey": "Chiave",
+          "fieldKeyPlaceholder": "Chiave univoca",
+          "keyWarning": "Se modificato, {kindName} nel database contenenti la vecchia chiave non saranno più in grado di visualizzare questo campo, a meno che un campo compatibile nel modulo non sostituisca la vecchia chiave.",
+          "error": "Errore",
+          "keyAlreadyInUse": "Questa chiave è già usata da un altro campo",
+          "success": "Successo",
+          "familyUpdatedSuccess": "Famiglia modificata con successo",
+          "familyUpdateError": "Impossibile modificare la famiglia",
+          "fieldTypeSingleLineText": "Testo breve",
+          "fieldTypeMultiLineText": "Testo lungo",
+          "fieldTypeRichText": "Testo con formattazione",
+          "fieldTypeBoolean": "Vero/Falso",
+          "fieldTypeNumber": "Numero",
+          "fieldTypeDiscreteScore": "Valutazione",
+          "fieldTypeDate": "Data",
+          "fieldTypeSingleOption": "Scelta singola",
+          "fieldTypeMultiOption": "Scelta multipla",
+          "fieldTypeEventList": "Lista di eventi",
+          "stringTypeNone": "Nessuno",
+          "stringTypeUrl": "URL",
+          "stringTypePhone": "Numero di telefono",
+          "stringTypeEmail": "Indirizzo email"
+        },
+        "editformjson": {
+          "description": "Modifica diretta del modulo in formato .json, utile per l'importazione/esportazione. Apportare altre modifiche in questo modo solo se si comprende esattamente la struttura del modulo. Per salvare, utilizzare il pulsante di anteprima, che consentirà di verificare prima le modifiche nell'editor visuale. Eventuali modifiche non salvate apportate nell'editor visuale verranno sovrascritte.",
+          "import": "Importa",
+          "export": "Esporta",
+          "syncAndPreview": "Sincronizza e visualizza in anteprima",
+          "importSuccess": "File importato correttamente. Le modifiche non sono ancora state salvate.",
+          "importError": "Impossibile importare il file.",
+          "syncSuccess": "Sincronizzazione avvenuta con successo. Verifica le modifiche e salvale.",
+          "syncError": "Errore di sincronizzazione. Il tuo JSON è sintatticamente corretto?",
+          "invalidJson": "Il file importato non ha una struttura JSON valida."
+        }
+      },
+      "input": {
+        "entitySelect": {
+          "title": "Scegli un'entità",
+          "placeholder": "Digita qui la tua ricerca",
+          "filters": "Filtri",
+          "cancel": "Annulla",
+          "confirm": "Conferma"
+        },
+        "iconUpload": {
+          "downloadFailed": "Impossibile scaricare l'immagine.",
+          "error": "Errore",
+          "success": "Successo",
+          "uploadSuccess": "Immagine caricata con successo!",
+          "uploadFailed": "Impossibile caricare l'immagine",
+          "uploadFailedWithStatus": "Impossibile caricare l'immagine, stato {status}.",
+          "uploadFailedWithMessage": "Impossibile caricare l'immagine: {message}",
+          "changeIcon": "Modifica l'icona",
+          "allowedFormats": "(.png, .svg, .bmp, .jpg, .jpeg, .ico, ...)",
+          "upload": "Carica",
+          "localFile": "Carica da file locali",
+          "or": "OPPURE",
+          "urlPlaceholder": "http://url.com/icon.svg",
+          "save": "Salva",
+          "downloadFromUrl": "Scarica dall'URL"
+        },
+        "policyPermissionField": {
+          "accessAll": "Accesso a ogni {label} come impostazione predefinita",
+          "selectExclude": "Seleziona quale {label} escludere (opzionale)",
+          "selectInclude": "Seleziona quale {label} includere"
+        }
+      },
+      "editDeleteButtons": {
+        "deleteHeader": "Cancella {modelName} {name}",
+        "deleteWarning": "Cancellare {modelName} {name} cancellerà definitivamente {count} entità.",
+        "confirmPrompt": "Questa azione non può essere annullata. Per confermare di voler cancellare {modelName}, inseriscine il nome qui sotto:",
+        "confirmDelete": "Conferma di voler cancellare {modelName}",
+        "cancel": "Annulla",
+        "confirm": "Conferma"
+      },
+      "entityKinshipTable": {
+        "addParent": "Aggiungi antenato",
+        "addChild": "Aggiungi discendente",
+        "childrenList": "Lista dei discendenti",
+        "parentsList": "Lista degli antenati",
+        "noKinship": "Nessun discendente o antenato al momento",
+        "entityName": "Nome dell'entità",
+        "category": "Categoria",
+        "parentRelationship": "il collegamento con l'antenato",
+        "childRelationship": "il collegamento con il discendente",
+        "success": "Successo",
+        "error": "Errore",
+        "childAddedSuccess": "Relazione con il discendente {name} aggiunta",
+        "childAddError": "Impossibile aggiungere la relazione con il discendente {name}",
+        "parentAddedSuccess": "Relazione con l'antenato {name} aggiunta",
+        "parentAddError": "Impossibile aggiungere la relazione con l'antenato {name}",
+        "parentRemovedSuccess": "Relazione con l'antenato {name} rimossa",
+        "parentRemoveError": "Impossibile rimuovere la relazione con l'antenato {name}",
+        "childRemovedSuccess": "Relazione con il discendente {name} rimossa",
+        "childRemoveError": "Impossibile rimuovere la relazione con il discendente {name}"
+      },
+      "navbar": {
+        "safehaven": "SafeHaven",
+        "myAccount": "Il mio account",
+        "loggedOut": "Disconnesso",
+        "logout": "Disconnetti"
+      },
+      "sidebar": {
+        "management": "Gestione",
+        "categories": "Categorie",
+        "entities": "Entità",
+        "pendingEntities": "Entità in attesa di moderazione",
+        "pendingComments": "Commenti in attesa di moderazione",
+        "home": "Pagina iniziale",
+        "config": "Configurazione",
+        "users": "Utenti",
+        "accessTokens": "Chiavi di accesso",
+        "families": "Famiglie",
+        "tags": "Tag"
+      }
+    },
+    "form": {
+      "adresses": {
+        "addAddress": "Aggiungi indirizzo",
+        "addresses": "Indirizzi",
+        "error": "Errore",
+        "addressAlreadyExists": "L'indirizzo esiste già"
+      },
+      "categorySelect": {
+        "category": "Categoria",
+        "selectCategory": "Seleziona una categoria"
+      },
+      "dynamicField": {
+        "discreteScore": {
+          "bad": "Male",
+          "ratherBad": "Abbastanza male",
+          "ratherGood": "Abbastanza bene",
+          "good": "Bene"
+        },
+        "dateFormat": "dd/mm/yy",
+        "datePlaceholder": "gg/mm/aaaa",
+        "optionalDetails": "Dettagli (opzionale)",
+        "newEvent": "Nuovo evento",
+        "eventTypePlaceholder": "Tipo di evento",
+        "urlTooltip": "È necessario inserire un URL valido",
+        "emailTooltip": "È necessario inserire un'email valida",
+        "phoneTooltip": "È necessario inserire un numero di telefono valido"
+      },
+      "tagSelect": {
+        "tags": "Tag",
+        "emptyFilterMessage": "Nessun risultato trovato",
+        "placeholder": "Seleziona tag"
+      }
+    },
+    "commentDisplayer": {
+      "toModerate": "In attesa di moderazione",
+      "commentModelName": "del commento",
+      "commentAuthor": "di {author}"
+    },
+    "localeMenu": {
+      "chooseLanguage": "Cambia lingua"
+    },
+    "addressDialog": {
+        "selectAddress": "Seleziona indirizzo",
+        "cancel": "Annulla",
+        "select": "Seleziona"
+    },
+    "addressPicker": {
+      "searchAddress": "Cerca un indirizzo",
+      "startSearch": "Inizia ricerca",
+      "noResults": "Nessun risultato trovato",
+      "movePoint": "Clicka sulla mappa per spostare il punto, se necessario.",
+      "fullAddress": "Indirizzo completo"
+    },
+    "polygonDrawer": {
+      "header": "Definisci un'area geografica",
+      "polygon": "poligono",
+      "polygons": "poligoni",
+      "max": "al più",
+      "clear": "Cancella",
+      "cancel": "Annulla",
+      "save": "Salva"
+    },
+    "requiredIndicator": {
+      "requiredField": "Informazione richiesta"
+    },
+    "startPopup": {
+      "information": "Informazioni",
+      "validate": "Accetta"
+    }
+  },
+  "page": {
+    "search": {
+      "token": {
+        "resultsSingular": "risultato",
+        "resultsPlural": "risultati",
+        "search": "Cerca",
+        "addCommentHint": "Per aggiungere un commento, cerca prima l'entità su cui desideri commentare",
+        "searchPlaceholder": "Digita qui la tua ricerca",
+        "minChars": "(almeno 4 caratteri)",
+        "filters": "Filtri",
+        "error": "Errore",
+        "loadDataError": "Impossibile caricare i dati",
+        "loadResultsError": "Impossibile caricare i risultati"
+      }
+    },
+    "map": {
+      "token": {
+        "error": "Errore",
+        "couldNotLoadEntity": "Impossibile caricare l'entità selezionata",
+        "couldNotLoadMap": "Impossibile caricare la mappa"
+      }
+    },
+    "add": {
+      "token": {
+        "add": "Aggiungi",
+        "error": "Errore",
+        "couldNotLoadMap": "Impossibile caricare la mappa"
+      }
+    },
+    "admin": {
+      "login": {
+        "adminSpace": "Pannello amministrativo",
+        "invalidCredentials": "Nome utente o password errati",
+        "username": "Nome utente",
+        "password": "Password",
+        "rememberMe": "Ricordami",
+        "login": "Accedi"
+      },
+      "home": {
+        "pageTitle": "Pannello di controllo",
+        "activities30Days": "Attività negli ultimi 30 giorni",
+        "entities": "Entità",
+        "comments": "Commenti",
+        "visits30Days": "Visite (30g)",
+        "visits7Days": "Visite (7g)",
+        "visits": "Visite"
+      },
+      "config": {
+        "general": "Generale",
+        "popup": "Finestra a comparsa",
+        "mapInitialization": "Mappa - Initializzazione",
+        "mapSource": "Mappa - Sorgenti",
+        "mapCluster": "Mappa - Aggregazione",
+        "safeMode": "Strumenti di sicurezza",
+        "title": "Titolo",
+        "subtitle": "Sottotitolo",
+        "information": "Informazioni",
+        "logoUrl": "URL del logo",
+        "redirectUrlEnabled": "Reindirizza token non validi a un URL personalizzato",
+        "redirectUrl": "URL di reindirizzamento",
+        "cancel": "Annulla",
+        "reset": "Ripristina",
+        "save": "Salva",
+        "showPopup": "Mostra una finestra a comparsa all'avvio dell'applicazione",
+        "popupText": "Finestra di benvenuto",
+        "popupCheckbox": "Aggiungi una casella di controllo alla finestra di benvenuto",
+        "popupCheckboxText": "Testo di accompagnamento per la casella di controllo nella finestra di benvenuto",
+        "centerLat": "Latitudine (centrale)",
+        "centerLng": "Longitudine (centrale)",
+        "zoom": "Livello di ingrandimento",
+        "lightMapUrl": "URL per i riquadri della mappa (tema chiaro)",
+        "lightMapAttributions": "Riconoscimenti per la mappa (tema chiaro)",
+        "darkMapUrl": "URL per i riquadri della mappa (tema scuro)",
+        "darkMapAttributions": "Riconoscimenti per la mappa (tema scuro)",
+        "characteristicDistance": "Distanza caratteristica",
+        "declusteringSpeed": "Velocità di deaggregamento",
+        "minimalClusterSize": "Dimensione minima del cluster",
+        "enableSafeMode": "Abilita modalità sicura",
+        "hcaptchaSitekey": "Site key hCaptcha",
+        "hcaptchaSecret": "Secret key hCaptcha",
+        "error": "Errore",
+        "resetError": "Impossibile ripristinare il gruppo di opzioni",
+        "resetSuccess": "Gruppo di opzioni ripristinato con successo",
+        "saveError": "Impossibile salvare il gruppo di opzioni",
+        "saveSuccess": "Gruppo di opzioni salvato con successo",
+        "success": "Successo",
+        "pageTitle": "Modifica configurazione",
+        "pageBreadcrumb": "Configurazione"
+      },
+      "familyId": {
+        "categories": {
+          "id": {
+            "title": "Titolo",
+            "defaultStatus": "Incluso per impostazione predefinita",
+            "defaultStatusHelper": "(se non selezionato, tutte le entità appartenenti a questa categoria verranno escluse dai risultati predefiniti)",
+            "borderColor": "Colore del bordo",
+            "fillColor": "Colore del riempimento",
+            "cancel": "Annulla",
+            "save": "Salva",
+            "newCategory": "Nuova categoria",
+            "editCategory": "Modifica della categoria {title}",
+            "categories": "Categorie",
+            "editNewCategory": "Modifica di una nuova categoria",
+            "success": "Successo",
+            "createSuccess": "Categoria creata",
+            "editSuccess": "Categoria modificata",
+            "error": "Errore",
+            "editError": "Impossibile modificare la categoria"
+          },
+          "index": {
+            "search": "Cerca",
+            "selectColumns": "Seleziona colonne",
+            "currentPageReport": "({'{'}totalPages{'}'} pagina(e), {'{'}totalRecords{'}'} categoria(e))",
+            "included": "Incluso",
+            "excluded": "Escluso",
+            "modelName": "la categoria",
+            "categories": "Categorie",
+            "newCategory": "Nuova categoria",
+            "success": "Successo",
+            "error": "Errore",
+            "deleteSuccess": "Categoria {category_name} cancellata",
+            "deleteError": "Impossibile cancellare la categoria {category_name}",
+            "column_title": "Titolo",
+            "column_default_status": "Comportamento predefinito",
+            "column_entity_count": "Entità"
+          },
+          "newIconId": {
+            "backToList": "Torna alla lista",
+            "title": "Modifica l'icona della categoria {category}",
+            "categories": "Categorie"
+          }
+        },
+        "comments": {
+          "id": {
+            "author": "Autore",
+            "commentText": "Testo del commento",
+            "createdAt": "Commento creato in data {date}",
+            "updatedAt": "ultima modifica in data {date}",
+            "attachedTo": "Collegato all'entità {entity}",
+            "changeEntity": "Scegli un'altra entità",
+            "goToEntity": "Vai all'entità collegata",
+            "entityChangeTitle": "Scegli un'entità per il commento",
+            "moderated": "Approvato",
+            "moderatedHelperText": "Se abilitato, questo commento lascerà l'elenco dei commenti in attesa di moderazione e sarà reso pubblico",
+            "cancel": "Annulla",
+            "save": "Salva",
+            "newCommentTitle": "Nuovo commento",
+            "editCommentTitle": "Modifica del commento di {author}",
+            "entityCommentsBreadcrumb": "Commenti di {entity}",
+            "pendingCommentsBreadcrumb": "Commenti in attesa di moderazione",
+            "newCommentBreadcrumb": "Nuovo commento",
+            "editCommentBreadcrumb": "Modifica di un commento",
+            "success": "Successo",
+            "editSuccess": "Commento modificato",
+            "error": "Errore",
+            "editError": "Impossibile modificare il commento"
+          },
+          "pending": {
+            "search": "Cerca",
+            "selectColumns": "Seleziona colonne",
+            "currentPageReport": "({'{'}totalPages{'}'} pagina(e), {'{'}totalRecords{'}'} commento(i))",
+            "column_author": "Autore",
+            "column_entity_display_name": "Nome dell'entità",
+            "column_entity_category_id": "Categoria",
+            "column_created_at": "Data di creazione",
+            "column_updated_at": "Data di modifica",
+            "modelName": "il commento",
+            "pendingComments": "Commenti in attesa di moderazione",
+            "newComment": "Nuovo commento",
+            "pendingCommentsShort": "Commenti in attesa",
+            "success": "Successo",
+            "deleteSuccess": "Commento su {comment_name} cancellato",
+            "error": "Errore",
+            "deleteError": "Impossibile cancellare il commento su {comment_name}"
+          }
+        },
+        "entities": {
+          "id": {
+            "contentsAndModeration": "Contenuti e moderazione",
+            "relationships": "Relazioni",
+            "comments": "Commenti",
+            "commentsNumber": "{count} commento | {count} commenti",
+            "displayName": "Nome da visualizzare",
+            "createdAt": "Entità creata in data {date}",
+            "updatedAt": "ultima modifica in data {date}",
+            "hidden": "Nascondi",
+            "hiddenHelperText": "Se abilitata, questa entità non sarà visibile pubblicamente, anche se approvata. Utile per le entità che si desidera nascondere a lungo termine senza eliminarle.",
+            "moderated": "Approvata",
+            "moderatedHelperText": "Se abilitata, questa entità abbandonerà l'elenco delle entità in attesa di moderazione e verrà resa pubblica.",
+            "moderationNotes": "Note di moderazione",
+            "entityId": "Identificativo dell'entità:",
+            "copyEntityId": "Copia l'identificativo dell'entità",
+            "cancel": "Annulla",
+            "save": "Salva",
+            "noComments": "Ancora nessun commento",
+            "newComment": "Nuovo commento",
+            "addComment": "Aggiungi un commento",
+            "title": "Modifica dell'entità {entity}",
+            "entitiesBreadcrumb": "Entità",
+            "success": "Successo",
+            "error": "Errore",
+            "editSuccess": "Entità modificata",
+            "editError": "Impossibile modificare l'entità",
+            "deleteCommentSuccess": "Commento di {comment_author} cancellato",
+            "deleteCommentError": "Impossibile cancellare il commento di {comment_author}",
+            "copied": "Copiato",
+            "copiedDetails": "Identificativo dell'entità copiato"
+          },
+          "index": {
+            "searchPlaceholder": "Digita qui la tua ricerca",
+            "filtersLabel": "Filtri",
+            "selectColumns": "Seleziona colonne",
+            "currentPageReport": "({'{'}totalPages{'}'} pagina(e), {'{'}totalRecords{'}'} entità)",
+            "modelName": "l'entità",
+            "hidden": "Nascosta",
+            "visible": "Visibile",
+            "title": "Entità",
+            "newEntity": "Nuova entità",
+            "success": "Successo",
+            "error": "Errore",
+            "deleteEntitySuccess": "Entità {entity_name} cancellata",
+            "deleteEntityError": "Impossibile cancellare l'entità {entity_name}",
+            "column_display_name": "Nome da visualizzare",
+            "column_category_id": "Categoria",
+            "column_tags": "Tag",
+            "column_hidden": "Visibilità"
+          },
+          "new": {
+            "displayName": "Nome da visualizzare",
+            "hidden": "Nascondi",
+            "hiddenHelperText": "Se abilitata, questa entità non sarà visibile pubblicamente, anche se approvata. Utile per le entità che si desidera nascondere a lungo termine senza eliminarle.",
+            "moderated": "Approvata",
+            "moderatedHelperText": "Se abilitata, questa entità abbandonerà l'elenco delle entità in attesa di moderazione e verrà resa pubblica.",
+            "moderationNotes": "Note di moderazione",
+            "cancel": "Annulla",
+            "save": "Salva",
+            "title": "Nuova entità",
+            "entitiesBreadcrumb": "Entità",
+            "newEntityBreadcrumb": "Modifica di una nuova entità",
+            "success": "Successo",
+            "error": "Errore",
+            "createEntitySuccess": "Entità creata",
+            "createEntityError": "Impossibile creare l'entità"
+          },
+          "pending": {
+            "searchPlaceholder": "Cerca",
+            "selectColumns": "Seleziona colonne",
+            "currentPageReport": "({'{'}totalPages{'}'} pagina(e), {'{'}totalRecords{'}'} entità)",
+            "modelName": "l'entità",
+            "hidden": "Nascosta",
+            "visible": "Visibile",
+            "title": "Entità in attesa di moderazione",
+            "newEntity": "Nuova entità",
+            "breadcrumb": "Entità in attesa",
+            "success": "Successo",
+            "error": "Errore",
+            "deleteEntitySuccess": "Entità {entity_name} cancellata",
+            "deleteEntityError": "Impossibile cancellare l'entità {entity_name}",
+            "column_display_name": "Nome da visualizzare",
+            "column_category_id": "Categoria",
+            "column_created_at": "Data di creazione",
+            "column_updated_at": "Data di modifica",
+            "column_hidden": "Visibilità"
+          }
+        }
+      },
+      "accessTokens": {
+        "details": {
+          "id": {
+            "origins": "Origine delle visite",
+            "referrer": "Origine",
+            "count": "Numero di visite",
+            "lastActivities": "Attività negli ultimi 30 giorni",
+            "visits": "Visite",
+            "title": "Dettagli della chiave di accesso {title}",
+            "breadcrumb": "Chiavi di accesso"
+          }
+        },
+        "id": {
+          "title": "Titolo",
+          "token": "Chiave di accesso",
+          "tokenHelperText": "(utilizzato nell'URL di accesso dopo /map/ o /search/)",
+          "generateUuid": "genera un UUID",
+          "active": "Attiva",
+          "canListEntities": "Autorizzazione a elencare le entità",
+          "canListEntitiesHelperText": "Include il nome, la categoria, i tag, le relazioni, gli indirizzi e la data di creazione di ciascuna entità",
+          "canAccessEntities": "Autorizzazione a visualizzare le entità",
+          "canAddEntities": "Autorizzazione ad aggiungere un'entità",
+          "canAccessComments": "Autorizzazione a elencare e visualizzare i commenti",
+          "canAddComments": "Autorizzazione ad aggiungere un commento",
+          "canListWithoutQuery": "Autorizzazione a elencare le entità in modo testuale con una ricerca vuota",
+          "canListWithoutQueryHelperText": "Se disabilitato ma l'elenco è abilitato, saranno richiesti almeno 4 caratteri per eseguire una ricerca",
+          "canListWithFilters": "Autorizzazione a filtrare le entità per tag",
+          "canListWithEnumConstraints": "Autorizzazione a filtrare le entità in base ai vincoli sulle risposte al modulo dell'entità",
+          "families": "famiglia",
+          "categories": "categoria",
+          "tags": "tag",
+          "geographicRestriction": "Restrizione geografica",
+          "saveGeographicRestriction": "Definisci la restrizione",
+          "cancel": "Annulla",
+          "save": "Salva",
+          "editTokenTitle": "Modifica della chiave di accesso {title}",
+          "newTokenTitle": "Creazione di una nuova chiave di accesso",
+          "breadCrumb": "Chiavi di accesso",
+          "success": "Successo",
+          "error": "Errore",
+          "createTokenSuccess": "Chiave di accesso creata",
+          "editTokenSuccess": "Chiave di accesso modificata",
+          "editTokenError": "Impossibile modificare la chiave di accesso"
+        },
+        "index": {
+          "searchPlaceholder": "Cerca",
+          "selectColumns": "Seleziona colonne",
+          "currentPageReport": "({'{'}totalPages{'}'} pagina(e), {'{'}totalRecords{'}'} chiave(i))",
+          "column_title": "Titolo",
+          "column_token": "Chiave",
+          "column_active": "Attiva",
+          "column_last_week_visits": "Visite (ultimi 7 giorni)",
+          "column_permissions_families_policy": "Famiglie",
+          "column_permissions_categories_policy": "Categorie",
+          "column_permissions_tags_policy": "Tag",
+          "column_permissions_can_access_comments": "Commenti",
+          "all": "Completo",
+          "partial": "Parziale",
+          "yes": "Sì",
+          "no": "No",
+          "modelName": "la chiave di accesso",
+          "title": "Chiavi di accesso",
+          "newToken": "Nuova chiave di accesso",
+          "success": "Successo",
+          "error": "Eerror",
+          "deleteTokenSuccess": "Chiave di accesso {access_token_name} cancellata",
+          "deleteTokenError": "Impossibile cancellare la chiave di accesso {access_token_name}"
+        }
+      },
+      "families": {
+        "id": {
+          "comments": {
+            "visualEditor": "Editor visuale",
+            "advancedEditor": "Editor avanzato",
+            "firstPageExplanation": "All'inizio del modulo viene automaticamente inserita una pagina aggiuntiva contenente il nome dell'autore e un campo di testo libero.",
+            "kindName": "i commenti",
+            "title": "Modifica del modulo di aggiunta commenti della famiglia {title}",
+            "families": "Famiglie"
+          },
+          "entities": {
+            "visualEditor": "Editor visuale",
+            "advancedEditor": "Editor avanzato",
+            "firstPageExplanation": "All'inizio del modulo viene automaticamente inserita una pagina aggiuntiva contenente il titolo dell'entità, la sua posizione (longitudine/latitudine) e il suo indirizzo.",
+            "kindName": "le entità",
+            "title": "Modifica del form di aggiunta delle entità nella famiglia {title}",
+            "families": "Famiglie"
+          },
+          "general": {
+            "familyName": "Titolo",
+            "entityFormTitle": "Titolo del modulo di aggiunta entità",
+            "entityFormHelp": "Testo di aiuto per il modulo di aggiunta entità",
+            "commentFormTitle": "Titolo del modulo di invio commenti",
+            "commentFormHelp": "Testo di aiuto per il modulo di invio commenti",
+            "sortOrder": "Ordine di visualizzazione tra le famiglie",
+            "cancel": "Annulla",
+            "save": "Salva",
+            "title": "Modifica della famiglia {title}",
+            "families": "Famiglie",
+            "success": "Successo",
+            "error": "Errore",
+            "editFamilySuccess": "Famiglia modificata",
+            "editFamilyError": "Impossibile modificare la famiglia"
+          }
+        },
+        "index": {
+          "searchPlaceholder": "Cerca",
+          "selectColumns": "Seleziona colonne",
+          "currentPageReport": "({'{'}totalPages{'}'} pagina(e), {'{'}totalRecords{'}'} famiglia(e))",
+          "column_title": "Titolo",
+          "column_entity_count": "Entità",
+          "modelName": "la famiglia",
+          "title": "Famiglie",
+          "newFamily": "Nuova famiglia",
+          "success": "Successo",
+          "error": "Errore",
+          "deleteFamilySuccess": "Famiglia {family_name} cancellata",
+          "deleteFamilyError": "Impossibile cancellare la famiglia {family_name}"
+        },
+        "new": {
+          "familyName": "Titolo",
+          "entityFormTitle": "Titolo del modulo di aggiunta entità",
+          "commentFormTitle": "Titolo del modulo di invio commenti",
+          "sortOrder": "Ordine di visualizzazione tra le famiglie",
+          "cancel": "Annulla",
+          "save": "Salva",
+          "title": "Creazione di una nuova famiglia",
+          "families": "Famiglie",
+          "success": "Successo",
+          "error": "Errore",
+          "createFamilySuccess": "Famiglia creata",
+          "createFamilyError": "Impossibile creare la famiglia"
+        },
+        "newIconId": {
+          "backToList": "Torna alla lista",
+          "title": "Modifica dell'icona della famiglia {title}",
+          "families": "Famiglie"
+        }
+      },
+      "tags": {
+        "id": {
+          "tagTitle": "Titolo",
+          "isFilter": "Filtrante",
+          "defaultFilterStatus": "Incluso per impostazione predefinita",
+          "defaultFilterStatusHelperText": "(Se non selezionata, tutte le entità con questo tag verranno escluse dai risultati per impostazione predefinita)",
+          "isPrimaryFilter": "Evidenzia il filtro",
+          "isPrimaryFilterHelperText": "(Se selezionato, il filtro sarà presente nel pannello dei filtri sotto la selezione della categoria)",
+          "filterDescription": "Descrizione del filtro",
+          "filterDescriptionHelperText": "(descrizione mostrata agli utenti quando in evidenza)",
+          "borderColor": "Colore del bordo",
+          "fillColor": "Colore del riempimento",
+          "cancel": "Annulla",
+          "save": "Salva",
+          "newTagTitle": "Creazione di un nuovo tag",
+          "editTagTitle": "Modifica del tag {title}",
+          "tags": "Tag",
+          "success": "Successo",
+          "error": "Errore",
+          "createTagSuccess": "Tag creato",
+          "editTagSuccess": "Tag modificato",
+          "createTagError": "Impossibile creare il tag",
+          "editTagError": "Impossibile modificare il tag"
+        },
+        "index": {
+          "searchPlaceholder": "Cerca",
+          "selectColumns": "Seleziona colonne",
+          "currentPageReport": "({'{'}totalPages{'}'} pagina(e), {'{'}totalRecords{'}'} tag)",
+          "filtering": "Filtrante",
+          "nonFiltering": "Non filtrante",
+          "included": "Incluso",
+          "excluded": "Escluso",
+          "modelName": "il tag",
+          "column_title": "Titolo",
+          "column_is_filter": "Filtrante",
+          "column_default_filter_status": "Incluso per impostazione predefinita",
+          "column_filter_description": "Descrizione del filtro",
+          "title": "Tag",
+          "newTag": "Nuovo tag",
+          "success": "Successo",
+          "error": "Errore",
+          "deleteTagSuccess": "Tag {tag_name} cancellato",
+          "deleteTagError": "Impossibile cancellare il tag {tag_name}"
+        }
+      },
+      "users": {
+        "id": {
+          "name": "Nome utente",
+          "isAdmin": "Privilegi amministrativi",
+          "editPassword": "Sovrascrivi la vecchia password",
+          "passwordLabel": "Nuova password:",
+          "confirmPasswordLabel": "Conferma la nuova password:",
+          "cancel": "Annulla",
+          "save": "Salva",
+          "newUserTitle": "Nuovo utente",
+          "editUserTitle": "Modifica dell'utente {name}",
+          "users": "Utenti",
+          "success": "Successo",
+          "error": "Errore",
+          "editUserSuccess": "Utente modificato",
+          "editUserError": "Impossibile modificare l'utente"
+        },
+        "index": {
+          "searchPlaceholder": "Cerca",
+          "selectColumns": "Seleziona colonne",
+          "currentPageReport": "({'{'}totalPages{'}'} pagina(e), {'{'}totalRecords{'}'} utente(i))",
+          "admin": "Amministratore",
+          "moderator": "Moderatore",
+          "modelName": "l'utente",
+          "column_name": "Nome",
+          "column_is_admin": "Ruolo",
+          "column_last_login": "Ultimo accesso",
+          "title": "Utenti",
+          "newUser": "Aggiungi un utente",
+          "success": "Successo",
+          "error": "Errore",
+          "deleteUserSuccess": "Utente {user_name} rimosso",
+          "deleteUserError": "Impossibile rimuovere l'utente {user_name}"
+        },
+        "self": {
+          "sectionName": "Profilo",
+          "username": "Nome utente",
+          "state": "Stato",
+          "stateAdmin": "Amministratore",
+          "stateModerator": "Moderatore",
+          "editPasswordLabel": "Modifica password",
+          "newPasswordLabel": "Nuova password",
+          "newPasswordConfirmLabel": "Conferma la nuova password",
+          "backButton": "Torna indietro",
+          "saveButton": "Salva",
+          "editPassword": {
+            "success": {
+              "summary": "Successo",
+              "details": "Password modificata"
+            },
+            "error": {
+              "summary": "Errore",
+              "details": "Impossibile modificare la password"
+            }
+          }
+        }
+      }
+    }
+  },
+  "layout": {
+    "admin": {
+      "navigation": "Navigazione"
+    }
+  },
+  "app": {
+    "apiUnavailable": "API non disponibile",
+    "tryAgainLater": "Riprova più tardi"
+  },
+  "error": {
+    "somethingWentWrong": "Ops! Qualcosa è andato storto."
+  }
+}

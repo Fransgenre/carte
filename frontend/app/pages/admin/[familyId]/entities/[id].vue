@@ -7,22 +7,21 @@
         <Tab
           value="0"
         >
-          Contenu et modération
+          {{ $t('page.admin.familyId.entities.id.contentsAndModeration') }}
         </Tab>
         <Tab
           value="1"
         >
-          Parenté
+          {{ $t('page.admin.familyId.entities.id.relationships') }}
         </Tab>
         <Tab
           value="2"
         >
           <template v-if="!hasLoadedComments">
-            Commentaires
+            {{ $t('page.admin.familyId.entities.id.comments') }}
           </template>
           <template v-else>
-            Commentaire{{ entityComments.length > 1 ? 's' : '' }}
-            ({{ entityComments.length }})
+            {{ $t('page.admin.familyId.entities.id.commentsNumber', { count: entityComments.length }) }}
           </template>
         </Tab>
       </TabList>
@@ -37,7 +36,7 @@
               <AdminInputTextField
                 id="display_name"
                 v-model="editedEntity.display_name"
-                label="Nom d'affichage"
+                :label="$t('page.admin.familyId.entities.id.displayName')"
                 :variant="hasBeenEdited('display_name')"
               />
               <FormCategorySelect
@@ -56,16 +55,14 @@
             </div>
 
             <div class="flex flex-col grow gap-4 max-w-[30rem]">
-              Entitée crée le
-              {{ Intl.DateTimeFormat('fr-FR', {
+              {{ $t('page.admin.familyId.entities.id.createdAt', { date: $d(new Date(fetchedEntity.created_at), {
                 dateStyle: 'long',
                 timeStyle: 'short',
-              }).format(new Date(fetchedEntity.created_at)) }}, mise à jour pour la dernière fois le
-              {{ Intl.DateTimeFormat('fr-FR', {
+              }) }) }},
+              {{ $t('page.admin.familyId.entities.id.updatedAt', { date: $d(new Date(fetchedEntity.updated_at), {
                 dateStyle: 'long',
                 timeStyle: 'short',
-              }).format(new Date(fetchedEntity.updated_at)) }}
-
+              }) }) }}
               <FormTagSelect
                 v-model="editedEntity.tags"
                 :tags="tags"
@@ -74,36 +71,36 @@
               <AdminInputSwitchField
                 id="hidden"
                 v-model="editedEntity.hidden"
-                label="Cachée"
-                helper-text="Si activé, cette entité ne sera pas visible publiquement, même si modérée. Utile pour des entités que vous souhaitez cacher à long terme sans les supprimer."
+                :label="$t('page.admin.familyId.entities.id.hidden')"
+                :helper-text="$t('page.admin.familyId.entities.id.hiddenHelperText')"
               />
               <AdminInputSwitchField
                 id="moderated"
                 v-model="editedEntity.moderated"
-                label="Modérée"
-                helper-text="Si activé, cette entité quittera la liste des entités en attente et sera rendue publique."
+                :label="$t('page.admin.familyId.entities.id.moderated')"
+                :helper-text="$t('page.admin.familyId.entities.id.moderatedHelperText')"
               />
 
               <AdminInputTextField
                 id="moderation_notes"
                 v-model="editedEntity.moderation_notes"
-                label="Notes de modération"
+                :label="$t('page.admin.familyId.entities.id.moderationNotes')"
                 text-length="long"
                 optional
               />
 
               <!-- modif pour ajout affichage id de l'entité + option pour copier l'id facilement -->
               <p class="flex flex-col items-start gap-1">
-                <strong>Identifiant de l’entité :</strong>
+                <strong>{{ $t('page.admin.familyId.entities.id.entityId') }}</strong>
                 <span class="flex items-center gap-2">
                   <label class="px-2 py-1 rounded text-sm select-text">{{ entityId }}</label>
                   <Button
                     outlined
                     rounded
                     type="button"
-                    title="Copier l'identifiant"
+                    :title="$t('page.admin.familyId.entities.id.copyEntityId')"
                     class="mx-2"
-                    aria-label="Copier l'identifiant"
+                    :aria-label="$t('page.admin.familyId.entities.id.copyEntityId')"
                     @click="copyEntityId"
                   >
                     <template #icon>
@@ -120,14 +117,14 @@
               <span class="flex gap-1 justify-end">
                 <NuxtLink :to="`/admin/${familyId}/${entitiesUrl}`">
                   <Button
-                    label="Annuler"
+                    :label="$t('page.admin.familyId.entities.id.cancel')"
                     severity="secondary"
                     :loading="processingRequest"
                     :disabled="processingRequest"
                   />
                 </NuxtLink>
                 <Button
-                  label="Sauvegarder"
+                  :label="$t('page.admin.familyId.entities.id.save')"
                   type="submit"
                   :loading="processingRequest"
                   :disabled="processingRequest || !editedEntity.display_name || !editedEntity.category_id"
@@ -152,7 +149,7 @@
             v-if="entityComments.length == 0"
             severity="warn"
           >
-            Aucun commentaire pour le moment
+            {{ $t('page.admin.familyId.entities.id.noComments') }}
           </Message>
           <CommentsDisplayer
             v-else
@@ -165,7 +162,7 @@
             @edit="commentId => navigateTo(`/admin/${familyId}/comments/${commentId}?urlEntityId=${entityId}`)"
           />
           <Button
-            label="Nouveau commentaire"
+            :label="$t('page.admin.familyId.entities.id.newComment')"
             rounded
             outlined
             class="ml-3 mt-3"
@@ -177,7 +174,7 @@
                   class="-ml-1 mr-1"
                   icon-name="commentAdd"
                 />
-                Ajouter un commentaire
+                {{ $t('page.admin.familyId.entities.id.addComment') }}
               </div>
             </template>
           </Button>
@@ -192,6 +189,8 @@ import { ref, computed } from 'vue'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { AdminComment, AdminNewOrUpdateEntity, EntityOrCommentData, FormField, UnprocessedLocation } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -236,13 +235,13 @@ const entitiesUrl = useRoute().query.entitiesUrl ?? 'entities'
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Édition de l'entité ${fetchedEntity.value.display_name}`,
+  t('page.admin.familyId.entities.id.title', { entity: fetchedEntity.value.display_name }),
   'entity',
   [],
   [
     { label: `${family.title}`, url: '/admin/families' },
-    { label: 'Entités', url: `/admin/${familyId}/${entitiesUrl}` },
-    { label: `Édition de l'entité ${fetchedEntity.value.display_name}`, url: `/admin/${familyId}/entities/${entityId}?=${entitiesUrl}` },
+    { label: t('page.admin.familyId.entities.id.entitiesBreadcrumb'), url: `/admin/${familyId}/${entitiesUrl}` },
+    { label: t('page.admin.familyId.entities.id.title', { entity: fetchedEntity.value.display_name }), url: `/admin/${familyId}/entities/${entityId}?=${entitiesUrl}` },
   ],
 )
 
@@ -255,10 +254,20 @@ async function onSave() {
   try {
     await state.client.updateEntity(entityId, editedEntity.value)
     navigateTo(`/admin/${familyId}/${entitiesUrl}`)
-    toast.add({ severity: 'success', summary: 'Succès', detail: 'Entité modifiée avec succès', life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.familyId.entities.id.success'),
+      detail: t('page.admin.familyId.entities.id.editSuccess'),
+      life: 3000,
+    })
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur de modification de l\'entité', life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.familyId.entities.id.error'),
+      detail: t('page.admin.familyId.entities.id.editError'),
+      life: 3000,
+    })
   }
   processingRequest.value = false
   state.getEntitiesCommentsCounts()
@@ -267,11 +276,21 @@ async function onSave() {
 async function onCommentDelete(comment_id: string, comment_author: string, onDeleteDone: () => void) {
   try {
     await state.client.deleteComment(comment_id)
-    toast.add({ severity: 'success', summary: 'Succès', detail: `Commentaire ${comment_author} supprimé avec succès`, life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.familyId.entities.id.success'),
+      detail: t('page.admin.familyId.entities.id.deleteCommentSuccess', { comment_author }),
+      life: 3000,
+    })
     refreshComments()
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: `Erreur de suppression du commentaire de ${comment_author}`, life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.familyId.entities.id.error'),
+      detail: t('page.admin.familyId.entities.id.deleteCommentError', { comment_author }),
+      life: 3000,
+    })
   }
   onDeleteDone()
 }
@@ -281,8 +300,8 @@ function copyEntityId() {
   navigator.clipboard.writeText(entityId)
   toast.add({
     severity: 'success',
-    summary: 'Copié',
-    detail: `Identifiant de l'entité copié`,
+    summary: t('page.admin.familyId.entities.id.copied'),
+    detail: t('page.admin.familyId.entities.id.copiedDetails'),
     life: 2000,
   })
 }

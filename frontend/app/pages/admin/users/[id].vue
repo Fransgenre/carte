@@ -6,13 +6,13 @@
     <AdminInputTextField
       id="username"
       v-model="user.name"
-      label="Nom d'utilisateur⋅ice"
+      :label="$t('page.admin.users.id.name')"
     />
 
     <AdminInputSwitchField
       id="userIsAdmin"
       v-model="user.is_admin"
-      label="Droits d'administration"
+      :label="$t('page.admin.users.id.isAdmin')"
       :disabled="state.username == user.name"
     />
 
@@ -20,7 +20,7 @@
       v-if="!isNew"
       id="editPassword"
       v-model="editPassword"
-      label="Écraser l'ancien mot de passe"
+      :label="$t('page.admin.users.id.editPassword')"
     />
 
     <div
@@ -29,7 +29,7 @@
       :class="{ flex: isNew || editPassword }"
     >
       <label for="password">
-        Nouveau mot de passe :
+        {{ $t('page.admin.users.id.passwordLabel') }}
       </label>
       <Password
         v-model="newPassword"
@@ -40,7 +40,7 @@
         :invalid="editPassword && !isValidText(newPassword)"
       />
       <label for="passwordConfirm">
-        Confirmer le nouveau mot de passe :
+        {{ $t('page.admin.users.id.confirmPasswordLabel') }}
       </label>
       <Password
         v-model="newPasswordConfirm"
@@ -57,14 +57,14 @@
         to="/admin/users"
       >
         <Button
-          label="Annuler"
+          :label="$t('page.admin.users.id.cancel')"
           severity="secondary"
           :loading="processingRequest"
           :disabled="processingRequest"
         />
       </NuxtLink>
       <Button
-        label="Sauvegarder"
+        :label="$t('page.admin.users.id.save')"
         type="submit"
         :loading="processingRequest"
         :disabled="isDisabled()"
@@ -78,6 +78,8 @@ import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { NewOrUpdatedUser } from '~/lib'
 import state from '~/lib/admin-state'
 import { isValidText } from '~/lib/validation'
+
+const { t } = useI18n()
 
 if (!state.is_admin)
   navigateTo('/admin/home')
@@ -111,15 +113,15 @@ function isDisabled() {
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
   isNew
-    ? 'Nouvel⋅le utilisateur⋅ice'
-    : `Édition de l'utilisateur⋅ice ${user.value.name}`,
+    ? t('page.admin.users.id.newUserTitle')
+    : t('page.admin.users.id.editUserTitle', { name: user.value.name }),
   'user',
   [],
   [
-    { label: 'Utilisateur⋅ices', url: '/admin/users' },
+    { label: t('page.admin.users.id.users'), url: '/admin/users' },
     (isNew
-      ? { label: 'Nouvel⋅le utilisateur⋅ice', url: '/admin/users/new' }
-      : { label: `Édition de l'utilisateur⋅ice ${user.value.name}`, url: `/admin/users/${userId}` }
+      ? { label: t('page.admin.users.id.newUserTitle'), url: '/admin/users/new' }
+      : { label: t('page.admin.users.id.editUserTitle', { name: user.value.name }), url: `/admin/users/${userId}` }
     ),
   ],
 )
@@ -142,8 +144,8 @@ async function onSave() {
       navigateTo('/admin/users')
       toast.add({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Utilisateur⋅ice modifié⋅e avec succès',
+        summary: t('page.admin.users.id.success'),
+        detail: t('page.admin.users.id.editUserSuccess'),
         life: 3000,
       })
     }
@@ -157,8 +159,8 @@ async function onSave() {
       navigateTo('/admin/users')
       toast.add({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Utilisateur⋅ice modifié⋅e avec succès',
+        summary: t('page.admin.users.id.success'),
+        detail: t('page.admin.users.id.editUserSuccess'),
         life: 3000,
       })
     }
@@ -166,8 +168,8 @@ async function onSave() {
   catch {
     toast.add({
       severity: 'error',
-      summary: 'Erreur',
-      detail: 'Erreur de modification de l\'utilisateur⋅ice',
+      summary: t('page.admin.users.id.error'),
+      detail: t('page.admin.users.id.editUserError'),
       life: 3000,
     })
   }

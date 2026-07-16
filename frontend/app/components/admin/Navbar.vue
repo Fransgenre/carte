@@ -10,8 +10,12 @@
           severity="secondary"
           small
           class="!p-1 !mr-2"
-          style="color: white; border-color: white;"
-          @click="() => { emit('toggleSidebar') }"
+          style="color: white; border-color: white"
+          @click="
+            () => {
+              emit('toggleSidebar');
+            }
+          "
         >
           <template #default>
             <AppIcon
@@ -23,18 +27,18 @@
 
         <NuxtLink
           to="/admin"
-          class="ml-1 "
+          class="ml-1"
         >
           <img
             height="40"
             width="40"
-            alt="icon"
+            :alt="$t('cmp.admin.navbar.safehaven')"
             :src="safehaven_logo"
           >
         </NuxtLink>
         <div class="navbar-text pl-4">
           <div class="my-0 text-lg font-extrabold">
-            SafeHaven
+            {{ $t('cmp.admin.navbar.safehaven') }}
           </div>
           <div class="text-xs italic">
             {{ state.options.general.title }}
@@ -49,13 +53,18 @@
       <Button
         severity="secondary"
         outlined
-        style="color: white; border-color: white;"
+        style="color: white; border-color: white"
         @click="toggleDarkMode()"
       >
         <template #icon>
           <AppIcon icon-name="lightDark" />
         </template>
       </Button>
+
+      <LocaleMenu
+        class="ml-2"
+        style="color: white; border-color: white;"
+      />
 
       <Button
         rounded
@@ -67,7 +76,7 @@
       >
         <template #default>
           <AdminUserAvatar
-            :username="state.username ?? 'not logged'"
+            :username="state.username ?? $t('cmp.admin.navbar.loggedOut')"
             size="normal"
           />
         </template>
@@ -89,6 +98,7 @@ import safehaven_logo from '~/assets/logo_square_white.svg'
 
 const emit = defineEmits(['toggleSidebar'])
 const darkMode = useDarkMode()
+const { t } = useI18n()
 
 const accountMenu = useTemplateRef('accountMenu')
 const navbarRef: Ref<HTMLElement | null> = ref(null)
@@ -106,13 +116,13 @@ const items = [
     label: state.username!,
     items: [
       {
-        label: 'Mon compte',
+        label: t('cmp.admin.navbar.myAccount'),
         command: () => {
           navigateTo('/admin/users/self')
         },
       },
       {
-        label: 'Me déconnecter',
+        label: t('cmp.admin.navbar.logout'),
         command: () => {
           state.logout()
         },
@@ -132,7 +142,7 @@ function toggleDarkMode() {
 
 <style>
 .admin-navbar {
-  background-color: #E86BA7 !important;
+  background-color: #e86ba7 !important;
   border-radius: 0 !important;
   border-left-width: 0 !important;
   border-right-width: 0 !important;

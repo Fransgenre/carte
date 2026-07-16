@@ -10,14 +10,16 @@
         </InputIcon>
         <InputText
           v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
-          placeholder="Recherche"
+          :placeholder="$t('page.admin.familyId.comments.pending.search')"
         />
       </IconField>
       <MultiSelect
         v-model="state.tablesSelectedColumns[table_key]"
         :options="optionalColumns"
+        option-label="label"
+        option-value="key"
         display="chip"
-        placeholder="Sélectionner des colonnes"
+        :placeholder="$t('page.admin.familyId.comments.pending.selectColumns')"
         class="w-full md:w-80"
       />
     </span>
@@ -25,7 +27,7 @@
       v-model:filters="state.tablesFilters[table_key]"
       paginator
       paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
-      current-page-report-template="&nbsp&nbsp&nbsp({totalPages} page·s, {totalRecords} commentaire·s)"
+      :current-page-report-template="$t('page.admin.familyId.comments.pending.currentPageReport')"
       state-storage="session"
       :state-key="table_key"
       data-key="id"
@@ -39,21 +41,21 @@
     >
       <Column
         field="author"
-        header="Auteurice"
+        :header="$t('page.admin.familyId.comments.pending.column_author')"
         class="max-w-[25rem]"
         sortable
       />
       <Column
         field="entity_display_name"
-        header="Nom de l'entité"
+        :header="$t('page.admin.familyId.comments.pending.column_entity_display_name')"
         class="max-w-[25rem]"
         sortable
       />
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Catégorie')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('entity_category_id')"
         field="entity_category_id"
-        header="Catégorie"
+        :header="$t('page.admin.familyId.comments.pending.column_entity_category_id')"
         sortable
       >
         <template #body="slotProps">
@@ -62,30 +64,30 @@
       </Column>
 
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Créé le')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('created_at')"
         field="created_at"
-        header="Créé le"
+        :header="$t('page.admin.familyId.comments.pending.column_created_at')"
         sortable
       >
         <template #body="slotProps">
-          {{ new Date(slotProps.data.created_at).toLocaleDateString() }}
+          {{ $d(new Date(slotProps.data.created_at), { dateStyle: 'short' }) }}
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Mis à jour le')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('updated_at')"
         field="updated_at"
-        header="Mis à jour le"
+        :header="$t('page.admin.familyId.comments.pending.column_updated_at')"
         sortable
       >
         <template #body="slotProps">
-          {{ new Date(slotProps.data.updated_at).toLocaleDateString() }}
+          {{ $d(new Date(slotProps.data.updated_at), { dateStyle: 'short' }) }}
         </template>
       </Column>
       <Column>
         <template #body="slotProps">
           <AdminEditDeleteButtons
             :id="slotProps.data.id"
-            model-name="du commentaire"
+            :model-name="$t('page.admin.familyId.comments.pending.modelName')"
             :name="slotProps.data.entity_display_name"
             @delete="onDelete"
             @edit="id => navigateTo(`/admin/${familyId}/comments/${id}`)"
@@ -101,6 +103,8 @@ import type { DataTableFilterMetaData } from 'primevue/datatable'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { AdminListedComment } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 const familyId = useRoute().params.familyId as string
 if (state.families == null)
@@ -119,17 +123,17 @@ async function refreshTable() {
 }
 refreshTable()
 
-const isSmallScreen = useMediaQuery('(max-width: 768px)')
-const optionalColumns = ref(['Catégorie', 'Créé le', 'Mis à jour le'])
+// 'Catégorie', 'Créé le', 'Mis à jour le'
+const optionalColumnsKeys = ['entity_category_id', 'created_at', 'updated_at']
+const optionalColumns = optionalColumnsKeys.map(column_key => ({
+  key: column_key,
+  label: t('page.admin.familyId.comments.pending.column_' + column_key),
+}))
+
 const table_key = `dt-state-pending-comments-${familyId}`
-if (!(table_key in state.tablesSelectedColumns)) {
-  state.tablesSelectedColumns[table_key] = isSmallScreen.value ? [] : ['Créé le', 'Catégorie']
-}
-if (!(table_key in state.tablesFilters)) {
-  state.tablesFilters[table_key] = {
-    global: { value: null, matchMode: 'contains' },
-  }
-}
+const isSmallScreen = useMediaQuery('(max-width: 768px)')
+const selectedColumKeys = isSmallScreen.value ? [] : ['entity_category_id', 'created_at']
+state.registerTable(table_key, selectedColumKeys)
 
 definePageMeta({
   layout: 'admin-ui',
@@ -137,19 +141,19 @@ definePageMeta({
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  'Commentaires en attente de modération',
+  t('page.admin.familyId.comments.pending.pendingComments'),
   'pendingComment',
   [
     {
       icon: 'add',
-      label: 'Nouveau commentaire',
+      label: t('page.admin.familyId.comments.pending.newComment'),
       severity: 'success',
       url: `/admin/${familyId}/comments/new`,
     },
   ],
   [
     { label: `${familyTitle}`, url: '/admin/families' },
-    { label: 'Commentaires en attente', url: `/admin/${familyId}/comments/pending` },
+    { label: t('page.admin.familyId.comments.pending.pendingCommentsShort'), url: `/admin/${familyId}/comments/pending` },
   ],
 )
 
@@ -158,11 +162,21 @@ const toast = useToast()
 async function onDelete(comment_id: string, comment_name: string, onDeleteDone: () => void) {
   try {
     await state.client.deleteComment(comment_id)
-    toast.add({ severity: 'success', summary: 'Succès', detail: `Commentaire ${comment_name} supprimé avec succès`, life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.familyId.comments.pending.success'),
+      detail: t('page.admin.familyId.comments.pending.deleteSuccess', { comment_name }),
+      life: 3000,
+    })
     refreshTable()
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: `Erreur de suppression du commentaire ${comment_name}`, life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.familyId.comments.pending.error'),
+      detail: t('page.admin.familyId.comments.pending.deleteError', { comment_name }),
+      life: 3000,
+    })
   }
   onDeleteDone()
 }

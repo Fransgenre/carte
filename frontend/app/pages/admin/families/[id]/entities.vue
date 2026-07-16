@@ -2,17 +2,16 @@
   <Tabs v-model:value="tabValue">
     <TabList>
       <Tab value="0">
-        Éditeur visuel
+        {{ $t('page.admin.families.id.entities.visualEditor') }}
       </Tab>
       <Tab value="1">
-        Éditeur avancé
+        {{ $t('page.admin.families.id.entities.advancedEditor') }}
       </Tab>
     </TabList>
     <TabPanels>
       <TabPanel value="0">
         <p class="text-muted-color">
-          Une page additionelle est insérée automatiquement au début du formulaire,
-          contenant le titre de l'entité, sa position lontitude/lagitude et son addresse.
+          {{ $t('page.admin.families.id.entities.firstPageExplanation') }}
         </p>
 
         <AdminFamiliesEditForm
@@ -21,7 +20,7 @@
           :on-save-callback="onSave"
           class="-ml-4"
           kind="entity"
-          kind-name="entité"
+          :kind-name="$t('page.admin.families.id.entities.kindName')"
         />
       </TabPanel>
       <TabPanel value="1">
@@ -29,7 +28,7 @@
           :original-form-fields="fetchedFamily.entity_form.fields"
           :on-sync-callback="onSynchronise"
           kind="entity"
-          kind-name="entité"
+          :kind-name="$t('page.admin.families.id.entities.kindName')"
         />
       </TabPanel>
     </TabPanels>
@@ -40,6 +39,8 @@
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { FormField } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -57,12 +58,12 @@ const categories = state.categories.filter(category => category.family_id == fet
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Édition du formulaire d'ajout d'entités de la famille ${fetchedFamily.title}`,
+  t('page.admin.families.id.entities.title', { title: fetchedFamily.title }),
   'family',
   [],
   [
-    { label: 'Familles', url: '/admin/families' },
-    { label: `Édition du formulaire d'ajout d'entités de la famille ${fetchedFamily.title}`, url: `/admin/families/${id}/general` },
+    { label: t('page.admin.families.id.entities.families'), url: '/admin/families' },
+    { label: t('page.admin.families.id.entities.title', { title: fetchedFamily.title }), url: `/admin/families/${id}/general` },
   ],
 )
 

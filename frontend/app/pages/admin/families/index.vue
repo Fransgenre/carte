@@ -10,14 +10,16 @@
         /></InputIcon>
         <InputText
           v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
-          placeholder="Recherche"
+          :placeholder="$t('page.admin.families.index.searchPlaceholder')"
         />
       </IconField>
       <MultiSelect
         v-model="state.tablesSelectedColumns[table_key]"
         :options="optionalColumns"
+        option-label="label"
+        option-value="key"
         display="chip"
-        placeholder="Sélectionner des colonnes"
+        :placeholder="$t('page.admin.families.index.selectColumns')"
         class="w-full md:w-80"
       />
     </span>
@@ -28,7 +30,7 @@
       data-key="id"
       paginator
       paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
-      current-page-report-template="&nbsp&nbsp&nbsp({totalPages} page·s, {totalRecords} famille·s)"
+      :current-page-report-template="$t('page.admin.families.index.currentPageReport')"
       :value="families"
       striped-rows
       :rows="10"
@@ -39,13 +41,13 @@
     >
       <Column
         field="title"
-        header="Titre"
+        :header="$t('page.admin.families.index.column_title')"
         sortable
       />
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Entités')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('entity_count')"
         field="entity_count"
-        header="Entités"
+        :header="$t('page.admin.families.index.column_entity_count')"
         sortable
       />
       <Column v-if="state.is_admin">
@@ -83,7 +85,7 @@
             </Button>
             <AdminEditDeleteButtons
               :id="slotProps.data.id"
-              model-name="de la famille"
+              :model-name="$t('page.admin.families.index.modelName')"
               :name="slotProps.data.title"
               secure-delete
               :secure-delete-entity-count="slotProps.data.entity_count"
@@ -104,18 +106,19 @@ import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { Family } from '~/lib'
 import state from '~/lib/admin-state'
 
-const optionalColumns = ref(['Entités'])
+const { t } = useI18n()
+
+// 'Entités'
+const optionalColumnsKeys = ['entity_count']
+const optionalColumns = optionalColumnsKeys.map(column_key => ({
+  key: column_key,
+  label: t('page.admin.families.index.column_' + column_key),
+}))
 
 const table_key = `dt-state-families`
 const isSmallScreen = useMediaQuery('(max-width: 768px)')
-if (!(table_key in state.tablesSelectedColumns)) {
-  state.tablesSelectedColumns[table_key] = isSmallScreen.value ? [] : ['Entités']
-}
-if (!(table_key in state.tablesFilters)) {
-  state.tablesFilters[table_key] = {
-    global: { value: null, matchMode: 'contains' },
-  }
-}
+const selectedColumKeys = isSmallScreen.value ? [] : ['entity_count']
+state.registerTable(table_key, selectedColumKeys)
 
 definePageMeta({
   layout: 'admin-ui',
@@ -123,20 +126,20 @@ definePageMeta({
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  'Familles',
+  t('page.admin.families.index.title'),
   'family',
   state.is_admin
     ? [
         {
           icon: 'add',
-          label: 'Nouvelle famille',
+          label: t('page.admin.families.index.newFamily'),
           severity: 'success',
           url: `/admin/families/new`,
         },
       ]
     : [],
   [
-    { label: 'Familles', url: '/admin/families' },
+    { label: t('page.admin.families.index.title'), url: '/admin/families' },
   ],
 )
 
@@ -159,11 +162,21 @@ const toast = useToast()
 async function onDelete(family_id: string, family_name: string, onDeleteDone: () => void) {
   try {
     await state.client.deleteFamily(family_id)
-    toast.add({ severity: 'success', summary: 'Succès', detail: `Famille ${family_name} supprimée avec succès`, life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.families.index.success'),
+      detail: t('page.admin.families.index.deleteFamilySuccess', { family_name }),
+      life: 3000,
+    })
     refreshTable()
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: `Erreur de suppression de la famille ${family_name}`, life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.families.index.error'),
+      detail: t('page.admin.families.index.deleteFamilyError', { family_name }),
+      life: 3000,
+    })
   }
   onDeleteDone()
 }

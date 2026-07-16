@@ -1,26 +1,26 @@
 <template>
   <div class="w-full">
     <h3 class="mt-0 font-semibold text-lg mb-2">
-      Origines des liens
+      {{ $t('page.admin.accessTokens.details.id.origins') }}
     </h3>
 
     <DataTable :value="origins">
       <Column
         field="referrer"
-        header="Origine"
+        :header="$t('page.admin.accessTokens.details.id.referrer')"
         sortable
       />
 
       <Column
         field="count"
-        header="Nombre de visites"
+        :header="$t('page.admin.accessTokens.details.id.count')"
         sortable
       />
     </DataTable>
 
     <div class="mt-4">
       <h3 class="mt-0 font-semibold text-lg mb-4">
-        Activités des 30 derniers jours
+        {{ $t('page.admin.accessTokens.details.id.lastActivities') }}
       </h3>
 
       <div class="relative flex h-full w-full justify-center">
@@ -40,6 +40,8 @@ import Chart from 'primevue/chart'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import state from '~/lib/admin-state'
 
+const { t, locale } = useI18n()
+
 definePageMeta({
   layout: 'admin-ui',
 })
@@ -55,7 +57,7 @@ const chartData = {
   labels: Object.keys(stats.visits_30_days).map(date => new Date(date)),
   datasets: [
     {
-      label: 'Visites',
+      label: t('page.admin.accessTokens.details.id.visits'),
       data: Object.values(stats.visits_30_days),
       fill: true,
       borderColor: '#e86ba7',
@@ -75,6 +77,7 @@ const chartData = {
 }
 
 const chartOptions = {
+  locale: locale.value,
   responsive: true,
   plugins: {
     legend: {
@@ -121,12 +124,12 @@ function getGradient(ctx: CanvasRenderingContext2D, chartArea: { top: number, bo
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Détails du jeton ${token.title}`,
+  t('page.admin.accessTokens.details.id.title', { title: token.title }),
   'accessToken',
   [],
   [
-    { label: 'Jetons d\'accès', url: '/admin/access-tokens' },
-    { label: `Détails du jeton ${token.title}`, url: `/admin/access-tokens/${accessTokenId}` },
+    { label: t('page.admin.accessTokens.details.id.breadcrumb'), url: '/admin/access-tokens' },
+    { label: t('page.admin.accessTokens.details.id.title', { title: token.title }), url: `/admin/access-tokens/${accessTokenId}` },
   ],
 )
 </script>

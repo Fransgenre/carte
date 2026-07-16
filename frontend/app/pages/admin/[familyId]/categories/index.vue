@@ -10,14 +10,16 @@
         </InputIcon>
         <InputText
           v-model="(state.tablesFilters[table_key]!['global'] as DataTableFilterMetaData).value"
-          placeholder="Recherche"
+          :placeholder="$t('page.admin.familyId.categories.index.search')"
         />
       </IconField>
       <MultiSelect
         v-model="state.tablesSelectedColumns[table_key]"
         :options="optionalColumns"
+        option-label="label"
+        option-value="key"
         display="chip"
-        placeholder="Sélectionner des colonnes"
+        :placeholder="$t('page.admin.familyId.categories.index.selectColumns')"
         class="w-full md:w-80"
       />
     </span>
@@ -25,7 +27,7 @@
       v-model:filters="state.tablesFilters[table_key]"
       paginator
       paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
-      current-page-report-template="&nbsp&nbsp&nbsp({totalPages} page·s, {totalRecords} catégorie·s)"
+      :current-page-report-template="$t('page.admin.familyId.categories.index.currentPageReport')"
       state-storage="session"
       :state-key="table_key"
       data-key="id"
@@ -39,33 +41,33 @@
     >
       <Column
         field="title"
-        header="Titre"
+        :header="$t('page.admin.familyId.categories.index.column_title')"
         sortable
       />
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Affichage par défaut')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('default_status')"
         field="default_status"
-        header="Affichage par défaut"
+        :header="$t('page.admin.familyId.categories.index.column_default_status')"
         sortable
       >
         <template #body="slotProps">
           <Tag
-            :value="slotProps.data.default_status ? 'Inclus' : 'Exclus'"
+            :value="slotProps.data.default_status ? $t('page.admin.familyId.categories.index.included') : $t('page.admin.familyId.categories.index.excluded')"
             :severity="slotProps.data.default_status ? 'success' : 'danger'"
           />
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Entités')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('entity_count')"
         field="entity_count"
-        header="Entités"
+        :header="$t('page.admin.familyId.categories.index.column_entity_count')"
         sortable
       />
       <Column>
         <template #body="slotProps">
           <AdminEditDeleteButtons
             :id="slotProps.data.id"
-            model-name="de la catégorie"
+            :model-name="$t('page.admin.familyId.categories.index.modelName')"
             :name="slotProps.data.title"
             secure-delete
             :secure-delete-entity-count="slotProps.data.entity_count"
@@ -83,6 +85,9 @@ import type { DataTableFilterMetaData } from 'primevue/datatable'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { Category } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
+const toast = useToast()
 
 const familyId = useRoute().params.familyId as string
 if (state.families == null)
@@ -105,17 +110,16 @@ async function refreshTable() {
 }
 refreshTable()
 
-const isSmallScreen = useMediaQuery('(max-width: 768px)')
-const optionalColumns = ref(['Affichage par défaut', 'Entités'])
+const optionalColumnsKeys = ['default_status', 'entity_count']
+const optionalColumns = optionalColumnsKeys.map(column_key => ({
+  key: column_key,
+  label: t('page.admin.familyId.categories.index.column_' + column_key),
+}))
+
 const table_key = `dt-state-categories-${familyId}`
-if (!(table_key in state.tablesSelectedColumns)) {
-  state.tablesSelectedColumns[table_key] = isSmallScreen.value ? [] : ['Affichage par défaut']
-}
-if (!(table_key in state.tablesFilters)) {
-  state.tablesFilters[table_key] = {
-    global: { value: null, matchMode: 'contains' },
-  }
-}
+const isSmallScreen = useMediaQuery('(max-width: 768px)')
+const selectedColumKeys = isSmallScreen.value ? [] : ['default_status']
+state.registerTable(table_key, selectedColumKeys)
 
 definePageMeta({
   layout: 'admin-ui',
@@ -123,32 +127,40 @@ definePageMeta({
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  'Catégories',
+  t('page.admin.familyId.categories.index.categories'),
   'category',
   [
     {
       icon: 'add',
-      label: 'Nouvelle catégorie',
+      label: t('page.admin.familyId.categories.index.newCategory'),
       severity: 'success',
       url: `/admin/${familyId}/categories/new`,
     },
   ],
   [
     { label: `${familyTitle}`, url: '/admin/families' },
-    { label: 'Catégories', url: `/admin/${familyId}/categories` },
+    { label: t('page.admin.familyId.categories.index.categories'), url: `/admin/${familyId}/categories` },
   ],
 )
-
-const toast = useToast()
 
 async function onDelete(category_id: string, category_name: string, onDeleteDone: () => void) {
   try {
     await state.deleteCategory(category_id)
-    toast.add({ severity: 'success', summary: 'Succès', detail: `Catégorie ${category_name} supprimée avec succès`, life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.familyId.categories.index.success'),
+      detail: t('page.admin.familyId.categories.index.deleteSuccess', { category_name }),
+      life: 3000,
+    })
     refreshTable()
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: `Erreur de suppression de la catégorie ${category_name}`, life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.familyId.categories.index.error'),
+      detail: t('page.admin.familyId.categories.index.deleteError', { category_name }),
+      life: 3000,
+    })
   }
   onDeleteDone()
 }

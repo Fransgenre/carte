@@ -68,6 +68,7 @@ import state from '~/lib/viewer-state'
 
 const toast = useToast()
 const darkMode = useDarkMode()
+const { t } = useI18n()
 
 const tileUrl = ref(
   darkMode.isDark.value
@@ -141,8 +142,8 @@ async function internalRefresh() {
     if ((error as AppError).error_code !== 'token_validation_error')
       toast.add({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de rafraîchir la carte',
+        summary: t('cmp.viewer.map.error'),
+        detail: t('cmp.viewer.map.refreshError'),
         life: 3000,
       })
   }
@@ -228,8 +229,8 @@ async function handleEntityClick(entity: DisplayableCachedEntity) {
   catch {
     toast.add({
       severity: 'error',
-      summary: 'Erreur',
-      detail: `Impossible de charger l'entité sélectionnée`,
+      summary: t('cmp.viewer.map.error'),
+      detail: t('cmp.viewer.map.entityLoadError'),
       life: 3000,
     })
   }

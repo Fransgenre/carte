@@ -7,7 +7,7 @@
         {{ state.title }}
       </Tab>
       <Tab value="1">
-        SafeHaven
+        {{ $t('cmp.viewer.information.safeHaven') }}
       </Tab>
     </TabList>
 
@@ -24,13 +24,15 @@
           <div class="logo hot-pink-bg p-4 flex items-center justify-center">
             <img
               src="assets/logo_secondary.svg"
-              alt="SafeHaven"
+              :alt="$t('cmp.viewer.information.safeHaven')"
             >
           </div>
         </div>
 
         <p class="text-center !m-4">
-          SafeHaven est une solution opensource de création de carte collaborative.<br>Vous pouvez facilement créer votre carte !
+          {{ $t('cmp.viewer.information.safeHavenDescription') }}
+          <br>
+          {{ $t('cmp.viewer.information.safeHavenDescriptionPart2') }}
         </p>
 
         <p class="text-center !m-4">
@@ -40,7 +42,7 @@
             rel="noopener noreferrer"
           >
             <Button
-              label="Découvrir sur GitHub"
+              :label="$t('cmp.viewer.information.discoverOnGithub')"
             >
               <template #icon>
                 <AppIcon icon-name="github" />

@@ -6,66 +6,66 @@
     <AdminInputTextField
       id="title"
       v-model="editedTag.title"
-      label="Titre"
+      :label="$t('page.admin.tags.id.tagTitle')"
       :variant="hasBeenEdited('title')"
     />
 
     <AdminInputSwitchField
       id="is_filter"
       v-model="editedTag.is_filter"
-      label="Filtrant"
+      :label="$t('page.admin.tags.id.isFilter')"
     />
 
     <AdminInputSwitchField
       v-if="editedTag.is_filter"
       id="default_filter_status"
       v-model="editedTag.default_filter_status"
-      label="Inclus par défaut"
-      helper-text="(si décoché, toutes les entités portant ce tag seront exclues des résultats par défaut)"
+      :label="$t('page.admin.tags.id.defaultFilterStatus')"
+      :helper-text="$t('page.admin.tags.id.defaultFilterStatusHelperText')"
     />
 
     <AdminInputSwitchField
       v-if="editedTag.is_filter"
       id="is_filter"
       v-model="editedTag.is_primary_filter"
-      label="Mettre en avant le filtre"
-      helper-text="(si coché, le filtre sera présent dans le panneau de filtrage en dessous du choix des catégories)"
+      :label="$t('page.admin.tags.id.isPrimaryFilter')"
+      :helper-text="$t('page.admin.tags.id.isPrimaryFilterHelperText')"
     />
 
     <AdminInputTextField
       v-if="editedTag.is_filter && editedTag.is_primary_filter"
       id="filter_description"
       v-model="editedTag.filter_description"
-      label="Description du filtre"
+      :label="$t('page.admin.tags.id.filterDescription')"
       :variant="hasBeenEdited('filter_description')"
-      helper-text="(description exposée aux utilisateurices lorsqu'il est mis en avant)"
+      :helper-text="$t('page.admin.tags.id.filterDescriptionHelperText')"
     />
 
     <AdminInputColorField
       id="border_color"
       v-model="editedTag.border_color"
-      label="Couleur de bordure"
+      :label="$t('page.admin.tags.id.borderColor')"
       :variant="hasBeenEdited('border_color')"
     />
 
     <AdminInputColorField
       id="fill_color"
       v-model="editedTag.fill_color"
-      label="Couleur de remplissage"
+      :label="$t('page.admin.tags.id.fillColor')"
       :variant="hasBeenEdited('fill_color')"
     />
 
     <span class="flex gap-1 justify-end">
       <NuxtLink to="/admin/tags">
         <Button
-          label="Annuler"
+          :label="$t('page.admin.tags.id.cancel')"
           severity="secondary"
           :loading="processingRequest"
           :disabled="processingRequest"
         />
       </NuxtLink>
       <Button
-        label="Sauvegarder"
+        :label="$t('page.admin.tags.id.save')"
         type="submit"
         :loading="processingRequest"
         :disabled="isDisabled()"
@@ -79,6 +79,8 @@ import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { NewOrUpdateTag } from '~/lib'
 import state from '~/lib/admin-state'
 import { isValidHexColor, isValidText } from '~/lib/validation'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -114,17 +116,17 @@ function isDisabled() {
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  isNew ? `Création d'un nouveau tag` : `Édition du tag ${fetchedTag!.title}`,
+  isNew ? t('page.admin.tags.id.newTagTitle') : t('page.admin.tags.id.editTagTitle', { title: fetchedTag!.title }),
   'tag',
   [],
   isNew
     ? [
-        { label: 'Tags', url: '/admin/tags' },
-        { label: `Création d'un nouveau tag`, url: `/admin/tags/new` },
+        { label: t('page.admin.tags.id.tags'), url: '/admin/tags' },
+        { label: t('page.admin.tags.id.newTagTitle'), url: `/admin/tags/new` },
       ]
     : [
-        { label: 'Tags', url: '/admin/tags' },
-        { label: `Édition du tag ${fetchedTag!.title}`, url: `/admin/tags/${tagId}` },
+        { label: t('page.admin.tags.id.tags'), url: '/admin/tags' },
+        { label: t('page.admin.tags.id.editTagTitle', { title: fetchedTag!.title }), url: `/admin/tags/${tagId}` },
       ],
 )
 
@@ -141,8 +143,8 @@ async function onSave() {
       await state.createTag(editedTag.value)
       toast.add({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Tag créé avec succès',
+        summary: t('page.admin.tags.id.success'),
+        detail: t('page.admin.tags.id.createTagSuccess'),
         life: 3000,
       })
     }
@@ -150,8 +152,8 @@ async function onSave() {
       await state.updateTag(tagId, editedTag.value)
       toast.add({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Tag modifié avec succès',
+        summary: t('page.admin.tags.id.success'),
+        detail: t('page.admin.tags.id.editTagSuccess'),
         life: 3000,
       })
     }
@@ -161,8 +163,8 @@ async function onSave() {
     console.error(error)
     toast.add({
       severity: 'error',
-      summary: 'Erreur',
-      detail: (isNew ? 'Erreur de création du tag' : 'Erreur de modification du tag'),
+      summary: t('page.admin.tags.id.error'),
+      detail: (isNew ? t('page.admin.tags.id.createTagError') : t('page.admin.tags.id.editTagError')),
       life: 3000,
     })
   }

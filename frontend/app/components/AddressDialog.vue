@@ -1,7 +1,7 @@
 <template>
   <Dialog
     :visible="props.visible"
-    header="Sélectionner une adresse"
+    :header="$t('cmp.addressDialog.selectAddress')"
     :modal="true"
     :closable="true"
     dismissable-mask
@@ -12,12 +12,12 @@
     <template #footer>
       <div class="pt-1">
         <Button
-          label="Annuler"
+          :label="$t('cmp.addressDialog.cancel')"
           severity="secondary"
           @click="emits('update:visible', false)"
         />
         <Button
-          label="Sélectionner"
+          :label="$t('cmp.addressDialog.select')"
           :disabled="!editedAddress"
           @click="editedAddress && emits('select', editedAddress)"
         />

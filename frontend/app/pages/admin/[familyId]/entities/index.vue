@@ -5,13 +5,13 @@
         <InputGroup class="h-10">
           <InputText
             v-model="state.tablesQueryParams[table_key]!.search_query"
-            placeholder="Tapez votre recherche ici"
+            :placeholder="$t('page.admin.familyId.entities.index.searchPlaceholder')"
           />
 
           <Button
             type="button"
             severity="warn"
-            label="Filtres"
+            :label="$t('page.admin.familyId.entities.index.filtersLabel')"
             @click="(event: Event) => filters_overlay?.toggle(event)"
           >
             <template #icon>
@@ -32,8 +32,10 @@
       <MultiSelect
         v-model="state.tablesSelectedColumns[table_key]"
         :options="optionalColumns"
+        option-label="label"
+        option-value="key"
         display="chip"
-        placeholder="Sélectionner des colonnes"
+        :placeholder="$t('page.admin.familyId.entities.index.selectColumns')"
         class="w-full md:w-80 h-10"
       />
     </span>
@@ -45,7 +47,7 @@
       lazy
       paginator
       paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
-      current-page-report-template="&nbsp&nbsp&nbsp({totalPages} page·s, {totalRecords} entité·s)"
+      :current-page-report-template="$t('page.admin.familyId.entities.index.currentPageReport')"
       data-key="id"
       :value="currentEntitiesResults?.entities"
       :total-records="currentEntitiesResults?.total_results"
@@ -56,22 +58,22 @@
     >
       <Column
         field="display_name"
-        header="Nom d'affichage"
+        :header="$t('page.admin.familyId.entities.index.column_display_name')"
         class="max-w-[25rem]"
       />
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Catégorie')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('category_id')"
         field="category_id"
-        header="Catégorie"
+        :header="$t('page.admin.familyId.entities.index.column_category_id')"
       >
         <template #body="slotProps">
           <CategoryTag :category="state.categoryRecord[slotProps.data.category_id]!" />
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Tags')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('tags')"
         field="tags"
-        header="Tags"
+        :header="$t('page.admin.familyId.entities.index.column_tags')"
         class="max-w-72"
       >
         <template #body="slotProps">
@@ -95,13 +97,13 @@
         </template>
       </Column>
       <Column
-        v-if="state.tablesSelectedColumns[table_key]!.includes('Visibilité')"
+        v-if="state.tablesSelectedColumns[table_key]!.includes('hidden')"
         field="hidden"
-        header="Visibilité"
+        :header="$t('page.admin.familyId.entities.index.column_hidden')"
       >
         <template #body="slotProps">
           <Tag
-            :value="slotProps.data.hidden ? 'Caché' : 'Visible'"
+            :value="slotProps.data.hidden ? $t('page.admin.familyId.entities.index.hidden') : $t('page.admin.familyId.entities.index.visible')"
             :severity="slotProps.data.hidden ? 'error' : 'success'"
           />
         </template>
@@ -110,7 +112,7 @@
         <template #body="slotProps">
           <AdminEditDeleteButtons
             :id="slotProps.data.entity_id"
-            model-name="de l'entité"
+            :model-name="$t('page.admin.familyId.entities.index.modelName')"
             :name="slotProps.data.display_name"
             @delete="onDelete"
             @edit="id => navigateTo(`/admin/${familyId}/entities/${id}?entitiesUrl=entities`)"
@@ -149,6 +151,7 @@ import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { AdminPaginatedCachedEntities } from '~/lib'
 import state from '~/lib/admin-state'
 
+const { t } = useI18n()
 const tableKeyRefresh = ref(0)
 const max_tags_displayed = 2
 const familyId = useRoute().params.familyId as string
@@ -170,12 +173,18 @@ const tags_tooltip = useTemplateRef('tags_tooltip')
 const tooltip_excess_tags: Ref<undefined | string[]> = ref(undefined)
 
 const firstRow = ref(0)
-const isSmallScreen = useMediaQuery('(max-width: 768px)')
-const optionalColumns = ref(['Catégorie', 'Tags', 'Visibilité'])
+
+// 'Catégorie', 'Tags', 'Visibilité'
+const optionalColumnsKeys = ['category_id', 'tags', 'hidden']
+const optionalColumns = optionalColumnsKeys.map(column_key => ({
+  key: column_key,
+  label: t('page.admin.familyId.entities.index.column_' + column_key),
+}))
+
 const table_key = `dt-state-entities-${familyId}`
-if (!(table_key in state.tablesSelectedColumns)) {
-  state.tablesSelectedColumns[table_key] = isSmallScreen.value ? [] : ['Catégorie', 'Tags', 'Visibilité']
-}
+const isSmallScreen = useMediaQuery('(max-width: 768px)')
+const selectedColumKeys = isSmallScreen.value ? [] : ['category_id', 'tags', 'hidden']
+state.registerTable(table_key, selectedColumKeys)
 
 if (!(table_key in state.tablesQueryParams)) {
   state.tablesQueryParams[table_key] = {
@@ -269,19 +278,19 @@ definePageMeta({
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  'Entités',
+  t('page.admin.familyId.entities.index.title'),
   'entity',
   [
     {
       icon: 'add',
-      label: 'Nouvelle entité',
+      label: t('page.admin.familyId.entities.index.newEntity'),
       severity: 'success',
       url: `/admin/${familyId}/entities/new?entitiesUrl=entities`,
     },
   ],
   [
     { label: `${familyTitle}`, url: '/admin/families' },
-    { label: 'Entités', url: `/admin/${familyId}/entities` },
+    { label: t('page.admin.familyId.entities.index.title'), url: `/admin/${familyId}/entities` },
   ],
 )
 
@@ -290,11 +299,21 @@ const toast = useToast()
 async function onDelete(entity_id: string, entity_name: string, onDeleteDone: () => void) {
   try {
     await state.client.deleteEntity(entity_id)
-    toast.add({ severity: 'success', summary: 'Succès', detail: `Entité ${entity_name} supprimée avec succès`, life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.familyId.entities.index.success'),
+      detail: t('page.admin.familyId.entities.index.deleteEntitySuccess', { entity_name }),
+      life: 3000,
+    })
     refreshTable()
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: `Erreur de suppression de l'entité ${entity_name}`, life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.familyId.entities.index.error'),
+      detail: t('page.admin.familyId.entities.index.deleteEntityError', { entity_name }),
+      life: 3000,
+    })
   }
   onDeleteDone()
 }

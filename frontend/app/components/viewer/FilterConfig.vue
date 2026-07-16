@@ -2,26 +2,26 @@
   <Tabs value="0">
     <TabList>
       <Tab value="0">
-        Général
+        {{ $t('cmp.viewer.filterConfig.general') }}
       </Tab>
       <Tab
         v-if="hasFilteringTags"
         value="1"
       >
-        Tags
+        {{ $t('cmp.viewer.filterConfig.tags') }}
       </Tab>
       <Tab
         v-if="hasFilteringEnums"
         value="2"
       >
-        Contraintes
+        {{ $t('cmp.viewer.filterConfig.constraints') }}
       </Tab>
     </TabList>
 
     <TabPanels>
       <TabPanel value="0">
         <div>
-          <span class="font-medium block mb-2">Catégories</span>
+          <span class="font-medium block mb-2">{{ $t('cmp.viewer.filterConfig.categories') }}</span>
           <div
             :style="{
               maxHeight: props.maximumHeight,
@@ -59,7 +59,7 @@
             class="m-1"
             @click="selectAllFilteringCategories"
           >
-            Tout sélectionner
+            {{ $t('cmp.viewer.filterConfig.selectAll') }}
           </Button>
           <Button
             outlined
@@ -67,7 +67,7 @@
             class="m-1"
             @click="deselectAllFilteringCategories"
           >
-            Tout désélectionner
+            {{ $t('cmp.viewer.filterConfig.deselectAll') }}
           </Button>
           <Button
             outlined
@@ -75,14 +75,14 @@
             class="m-1"
             @click="resetFilteringCategories"
           >
-            Réinitialiser
+            {{ $t('cmp.viewer.filterConfig.reset') }}
           </Button>
         </div>
         <div
           v-if="hasFilteringPrimaryTags"
           class="filter-settings mt-2"
         >
-          <span class="font-medium block mb-2">Filtres</span>
+          <span class="font-medium block mb-2">{{ $t('cmp.viewer.filterConfig.filters') }}</span>
           <div
             v-for="tag in props.filteringTags.filter(t => t.is_primary_filter)"
             :key="tag.id"
@@ -104,9 +104,9 @@
               <template #option="slotProps">
                 <div class="button-content">
                   <span>{{
-                    slotProps.option === -1 ? 'Caché'
+                    slotProps.option === -1 ? $t('cmp.viewer.filterConfig.hidden')
                     : slotProps.option === 0
-                      ? 'Affiché' : 'Requis'
+                      ? $t('cmp.viewer.filterConfig.displayed') : $t('cmp.viewer.filterConfig.required')
                   }}</span>
                 </div>
               </template>
@@ -119,16 +119,16 @@
         v-if="hasFilteringTags"
         value="1"
       >
-        <span class="font-medium block mb-2">Tags</span>
+        <span class="font-medium block mb-2">{{ $t('cmp.viewer.filterConfig.tags') }}</span>
         <InputGroup
           class="mb-6 mt-2"
         >
           <InputText
             v-model="tagSearch"
-            placeholder="Rechercher un tag"
+            :placeholder="$t('cmp.viewer.filterConfig.searchTag')"
           />
           <Button
-            v-tooltip.bottom="'Retirer la recherche'"
+            v-tooltip.bottom="$t('cmp.viewer.filterConfig.clearSearch')"
             severity="warn"
             @click="tagSearch = ''"
           >
@@ -137,7 +137,7 @@
             </template>
           </Button>
           <Button
-            v-tooltip.bottom="'Retirer tous les filtres'"
+            v-tooltip.bottom="$t('cmp.viewer.filterConfig.clearFilters')"
             severity="danger"
             @click="resetFilters()"
           >
@@ -174,9 +174,9 @@
               <template #option="slotProps">
                 <div class="button-content">
                   <span>{{
-                    slotProps.option === -1 ? 'Caché'
+                    slotProps.option === -1 ? $t('cmp.viewer.filterConfig.hidden')
                     : slotProps.option === 0
-                      ? 'Affiché' : 'Requis'
+                      ? $t('cmp.viewer.filterConfig.displayed') : $t('cmp.viewer.filterConfig.required')
                   }}</span>
                 </div>
               </template>

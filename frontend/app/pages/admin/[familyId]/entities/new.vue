@@ -8,7 +8,7 @@
         <AdminInputTextField
           id="display_name"
           v-model="editedEntity.display_name"
-          label="Nom d'affichage"
+          :label="$t('page.admin.familyId.entities.new.displayName')"
         />
         <FormCategorySelect
           v-model="editedEntity.category_id"
@@ -34,21 +34,20 @@
         <AdminInputSwitchField
           id="hidden"
           v-model="editedEntity.hidden"
-          label="Cachée"
-          helper-text="Si activé, cette entité ne sera pas visible publiquement, même si modérée.
-                    Utile pour des entités que vous souhaitez cacher à long terme sans les supprimer."
+          :label="$t('page.admin.familyId.entities.new.hidden')"
+          :helper-text="$t('page.admin.familyId.entities.new.hiddenHelperText')"
         />
         <AdminInputSwitchField
           id="moderated"
           v-model="editedEntity.moderated"
-          label="Modérée"
-          helper-text="Si activé, cette entité quittera la liste des entités en attente et sera rendue publique."
+          :label="$t('page.admin.familyId.entities.new.moderated')"
+          :helper-text="$t('page.admin.familyId.entities.new.moderatedHelperText')"
         />
 
         <AdminInputTextField
           id="moderation_notes"
           v-model="editedEntity.moderation_notes"
-          label="Notes de modération"
+          :label="$t('page.admin.familyId.entities.new.moderationNotes')"
           text-length="long"
           optional
         />
@@ -60,14 +59,14 @@
         <span class="flex gap-1 justify-end">
           <NuxtLink :to="`/admin/${familyId}/${entitiesUrl}`">
             <Button
-              label="Annuler"
+              :label="$t('page.admin.familyId.entities.new.cancel')"
               severity="secondary"
               :loading="processingRequest"
               :disabled="processingRequest"
             />
           </NuxtLink>
           <Button
-            label="Sauvegarder"
+            :label="$t('page.admin.familyId.entities.new.save')"
             type="submit"
             :loading="processingRequest"
             :disabled="processingRequest || !editedEntity.display_name || !editedEntity.category_id"
@@ -83,6 +82,8 @@ import { ref } from 'vue'
 import type { InitAdminLayout } from '~/layouts/admin-ui.vue'
 import type { AdminNewOrUpdateEntity, EntityOrCommentData, FormField, UnprocessedLocation } from '~/lib'
 import state from '~/lib/admin-state'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'admin-ui',
@@ -122,13 +123,13 @@ const entitiesUrl = useRoute().query.entitiesUrl
 
 const initAdminLayout = inject<InitAdminLayout>('initAdminLayout')!
 initAdminLayout(
-  `Nouvelle entité`,
+  t('page.admin.familyId.entities.new.title'),
   'entity',
   [],
   [
     { label: `${family.title}`, url: '/admin/families' },
-    { label: 'Entités', url: `/admin/${familyId}/${entitiesUrl}` },
-    { label: `Édition d'une nouvelle entité`, url: `/admin/${familyId}/entities/new?=${entitiesUrl}` },
+    { label: t('page.admin.familyId.entities.new.entitiesBreadcrumb'), url: `/admin/${familyId}/${entitiesUrl}` },
+    { label: t('page.admin.familyId.entities.new.newEntityBreadcrumb'), url: `/admin/${familyId}/entities/new?=${entitiesUrl}` },
   ],
 )
 
@@ -137,10 +138,20 @@ async function onSave() {
   try {
     const { id } = await state.client.createEntity(editedEntity.value)
     navigateTo(`/admin/${familyId}/entities/${id}`)
-    toast.add({ severity: 'success', summary: 'Succès', detail: 'Entité créée avec succès', life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: t('page.admin.familyId.entities.new.success'),
+      detail: t('page.admin.familyId.entities.new.createEntitySuccess'),
+      life: 3000,
+    })
   }
   catch {
-    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur de création de l\'entité', life: 3000 })
+    toast.add({
+      severity: 'error',
+      summary: t('page.admin.familyId.entities.new.error'),
+      detail: t('page.admin.familyId.entities.new.createEntityError'),
+      life: 3000,
+    })
   }
   processingRequest.value = false
 }
