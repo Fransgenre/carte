@@ -224,6 +224,8 @@
   <Dialog
     v-model:visible="filterPopupVisible"
     header="Filtres"
+    :style="{ width: '50rem' }"
+    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
     modal
   >
     <ViewerFilterConfig
