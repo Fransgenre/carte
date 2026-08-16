@@ -13,7 +13,7 @@ use axum::{
     Json,
 };
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{json, Map, Value};
 use std::collections::HashMap;
 use std::fmt::Display;
 use tracing::debug;
@@ -434,6 +434,7 @@ pub struct FetchEntityRequest {
     pub active_categories: Vec<Uuid>,
     pub active_required_tags: Vec<Uuid>,
     pub active_hidden_tags: Vec<Uuid>,
+    pub enums_constraints: HashMap<String, Vec<Value>>,
 }
 
 #[utoipa::path(
@@ -483,6 +484,14 @@ async fn viewer_fetch_entity(
         .map_or(Ok(()), Err)?;
     debug!("[PERMDBG] No tag is explicitly excluded, continuing");
 
+    // The use of enum contraints must not be explicitly excluded
+    are_constraints_allowed(
+        &entity.family_id,
+        &token.fam_priv_idx,
+        &request.enums_constraints,
+    )?;
+    debug!("[PERMDBG] No enum constraint is explicitly excluded, continuing");
+
     let parents = PublicEntity::get_parents(id, &mut conn).await?;
     let children = PublicEntity::get_children(id, &mut conn).await?;
 
@@ -523,7 +532,7 @@ async fn viewer_fetch_entity(
         debug!("[PERMDBG] No tag are explicitly excluded, continuing");
     }
 
-    let filtered_children: Vec<PublicListedEntity> = authorized_children
+    let mut filtered_children: Vec<PublicListedEntity> = authorized_children
         .into_iter()
         // filter against request
         .filter(|child| {
@@ -539,9 +548,44 @@ async fn viewer_fetch_entity(
         })
         .collect();
     debug!(
-        "[PERMDBG] Found {} remaining children when applying user filters",
+        "[PERMDBG] Found {} remaining children when applying category and tag filters",
         filtered_children.len()
     );
+
+    let requires_children_data_filtering = !request.enums_constraints.is_empty();
+    if requires_children_data_filtering {
+        // gather children data to perform further filtering
+        let mut children_data: HashMap<Uuid, Value> = HashMap::new();
+        for child in &filtered_children {
+            children_data.insert(child.id, PublicEntity::get(child.id, &mut conn).await?.data);
+        }
+
+        // filter children again against request and children data
+        filtered_children.retain(|child| {
+            let default_json_map = Map::new();
+            let default_json_array = json!([]);
+            let child_data = children_data[&child.id]
+                .as_object()
+                .unwrap_or(&default_json_map);
+            request
+                .enums_constraints
+                .iter()
+                .all(|(enum_name, enum_values)| {
+                    let data = child_data.get(enum_name).unwrap_or(&default_json_array);
+                    if data.is_array() {
+                        // child data is an array, this is a EnumMultiOption
+                        let array = data.as_array().unwrap();
+                        return enum_values.iter().any(|value| array.contains(value));
+                    }
+                    // child data is not an array, this is a EnumSingleOption
+                    enum_values.contains(data)
+                })
+        });
+        debug!(
+            "[PERMDBG] Found {} remaining children when applying enum constraint filters",
+            filtered_children.len()
+        );
+    }
 
     // Parents must simply not be excluded to be shown, unlike children which must be allowed in their own right
     let filtered_parents: Vec<PublicListedEntity> = parents

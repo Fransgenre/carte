@@ -3625,7 +3625,8 @@
         "required": [
           "active_categories",
           "active_required_tags",
-          "active_hidden_tags"
+          "active_hidden_tags",
+          "enums_constraints"
         ],
         "properties": {
           "active_categories": {
@@ -3647,6 +3648,13 @@
             "items": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          "enums_constraints": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {}
             }
           }
         }
