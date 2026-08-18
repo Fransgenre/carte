@@ -82,6 +82,7 @@ export default function useClient() {
       activeCategories: string[],
       activeRequiredTags: string[],
       activeHiddenTags: string[],
+      enumsConstraints: Record<string, Array<unknown>>,
     ): Promise<FetchedEntity> {
       const { data, error } = await rawClient.POST('/api/map/entities/{id}', {
         params: { path: { id } },
@@ -89,6 +90,7 @@ export default function useClient() {
           active_categories: activeCategories,
           active_required_tags: activeRequiredTags,
           active_hidden_tags: activeHiddenTags,
+          enums_constraints: enumsConstraints,
         },
       })
       if (error) throw error

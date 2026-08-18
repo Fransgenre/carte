@@ -338,6 +338,7 @@ export class AppState {
       this.activeFilteringCategories,
       this.activeRequiredTags,
       this.activeHiddenTags,
+      this.activeFilteringEnums,
     )
   }
 
@@ -347,6 +348,7 @@ export class AppState {
       this.activeFilteringCategories,
       this.activeRequiredTags,
       this.activeHiddenTags,
+      this.activeFilteringEnums,
     )
   }
 
